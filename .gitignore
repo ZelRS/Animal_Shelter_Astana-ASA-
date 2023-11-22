@@ -35,4 +35,5 @@ build/
 /.mvn/wrapper/maven-wrapper.jar
 /.mvn/wrapper/maven-wrapper.properties
 /mvnw.cmd
+/application-ZelRS.properties
 /src/main/resources/application-adhoc.properties
