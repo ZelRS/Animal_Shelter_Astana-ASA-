@@ -16,9 +16,8 @@ public class Shelter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
-    @Column(name = "название")
-    private String name;
+    @Column(name = "тип")
+    private String type;
 
     @OneToOne
     @JoinColumn(name = "информаиця_о_приюте_id")
