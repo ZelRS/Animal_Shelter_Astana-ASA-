@@ -8,6 +8,7 @@ import pro.sky.telegramBot.handler.Handler;
 import pro.sky.telegramBot.handler.MessageHandler;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,7 +32,11 @@ public class CommandHandler implements Handler {
     public void init() {
         commandMap.put(START.getName(), (firstName, lastName, chatId) -> {
             log.info("Received START command");
-            messageHandler.sendWelcomeMessage(firstName, chatId);
+            try {
+                messageHandler.sendWelcomeMessage(firstName, chatId);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
