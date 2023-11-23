@@ -6,6 +6,8 @@ import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.handler.impl.ButtonHandler;
+import pro.sky.telegramBot.handler.impl.CommandHandler;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -16,29 +18,38 @@ import java.util.List;
 public class BotUpdatesListener implements UpdatesListener {
 
     private final TelegramBot telegramBot;
+    private final CommandHandler commandHandler;
+    private final ButtonHandler buttonHandler;
 
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(this);
     }
 
-    @Override
     public int process(List<Update> updates) {
-        updates.stream()
-                .filter(update -> update.message() != null)
-                .forEach(this::processUpdate);
-        return UpdatesListener.CONFIRMED_UPDATES_ALL;
-    }
+        updates.forEach(update -> {
+            log.info("Processing update: {}", update);
 
-    private void processUpdate(Update update) {
-        log.info("Processing update from user: {} {}", update.message().chat().firstName(), update.message().chat().lastName());
-        //  получаем команду от пользователя
-//        String text = update.message().text();
-        //  получаем уникальный идентификатор чата, из которого отправлено сообщение
-//        Long chatId = update.message().chat().id();
-        //  получаем имя пользователя
-//        String userName = update.message().chat().firstName();
-        //  вызывается обработчик команд
-//        commandHandlerService.handleCommand(chatId, userName, text);
+            if (update.message() != null) {
+                String messageText = update.message().text();
+                long chatId = update.message().chat().id();
+                String firstName = update.message().chat().firstName();
+                String lastName = update.message().chat().lastName();
+
+                if (messageText != null) {
+                    commandHandler.handle(messageText, firstName, lastName, chatId);
+                }
+            }
+
+            if (update.callbackQuery() != null) {
+                String callbackData = update.callbackQuery().data();
+                long chatId = update.callbackQuery().message().chat().id();
+                String firstName = update.callbackQuery().from().firstName();
+                String lastName = update.callbackQuery().from().lastName();
+                buttonHandler.handle(callbackData, firstName, lastName, chatId);
+            }
+        });
+        log.info("Updates processed");
+        return UpdatesListener.CONFIRMED_UPDATES_ALL;
     }
 }
