@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.model.pet;
 
 import lombok.*;
+import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.model.users.User;
 
 import javax.persistence.*;
@@ -38,6 +39,10 @@ public abstract class Pet {
     @ManyToOne
     @JoinColumn(name = "приручивший_пользователь_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "приют", referencedColumnName = "id")
+    private Shelter shelter;
 
     @Override
     public boolean equals(Object o) {

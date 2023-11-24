@@ -1,10 +1,8 @@
 package pro.sky.telegramBot.model.shelter;
 
 import lombok.*;
-import org.hibernate.proxy.HibernateProxy;
 import pro.sky.telegramBot.enums.ShelterTypes;
-import pro.sky.telegramBot.model.pet.Cat;
-import pro.sky.telegramBot.model.pet.Dog;
+import pro.sky.telegramBot.model.pet.Pet;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -32,11 +30,7 @@ public class Shelter {
 
     @OneToMany(mappedBy = "shelter")
     @ToString.Exclude
-    private Collection<Dog> dogs;
-
-    @OneToMany(mappedBy = "shelter")
-    @ToString.Exclude
-    private Collection<Cat> cats;
+    private Collection<Pet> pets;
 
     @Override
     public boolean equals(Object o) {
@@ -58,8 +52,6 @@ public class Shelter {
                ", name='" + name + '\'' +
                ", type=" + type +
                ", shelterInfo=" + shelterInfo +
-               ", dogs=" + dogs +
-               ", cats=" + cats +
                '}';
     }
 }
