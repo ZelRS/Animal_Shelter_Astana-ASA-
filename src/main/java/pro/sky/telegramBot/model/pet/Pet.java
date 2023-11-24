@@ -2,38 +2,48 @@ package pro.sky.telegramBot.model.pet;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import pro.sky.telegramBot.enums.PetType;
+import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.model.users.User;
 
 import javax.persistence.*;
 
-@MappedSuperclass
+@Entity(name= "pet")
 @RequiredArgsConstructor
 @Data
-public abstract class Pet {
+public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "кличка")
+    @Enumerated(EnumType.STRING)
+    @Column(name= "type")
+    private PetType type;
+
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "порода")
+    @Column(name = "breed")
     private String breed;
 
-    @Column(name = "возраст")
+    @Column(name = "age")
     private Integer age;
 
-    @Column(name = "описание")
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "пол")
+    @Column(name = "gender")
     private String gender;
 
-    @OneToOne
-    @JoinColumn(name = "фото_животного_id")
-    private PetPhoto petPhoto;
+    @Lob
+    @Column(name = "photo")
+    private byte[] data;
 
     @ManyToOne
-    @JoinColumn(name = "приручивший_пользователь_id")
+    @JoinColumn(name = "owner_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "shelter_id")
+    private Shelter shelter;
 }

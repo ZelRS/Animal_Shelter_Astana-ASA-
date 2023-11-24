@@ -2,13 +2,13 @@ package pro.sky.telegramBot.model.users;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import pro.sky.telegramBot.model.pet.Cat;
-import pro.sky.telegramBot.model.pet.Dog;
+import pro.sky.telegramBot.enums.UserState;
+import pro.sky.telegramBot.model.pet.Pet;
 
 import javax.persistence.*;
 import java.util.Collection;
 
-@Entity(name = "Пользователь")
+@Entity(name = "person")
 @RequiredArgsConstructor
 @Data
 public class User {
@@ -19,16 +19,17 @@ public class User {
     @Column(name = "chat_id")
     private Long chatId;
 
-    @Column(name = "ФИО")
-    private String fullName;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "state")
+    private UserState state;
+
+    @Column(name = "user_name")
+    private String userName;
 
     @OneToOne
-    @JoinColumn(name = "информация_о_пользователе_id")
+    @JoinColumn(name = "info_id")
     private UserInfo userInfo;
 
     @OneToMany(mappedBy = "user")
-    private Collection<Dog> dogs;
-
-    @OneToMany(mappedBy = "user")
-    private Collection<Cat> cats;
+    private Collection<Pet> pets;
 }

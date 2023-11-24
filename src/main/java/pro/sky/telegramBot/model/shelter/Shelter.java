@@ -2,13 +2,12 @@ package pro.sky.telegramBot.model.shelter;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import pro.sky.telegramBot.model.pet.Cat;
-import pro.sky.telegramBot.model.pet.Dog;
+import pro.sky.telegramBot.model.pet.Pet;
 
 import javax.persistence.*;
 import java.util.Collection;
 
-@Entity(name = "приют")
+@Entity(name = "shelter")
 @RequiredArgsConstructor
 @Data
 public class Shelter {
@@ -16,16 +15,19 @@ public class Shelter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "тип")
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "type")
     private String type;
 
-    @OneToOne
-    @JoinColumn(name = "информаиця_о_приюте_id")
-    private ShelterInfo shelterInfo;
+    @Lob
+    @Column(name = "photo")
+    private byte[] data;
 
     @OneToMany(mappedBy = "shelter")
-    private Collection<Dog> dogs;
-
-    @OneToMany(mappedBy = "shelter")
-    private Collection<Cat> cats;
+    private Collection<Pet> pets;
 }
