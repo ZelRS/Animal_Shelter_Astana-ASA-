@@ -31,11 +31,11 @@ public class ButtonHandler implements Handler {
     public void init() {
 
         battonMap.put(DOGS_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
-            log.info("Pressed YES button");
+            log.info("Pressed DOG button");
             messageHandler.sendButtonMessage(chatId);
         });
         battonMap.put(CATS_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
-            log.info("Pressed NO button");
+            log.info("Pressed CAT button");
             messageHandler.sendButtonMessage(chatId);
         });
     }
