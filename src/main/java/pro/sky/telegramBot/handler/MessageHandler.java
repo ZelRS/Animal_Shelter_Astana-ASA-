@@ -8,4 +8,14 @@ public interface MessageHandler {
     void sendDefaultMessage(Long chatId);
 
     void sendButtonMessage(Long chatId);
+
+    void sendChooseShelterMessage(Long chatId);
+
+    void sendInfoForPotentialUserMessage(Long chatId);
+
+    void sendInfoForProbationUserMessage(Long chatId);
+
+    void sendSorryMessage(Long chatId);
+
+    void sendBlockedMessage(Long chatId);
 }

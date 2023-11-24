@@ -2,6 +2,7 @@ package pro.sky.telegramBot.model.users;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.pet.Cat;
 import pro.sky.telegramBot.model.pet.Dog;
 
@@ -21,6 +22,9 @@ public class User {
 
     @Column(name = "ФИО")
     private String fullName;
+
+    @Enumerated(EnumType.STRING)
+    private UserState state;
 
     @OneToOne
     @JoinColumn(name = "информация_о_пользователе_id")

@@ -23,7 +23,6 @@ public class UpdateDispatcher {
             handleCallbackQuery(update.callbackQuery());
         }
 
-
     }
 
     private void handleMessage(Message message) {

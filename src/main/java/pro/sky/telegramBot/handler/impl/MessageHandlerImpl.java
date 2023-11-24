@@ -1,6 +1,5 @@
 package pro.sky.telegramBot.handler.impl;
 
-import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +39,31 @@ public class MessageHandlerImpl implements MessageHandler {
 
     @Override
     public void sendButtonMessage(Long chatId) {
+
+    }
+
+    @Override
+    public void sendChooseShelterMessage(Long chatId) {
+
+    }
+
+    @Override
+    public void sendInfoForPotentialUserMessage(Long chatId) {
+
+    }
+
+    @Override
+    public void sendInfoForProbationUserMessage(Long chatId) {
+
+    }
+
+    @Override
+    public void sendSorryMessage(Long chatId) {
+
+    }
+
+    @Override
+    public void sendBlockedMessage(Long chatId) {
 
     }
 }

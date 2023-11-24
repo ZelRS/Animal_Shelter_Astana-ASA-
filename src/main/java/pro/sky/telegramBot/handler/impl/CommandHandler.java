@@ -20,6 +20,7 @@ import static pro.sky.telegramBot.enums.Commands.START;
 @Slf4j  // SLF4J logging
 public class CommandHandler implements Handler {
     private final MessageHandler messageHandler;
+    private final StartHandler startHandler;
 
     @FunctionalInterface
     interface Command {
@@ -32,11 +33,7 @@ public class CommandHandler implements Handler {
     public void init() {
         commandMap.put(START.getName(), (firstName, lastName, chatId) -> {
             log.info("Received START command");
-            try {
-                messageHandler.sendWelcomeMessage(firstName, chatId);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            startHandler.handleStartCommand(firstName, chatId);
         });
     }
 
