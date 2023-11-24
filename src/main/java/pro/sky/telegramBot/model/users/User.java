@@ -8,7 +8,7 @@ import pro.sky.telegramBot.model.pet.Pet;
 import javax.persistence.*;
 import java.util.Collection;
 
-@Entity(name = "Пользователь")
+@Entity(name = "person")
 @RequiredArgsConstructor
 @Data
 public class User {
@@ -20,14 +20,14 @@ public class User {
     private Long chatId;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "статус")
+    @Column(name = "state")
     private UserState state;
 
     @Column(name = "user_name")
     private String userName;
 
     @OneToOne
-    @JoinColumn(name = "информация_о_пользователе_id")
+    @JoinColumn(name = "info_id")
     private UserInfo userInfo;
 
     @OneToMany(mappedBy = "user")

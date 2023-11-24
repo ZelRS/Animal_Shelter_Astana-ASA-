@@ -8,7 +8,7 @@ import pro.sky.telegramBot.model.users.User;
 
 import javax.persistence.*;
 
-@Entity(name= "животное")
+@Entity(name= "pet")
 @RequiredArgsConstructor
 @Data
 public class Pet {
@@ -17,33 +17,33 @@ public class Pet {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name= "тип")
+    @Column(name= "type")
     private PetType type;
 
-    @Column(name = "кличка")
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "порода")
+    @Column(name = "breed")
     private String breed;
 
-    @Column(name = "возраст")
+    @Column(name = "age")
     private Integer age;
 
-    @Column(name = "описание")
+    @Column(name = "description")
     private String description;
 
-    @Column(name = "пол")
+    @Column(name = "gender")
     private String gender;
 
-    @OneToOne
-    @JoinColumn(name = "фото_животного_id")
-    private PetPhoto petPhoto;
+    @Lob
+    @Column(name = "photo")
+    private byte[] data;
 
     @ManyToOne
-    @JoinColumn(name = "приручивший_пользователь_id")
+    @JoinColumn(name = "owner_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "приют_id")
+    @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 }

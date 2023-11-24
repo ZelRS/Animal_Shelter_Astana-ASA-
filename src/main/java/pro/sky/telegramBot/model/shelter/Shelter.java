@@ -7,7 +7,7 @@ import pro.sky.telegramBot.model.pet.Pet;
 import javax.persistence.*;
 import java.util.Collection;
 
-@Entity(name = "приют")
+@Entity(name = "shelter")
 @RequiredArgsConstructor
 @Data
 public class Shelter {
@@ -15,18 +15,18 @@ public class Shelter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "название")
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "адрес")
+    @Column(name = "address")
     private String address;
 
-    @Column(name = "тип")
+    @Column(name = "type")
     private String type;
 
-//    @OneToOne
-//    @JoinColumn(name = "информаиця_о_приюте_id")
-//    private ShelterInfo shelterInfo;
+    @Lob
+    @Column(name = "photo")
+    private byte[] data;
 
     @OneToMany(mappedBy = "shelter")
     private Collection<Pet> pets;

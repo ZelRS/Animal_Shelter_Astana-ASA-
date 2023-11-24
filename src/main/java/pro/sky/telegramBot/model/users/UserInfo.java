@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity(name = "Информация_о_пользователе")
+@Entity(name = "person_info")
 @RequiredArgsConstructor
 @Data
 public class UserInfo {
@@ -13,25 +13,25 @@ public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//    @OneToOne
-//    @JoinColumn(name = "chatId_пользователя", referencedColumnName = "chat_id")
-//    private User user;
-
-    @Column(name = "имя")
+    @Column(name = "firstName")
     private String firstName;
 
-    @Column(name = "фамилия")
+    @Column(name = "lastName")
     private String lastName;
 
-    @Column(name = "паспорт")
+    @Column(name = "passport")
     private String passport;
 
-    @Column(name = "адрес")
+    @Column(name = "address")
     private String address;
 
     @Column(name = "email")
     private String email;
 
-    @Column(name = "номер_телефона")
+    @Column(name = "phone_number")
     private String phone;
+
+    @Lob
+    @Column(name = "photo")
+    private byte[] data;
 }
