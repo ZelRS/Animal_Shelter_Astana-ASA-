@@ -38,8 +38,26 @@ public class MessageHandlerImpl implements MessageHandler {
     }
 
     @Override
-    public void sendButtonMessage(Long chatId) {
+    public void sendDogsButMessage(Long chatId) {
+        log.info("Sending shelter for dogs message to {}", chatId);
+        try {
+            SendPhoto sendPhoto = mediaMessageGenerator.dogsButMessagePhotoCreate(chatId);
+            messageSender.sendImageMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send welcome message to {}", chatId, e);
+        }
 
+    }
+
+    @Override
+    public void sendCatsButMessage(Long chatId) {
+        log.info("Sending shelter for cats message to {}", chatId);
+        try {
+            SendPhoto sendPhoto = mediaMessageGenerator.catsButMessagePhotoCreate(chatId);
+            messageSender.sendImageMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send welcome message to {}", chatId, e);
+        }
     }
 
     @Override
@@ -66,4 +84,5 @@ public class MessageHandlerImpl implements MessageHandler {
     public void sendBlockedMessage(Long chatId) {
 
     }
+
 }

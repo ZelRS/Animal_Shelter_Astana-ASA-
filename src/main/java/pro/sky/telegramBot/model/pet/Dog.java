@@ -13,6 +13,6 @@ import javax.persistence.*;
 @EqualsAndHashCode(callSuper = true)
 public class Dog extends Pet {
     @ManyToOne
-    @JoinColumn(name = "тип_приюта", referencedColumnName = "тип")
+    @JoinColumn(name = "тип_приюта", referencedColumnName = "тип_приюта")
     private Shelter shelter;
 }

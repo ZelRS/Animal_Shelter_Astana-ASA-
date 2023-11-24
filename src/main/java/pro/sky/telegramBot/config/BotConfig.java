@@ -22,6 +22,9 @@ public class BotConfig {
     @Value("${DEFAULT_MES}")
     private String DEFAULT_MES;
 
+    @Value("${SHELTER_INTRO_MES}")
+    private String SHELTER_INTRO_MES;
+
     @Value("${DOGS_BUT}")
     private String dogs_but;
 

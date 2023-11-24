@@ -7,7 +7,7 @@ public interface MessageHandler {
 
     void sendDefaultMessage(Long chatId);
 
-    void sendButtonMessage(Long chatId);
+    void sendDogsButMessage(Long chatId);
 
     void sendChooseShelterMessage(Long chatId);
 
@@ -18,4 +18,6 @@ public interface MessageHandler {
     void sendSorryMessage(Long chatId);
 
     void sendBlockedMessage(Long chatId);
+
+    void sendCatsButMessage(Long chatId);
 }

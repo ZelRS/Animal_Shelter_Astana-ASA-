@@ -32,11 +32,11 @@ public class ButtonHandler implements Handler {
 
         battonMap.put(DOGS_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed DOG button");
-            messageHandler.sendButtonMessage(chatId);
+            messageHandler.sendDogsButMessage(chatId);
         });
         battonMap.put(CATS_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed CAT button");
-            messageHandler.sendButtonMessage(chatId);
+            messageHandler.sendCatsButMessage(chatId);
         });
     }
     @Override

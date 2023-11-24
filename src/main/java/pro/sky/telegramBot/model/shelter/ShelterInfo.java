@@ -13,13 +13,6 @@ public class ShelterInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "название")
-    private String name;
-
     @Column(name = "адрес")
     private String address;
-
-    @OneToOne
-    @JoinColumn(name = "тип_приюта", referencedColumnName = "тип")
-    private Shelter shelter;
 }
