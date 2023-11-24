@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.model.pet;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.model.shelter.Shelter;
@@ -11,9 +12,11 @@ import javax.persistence.*;
 @Entity(name= "pet")
 @RequiredArgsConstructor
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Enumerated(EnumType.STRING)

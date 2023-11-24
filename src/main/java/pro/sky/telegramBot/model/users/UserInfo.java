@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.model.users;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
@@ -8,9 +9,11 @@ import javax.persistence.*;
 @Entity(name = "person_info")
 @RequiredArgsConstructor
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "firstName")
