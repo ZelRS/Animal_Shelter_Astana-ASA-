@@ -9,11 +9,14 @@ public class ListCreator {
     public String createList(List<String> names) {
 
         StringBuilder formattedNames = new StringBuilder();
+        int count = 1;
 
         for (String name : names) {
-            formattedNames.append("- ").append("/").append(name).append("\n");
+            formattedNames.append(count).append("- ").append(name).append("\n");
+            count++;
         }
 
         return formattedNames.toString();
     }
+
 }
