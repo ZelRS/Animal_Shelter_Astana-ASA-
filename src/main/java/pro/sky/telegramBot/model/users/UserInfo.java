@@ -13,9 +13,15 @@ public class UserInfo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "chatId_пользователя", referencedColumnName = "chat_id")
-    private User user;
+//    @OneToOne
+//    @JoinColumn(name = "chatId_пользователя", referencedColumnName = "chat_id")
+//    private User user;
+
+    @Column(name = "имя")
+    private String firstName;
+
+    @Column(name = "фамилия")
+    private String lastName;
 
     @Column(name = "паспорт")
     private String passport;
