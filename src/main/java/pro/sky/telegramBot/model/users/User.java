@@ -2,6 +2,7 @@ package pro.sky.telegramBot.model.users;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.pet.Pet;
 
 import javax.persistence.*;
@@ -17,6 +18,10 @@ public class User {
 
     @Column(name = "chat_id")
     private Long chatId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "статус")
+    private UserState state;
 
     @Column(name = "user_name")
     private String userName;
