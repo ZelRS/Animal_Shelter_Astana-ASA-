@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.model.users;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.pet.Pet;
@@ -11,9 +12,11 @@ import java.util.Collection;
 @Entity(name = "person")
 @RequiredArgsConstructor
 @Data
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "chat_id")
