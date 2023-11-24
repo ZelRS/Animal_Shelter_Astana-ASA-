@@ -1,13 +1,15 @@
 package pro.sky.telegramBot.model.shelter;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
 import javax.persistence.*;
+import java.util.Objects;
 
-@Entity(name = "информаиця_о_приюте")
+@Entity(name = "информация_о_приюте")
 @RequiredArgsConstructor
-@Data
+@Getter
+@Setter
 public class ShelterInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,4 +17,25 @@ public class ShelterInfo {
 
     @Column(name = "адрес")
     private String address;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ShelterInfo)) return false;
+        ShelterInfo that = (ShelterInfo) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "ShelterInfo{" +
+               "id=" + id +
+               ", address='" + address + '\'' +
+               '}';
+    }
 }

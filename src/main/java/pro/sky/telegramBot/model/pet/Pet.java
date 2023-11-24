@@ -1,14 +1,16 @@
 package pro.sky.telegramBot.model.pet;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import pro.sky.telegramBot.model.users.User;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @MappedSuperclass
 @RequiredArgsConstructor
-@Data
+@Getter
+@Setter
+@ToString
 public abstract class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,4 +38,17 @@ public abstract class Pet {
     @ManyToOne
     @JoinColumn(name = "приручивший_пользователь_id")
     private User user;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Pet)) return false;
+        Pet pet = (Pet) o;
+        return Objects.equals(id, pet.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
