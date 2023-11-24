@@ -11,7 +11,7 @@ public class ListCreator {
         StringBuilder formattedNames = new StringBuilder();
 
         for (String name : names) {
-            formattedNames.append("- ").append(name).append("\n");
+            formattedNames.append("- ").append("/").append(name).append("\n");
         }
 
         return formattedNames.toString();
