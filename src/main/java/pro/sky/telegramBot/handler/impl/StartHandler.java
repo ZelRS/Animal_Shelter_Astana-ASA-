@@ -19,41 +19,49 @@ public class StartHandler {
 
     public void handleStartCommand(String firstName, Long chatId) {
         User user = userService.findUserByChatId(chatId);
-    if (user != null) {
-        switch (user.getState()) {
-            case IDLE:
-                log.info("Received START command from a new saved user");
-                messageHandler.sendChooseShelterMessage(chatId);
-                break;
-            case POTENTIAL:
-                log.info("Received START command from a potential user");
-                messageHandler.sendInfoForPotentialUserMessage(chatId);
-                break;
-            case PROBATION:
-                log.info("Received START command from a probation user");
-                messageHandler.sendInfoForProbationUserMessage(chatId);
-                break;
-            case TRUSTED:
-                log.info("Received START command from a trusted user");
-                messageHandler.sendChooseShelterMessage(chatId);
-                break;
-            case UNTRUSTED:
-                log.info("Received START command from a untrusted user");
-                messageHandler.sendSorryMessage(chatId);
-                break;
-            case BLOCKED:
-                log.info("Received START command from a blocked user");
-                messageHandler.sendBlockedMessage(chatId);
-                break;
+
+        if (user == null) {
+            log.info("Received START command from a first-time user");
+            sendMessageWithExceptionHandling(() -> messageHandler.sendWelcomeMessage(firstName, chatId));
+            return;
         }
-    } else {
+        log.info("Received START command from user in state: {}", user.getState());
+        sendUserStateSpecificMessage(user, chatId);
+    }
+    private void sendMessageWithExceptionHandling(MessageSender messageSender) {
         try {
-            log.info("Received START command from a first time user");
-            messageHandler.sendWelcomeMessage(firstName, chatId);
+            messageSender.send();
         } catch (IOException e) {
+            log.error("An error occurred while sending a message: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }
-
+    private void sendUserStateSpecificMessage(User user, Long chatId) {
+        switch (user.getState()) {
+            case IDLE:
+            case TRUSTED:
+                messageHandler.sendChooseShelterMessage(chatId);
+                break;
+            case POTENTIAL:
+                messageHandler.sendInfoForPotentialUserMessage(chatId);
+                break;
+            case PROBATION:
+                messageHandler.sendInfoForProbationUserMessage(chatId);
+                break;
+            case UNTRUSTED:
+                messageHandler.sendSorryMessage(chatId);
+                break;
+            case BLOCKED:
+                messageHandler.sendBlockedMessage(chatId);
+                break;
+            default:
+                log.warn("Unknown user state: {}", user.getState());
+                break;
+        }
+    }
+    @FunctionalInterface
+    private interface MessageSender {
+        void send() throws IOException;
     }
 }
+

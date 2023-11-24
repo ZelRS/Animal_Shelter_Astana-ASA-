@@ -8,7 +8,6 @@ import pro.sky.telegramBot.handler.Handler;
 import pro.sky.telegramBot.handler.MessageHandler;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
