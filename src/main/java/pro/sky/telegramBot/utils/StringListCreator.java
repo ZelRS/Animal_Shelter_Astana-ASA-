@@ -3,10 +3,12 @@ package pro.sky.telegramBot.utils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-@Component
-public class ListCreator {
 
-    public String createList(List<String> names) {
+// класс, выполняющий логику создания списка, содержащего строки в определенном формате
+@Component
+public class StringListCreator {
+
+    public String createStringList(List<String> names) {
 
         StringBuilder formattedNames = new StringBuilder();
         int count = 1;

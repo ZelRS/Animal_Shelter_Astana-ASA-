@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.repository.ShelterRepository;
 import pro.sky.telegramBot.service.ShelterService;
-import pro.sky.telegramBot.utils.ListCreator;
+import pro.sky.telegramBot.utils.StringListCreator;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class ShelterServiceImpl implements ShelterService {
     @Override
     public String getShelterNames(PetType type) {
         List<String> shelters = shelterRepository.findAllShelterNamesByType(type);
-        ListCreator listCreator = new ListCreator();
-        return listCreator.createList(shelters);
+        StringListCreator stringListCreator = new StringListCreator();
+        return stringListCreator.createStringList(shelters);
     }
 }
