@@ -49,4 +49,6 @@ public class SpecificMediaMessageCreator {
         params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(CAT));
         return mediaMessageCreator.createPhotoMessage(params);
     }
+
+//    ....... закрепление конкретного медиа-контента за определенным сообщением......
 }

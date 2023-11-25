@@ -20,7 +20,7 @@ import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 @Slf4j  // SLF4J logging
 public class MediaLoader {
     // метод загрузки фотограифии
-    public SendPhoto imageCreator(Long chatId, String path, String message) throws IOException {
+    public SendPhoto imageLoader(Long chatId, String path, String message) throws IOException {
         log.info("Creating send photo object");
         InputStream imageStream = getClass().getResourceAsStream(path);
         assert imageStream != null;
@@ -31,7 +31,7 @@ public class MediaLoader {
     }
 
     // метод загрузки видео
-    public SendVideo videoCreator(Long chatId, String filePath, String fileName) throws IOException {
+    public SendVideo videoLoader(Long chatId, String filePath, String fileName) throws IOException {
         log.info("Creating send mp4 video object");
         InputStream videoStream = getClass().getResourceAsStream(filePath);
 
@@ -45,7 +45,7 @@ public class MediaLoader {
     }
 
     // метод загрузки документа
-    public SendDocument documentCreator(Long chatId, String filePath, String fileName) throws IOException {
+    public SendDocument documentLoader(Long chatId, String filePath, String fileName) throws IOException {
         log.info("Creating send pdf document object");
         InputStream fileStream = getClass().getResourceAsStream(filePath);
 

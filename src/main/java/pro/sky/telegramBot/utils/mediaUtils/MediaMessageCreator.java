@@ -19,16 +19,16 @@ public class MediaMessageCreator {
 
     // метод для закрепления загруженноого фото за сообщением
     public SendPhoto createPhotoMessage(MediaMessageParams params) throws IOException {
-        return mediaLoader.imageCreator(params.getChatId(), params.getFilePath(), params.getCaption());
+        return mediaLoader.imageLoader(params.getChatId(), params.getFilePath(), params.getCaption());
     }
 
     // метод для закрепления загруженноого видео за сообщением
     public SendVideo createVideoMessage(MediaMessageParams params) throws IOException {
-        return mediaLoader.videoCreator(params.getChatId(), params.getFilePath(), params.getFileName());
+        return mediaLoader.videoLoader(params.getChatId(), params.getFilePath(), params.getFileName());
     }
 
     // метод для закрепления загруженноого документа за сообщением
     public SendDocument createDocumentMessage(MediaMessageParams params) throws IOException {
-        return mediaLoader.documentCreator(params.getChatId(), params.getFilePath(), params.getFileName());
+        return mediaLoader.documentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
     }
 }
