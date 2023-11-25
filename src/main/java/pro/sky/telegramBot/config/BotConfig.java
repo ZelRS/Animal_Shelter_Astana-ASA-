@@ -15,16 +15,12 @@ public class BotConfig {
 
     @Value("${BACK_MES}")
     private String back_mes;
-
     @Value("${WELCOME_MES}")
     private String WELCOME_MES;
-
     @Value("${DEFAULT_MES}")
     private String DEFAULT_MES;
-
     @Value("${SHELTER_INTRO_MES}")
     private String SHELTER_INTRO_MES;
-
     @Value("${DOGS_BUT}")
     private String dogs_but;
 
