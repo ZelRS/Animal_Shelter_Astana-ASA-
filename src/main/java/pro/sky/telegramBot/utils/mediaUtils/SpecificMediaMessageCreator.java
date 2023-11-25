@@ -1,8 +1,6 @@
-package pro.sky.telegramBot.utils;
+package pro.sky.telegramBot.utils.mediaUtils;
 
-import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendPhoto;
-import com.pengrad.telegrambot.request.SendVideo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,48 +14,41 @@ import static pro.sky.telegramBot.enums.ImageNames.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
 
+// класс содержит функционал, закрепляюищий определенный медиа-контент за конкретнымсообщением
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging
-public class MediaMessageGenerator {
-
-    private final MediaLoader mediaLoader;
+public class SpecificMediaMessageCreator {
+    private final MediaMessageCreator mediaMessageCreator;
     private final BotConfig config;
     private final ShelterService shelterService;
 
-    public SendPhoto createPhotoMessage(MediaMessageParams params) throws IOException {
-        return mediaLoader.imageCreator(params.getChatId(), params.getFilePath(), params.getCaption());
-    }
-
-    public SendVideo createVideoMessage(MediaMessageParams params) throws IOException {
-        return mediaLoader.videoCreator(params.getChatId(), params.getFilePath(), params.getFileName());
-    }
-
-    public SendDocument createDocumentMessage(MediaMessageParams params) throws IOException {
-        return mediaLoader.documentCreator(params.getChatId(), params.getFilePath(), params.getFileName());
-    }
-
-    public SendPhoto welcomeMessagePhotoCreate(long chatId, String firstName) throws IOException {
+    // метод закрепляет конкретное фото за приветственным сообщением
+    public SendPhoto createWelcomeMessagePhoto(long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(WELCOME_IMG.getPath());
         params.setCaption(String.format(config.getWELCOME_MES(), firstName));
-        return createPhotoMessage(params);
+        return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    public SendPhoto dogsButMessagePhotoCreate(Long chatId) throws IOException {
+    // метод закрепляет конкретное фото за сообщением со списком приютов для собак
+    public SendPhoto createDogSheltersListMessagePhoto(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(DOGS_IMG.getPath());
         params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(DOG));
-        return createPhotoMessage(params);
+        return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    public SendPhoto catsButMessagePhotoCreate(Long chatId) throws IOException {
+    // метод закрепляет конкретное фото за сообщением со списком приютов для собак
+    public SendPhoto createCatSheltersListMessagePhoto(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CATS_IMG.getPath());
         params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(CAT));
-        return createPhotoMessage(params);
+        return mediaMessageCreator.createPhotoMessage(params);
     }
+
+//    ....... закрепление конкретного медиа-контента за определенным сообщением......
 }

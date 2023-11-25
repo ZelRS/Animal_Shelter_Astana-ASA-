@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.utils;
+package pro.sky.telegramBot.utils.mediaUtils;
 
 import com.pengrad.telegrambot.model.request.InputFile;
 import com.pengrad.telegrambot.request.SendDocument;
@@ -15,11 +15,12 @@ import java.nio.file.StandardCopyOption;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
+// класс с функционалом загрузки медиа-контента для последующего добавления его к сообщению
 @Service
 @Slf4j  // SLF4J logging
 public class MediaLoader {
-
-    public SendPhoto imageCreator(Long chatId, String path, String message) throws IOException {
+    // метод загрузки фотограифии
+    public SendPhoto imageLoader(Long chatId, String path, String message) throws IOException {
         log.info("Creating send photo object");
         InputStream imageStream = getClass().getResourceAsStream(path);
         assert imageStream != null;
@@ -29,7 +30,8 @@ public class MediaLoader {
         return sendPhoto.caption(message).parseMode(HTML);
     }
 
-    public SendVideo videoCreator(Long chatId, String filePath, String fileName) throws IOException {
+    // метод загрузки видео
+    public SendVideo videoLoader(Long chatId, String filePath, String fileName) throws IOException {
         log.info("Creating send mp4 video object");
         InputStream videoStream = getClass().getResourceAsStream(filePath);
 
@@ -42,7 +44,8 @@ public class MediaLoader {
         return new SendVideo(chatId, video.getFile());
     }
 
-    public SendDocument documentCreator(Long chatId, String filePath, String fileName) throws IOException {
+    // метод загрузки документа
+    public SendDocument documentLoader(Long chatId, String filePath, String fileName) throws IOException {
         log.info("Creating send pdf document object");
         InputStream fileStream = getClass().getResourceAsStream(filePath);
 

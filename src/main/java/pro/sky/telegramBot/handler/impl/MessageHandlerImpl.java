@@ -1,31 +1,36 @@
 package pro.sky.telegramBot.handler.impl;
 
+import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.handler.MessageHandler;
-import pro.sky.telegramBot.sender.MessageSender;
-import pro.sky.telegramBot.utils.KeyboardCreator;
-import pro.sky.telegramBot.utils.MediaMessageGenerator;
+import pro.sky.telegramBot.executor.MessageExecutor;
+import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
+import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
+
+import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j  // SLF4J logging
 public class MessageHandlerImpl implements MessageHandler {
 
-    private final MediaMessageGenerator mediaMessageGenerator;
-    private final MessageSender messageSender;
-    private final KeyboardCreator keyboardCreator;
+//    private final MediaMessageCreator mediaMessageCreator;
+
+    private final SpecificMediaMessageCreator specificMediaMessageCreator;
+    private final MessageExecutor messageExecutor;
+    private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
     @Override
     public void sendWelcomeMessage(String firstName, Long chatId) {
         log.info("Sending welcome message to {}: {}", firstName, chatId);
         try {
-            SendPhoto sendPhoto = mediaMessageGenerator.welcomeMessagePhotoCreate(chatId, firstName);
-            sendPhoto.replyMarkup(keyboardCreator.catsAndDogsMessageKeyboard());
-            messageSender.sendImageMessage(sendPhoto);
+            SendPhoto sendPhoto = specificMediaMessageCreator.createWelcomeMessagePhoto(chatId, firstName);
+            sendPhoto.replyMarkup(specificKeyboardCreator.petSelectionMessageKeyboard());
+            messageExecutor.executeImageMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send welcome message to {}: {}", firstName, chatId, e);
         }
@@ -34,15 +39,17 @@ public class MessageHandlerImpl implements MessageHandler {
     @Override
     public void sendDefaultMessage(Long chatId) {
         log.info("Sending about message to {}", chatId);
-        messageSender.sendHTMLMessage(chatId, String.format(config.getDEFAULT_MES(), chatId));
+        SendMessage message = new SendMessage(String.valueOf(chatId),
+                String.format(config.getDEFAULT_MES())).parseMode(HTML);
+        messageExecutor.executeHTMLMessage(message);
     }
 
     @Override
     public void sendDogsButMessage(Long chatId) {
         log.info("Sending shelter for dogs message to {}", chatId);
         try {
-            SendPhoto sendPhoto = mediaMessageGenerator.dogsButMessagePhotoCreate(chatId);
-            messageSender.sendImageMessage(sendPhoto);
+            SendPhoto sendPhoto = specificMediaMessageCreator.createDogSheltersListMessagePhoto(chatId);
+            messageExecutor.executeImageMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send welcome message to {}", chatId, e);
         }
@@ -53,8 +60,8 @@ public class MessageHandlerImpl implements MessageHandler {
     public void sendCatsButMessage(Long chatId) {
         log.info("Sending shelter for cats message to {}", chatId);
         try {
-            SendPhoto sendPhoto = mediaMessageGenerator.catsButMessagePhotoCreate(chatId);
-            messageSender.sendImageMessage(sendPhoto);
+            SendPhoto sendPhoto = specificMediaMessageCreator.createCatSheltersListMessagePhoto(chatId);
+            messageExecutor.executeImageMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send welcome message to {}", chatId, e);
         }
