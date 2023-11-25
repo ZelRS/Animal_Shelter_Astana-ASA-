@@ -10,7 +10,7 @@ import pro.sky.telegramBot.service.ShelterService;
 
 import java.io.IOException;
 
-import static pro.sky.telegramBot.enums.ImageNames.*;
+import static pro.sky.telegramBot.enums.MessageImage.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
 
@@ -27,7 +27,7 @@ public class SpecificMediaMessageCreator {
     public SendPhoto createWelcomeMessagePhoto(long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
-        params.setFilePath(WELCOME_IMG.getPath());
+        params.setFilePath(WELCOME_MSG_IMG.getPath());
         params.setCaption(String.format(config.getWELCOME_MES(), firstName));
         return mediaMessageCreator.createPhotoMessage(params);
     }
@@ -36,7 +36,7 @@ public class SpecificMediaMessageCreator {
     public SendPhoto createDogSheltersListMessagePhoto(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
-        params.setFilePath(DOGS_IMG.getPath());
+        params.setFilePath(DOG_SHELTERS_MSG_IMG.getPath());
         params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(DOG));
         return mediaMessageCreator.createPhotoMessage(params);
     }
@@ -45,7 +45,7 @@ public class SpecificMediaMessageCreator {
     public SendPhoto createCatSheltersListMessagePhoto(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
-        params.setFilePath(CATS_IMG.getPath());
+        params.setFilePath(CAT_SHELTERS_MSG_IMG.getPath());
         params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(CAT));
         return mediaMessageCreator.createPhotoMessage(params);
     }
