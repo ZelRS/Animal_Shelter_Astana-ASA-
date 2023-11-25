@@ -18,7 +18,7 @@ import static pro.sky.telegramBot.enums.CallbackData.DOG_BUT;
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging
-public class CurrentKeyboardCreator {
+public class SpecificKeyboardCreator {
 
     private final InlineKeyboardCreator inlineKeyboardCreator;
     private final BotConfig config;

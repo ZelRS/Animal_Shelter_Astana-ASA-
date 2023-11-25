@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.handler.MessageHandler;
 import pro.sky.telegramBot.sender.MessageSender;
-import pro.sky.telegramBot.utils.CurrentKeyboardCreator;
+import pro.sky.telegramBot.utils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.MediaMessageGenerator;
 
 @RequiredArgsConstructor
@@ -17,14 +17,14 @@ public class MessageHandlerImpl implements MessageHandler {
 
     private final MediaMessageGenerator mediaMessageGenerator;
     private final MessageSender messageSender;
-    private final CurrentKeyboardCreator currentKeyboardCreator;
+    private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
     @Override
     public void sendWelcomeMessage(String firstName, Long chatId) {
         log.info("Sending welcome message to {}: {}", firstName, chatId);
         try {
             SendPhoto sendPhoto = mediaMessageGenerator.welcomeMessagePhotoCreate(chatId, firstName);
-            sendPhoto.replyMarkup(currentKeyboardCreator.petSelectionMessageKeyboard());
+            sendPhoto.replyMarkup(specificKeyboardCreator.petSelectionMessageKeyboard());
             messageSender.sendImageMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send welcome message to {}: {}", firstName, chatId, e);
