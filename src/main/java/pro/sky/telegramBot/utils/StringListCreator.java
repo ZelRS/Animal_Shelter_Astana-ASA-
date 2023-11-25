@@ -14,7 +14,7 @@ public class StringListCreator {
         int count = 1;
 
         for (String name : names) {
-            formattedNames.append(count).append("- ").append(name).append("\n");
+            formattedNames.append("/").append(count).append("- ").append(name).append("\n");
             count++;
         }
 
