@@ -22,9 +22,6 @@ import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 @Slf4j  // SLF4J logging
 public class MessageSender {
     private final TelegramBot telegramBot;
-    // мапа для текста, который не вошел в сообщение и который будет отправлен позже, если пользователь нажмет продолжить
-    // (пока не используется)
-    private final Map<Long, String> remainingMessages = new ConcurrentHashMap<>();
 
     // метод выполняет отравку простого текстового сообщения пользователю
     public void executeMessage(SendMessage message) {
