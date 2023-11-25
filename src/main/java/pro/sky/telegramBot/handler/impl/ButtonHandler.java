@@ -24,24 +24,23 @@ public class ButtonHandler implements Handler {
     interface Button {
         void run(String firstName, String lastName, Long chatId);
     }
-
-    Map<String, Button> battonMap = new HashMap<>();
+    Map<String, Button> buttonMap = new HashMap<>();
 
     @PostConstruct
     public void init() {
 
-        battonMap.put(DOG_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
+        buttonMap.put(DOG_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed DOG button");
             messageHandler.sendDogsButMessage(chatId);
         });
-        battonMap.put(CAT_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
+        buttonMap.put(CAT_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed CAT button");
             messageHandler.sendCatsButMessage(chatId);
         });
     }
     @Override
     public void handle(String callbackData, String firstName, String lastName, Long chatId) {
-        Button commandToRun = battonMap.get(callbackData.toLowerCase());
+        Button commandToRun = buttonMap.get(callbackData.toLowerCase());
         if (commandToRun != null) {
             commandToRun.run(firstName, lastName, chatId);
         } else {
