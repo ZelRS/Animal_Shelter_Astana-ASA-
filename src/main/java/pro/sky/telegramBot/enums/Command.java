@@ -3,17 +3,17 @@ package pro.sky.telegramBot.enums;
 import lombok.Getter;
 
 @Getter
-public enum Commands {
+public enum Command {
     START("/start");
 
     private final String name;
 
-    Commands(String name) {
+    Command(String name) {
         this.name = name;
     }
 
-    public static Commands fromString(String name) {
-        for (Commands b : Commands.values()) {
+    public static Command fromString(String name) {
+        for (Command b : Command.values()) {
             if (b.name.equalsIgnoreCase(name)) {
                 return b;
             }

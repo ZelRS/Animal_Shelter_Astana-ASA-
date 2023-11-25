@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pro.sky.telegramBot.enums.Commands.START;
+import static pro.sky.telegramBot.enums.Command.START;
 
 @Service
 @RequiredArgsConstructor
