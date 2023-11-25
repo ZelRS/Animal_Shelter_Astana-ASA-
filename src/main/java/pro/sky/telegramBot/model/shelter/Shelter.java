@@ -3,6 +3,7 @@ package pro.sky.telegramBot.model.shelter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.model.pet.Pet;
 
 import javax.persistence.*;
@@ -24,8 +25,9 @@ public class Shelter {
     @Column(name = "address")
     private String address;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "type")
-    private String type;
+    private PetType type;
 
     @Lob
     @Column(name = "photo")

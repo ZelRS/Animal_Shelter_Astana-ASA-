@@ -13,8 +13,23 @@ public class BotConfig {
     @Value("${telegram.bot.token}")
     private String token;
 
-    @Value("${telegram.bot.msg.start}")
-    private String startMsg;
+    @Value("${BACK_MES}")
+    private String back_mes;
+
+    @Value("${WELCOME_MES}")
+    private String WELCOME_MES;
+
+    @Value("${DEFAULT_MES}")
+    private String DEFAULT_MES;
+
+    @Value("${SHELTER_INTRO_MES}")
+    private String SHELTER_INTRO_MES;
+
+    @Value("${DOGS_BUT}")
+    private String dogs_but;
+
+    @Value("${CATS_BUT}")
+    private String cats_but;
 
     @Bean
     public TelegramBot telegramBot() {
