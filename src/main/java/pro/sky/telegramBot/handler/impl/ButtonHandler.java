@@ -24,7 +24,6 @@ public class ButtonHandler implements Handler {
     interface Button {
         void run(String firstName, String lastName, Long chatId);
     }
-
     Map<String, Button> buttonMap = new HashMap<>();
 
     @PostConstruct
