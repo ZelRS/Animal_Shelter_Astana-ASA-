@@ -7,15 +7,17 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.handler.MessageHandler;
 import pro.sky.telegramBot.sender.MessageSender;
-import pro.sky.telegramBot.utils.SpecificKeyboardCreator;
-import pro.sky.telegramBot.utils.MediaMessageGenerator;
+import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
+import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j  // SLF4J logging
 public class MessageHandlerImpl implements MessageHandler {
 
-    private final MediaMessageGenerator mediaMessageGenerator;
+//    private final MediaMessageCreator mediaMessageCreator;
+
+    private final SpecificMediaMessageCreator specificMediaMessageCreator;
     private final MessageSender messageSender;
     private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
@@ -23,7 +25,7 @@ public class MessageHandlerImpl implements MessageHandler {
     public void sendWelcomeMessage(String firstName, Long chatId) {
         log.info("Sending welcome message to {}: {}", firstName, chatId);
         try {
-            SendPhoto sendPhoto = mediaMessageGenerator.welcomeMessagePhotoCreate(chatId, firstName);
+            SendPhoto sendPhoto = specificMediaMessageCreator.createWelcomeMessagePhoto(chatId, firstName);
             sendPhoto.replyMarkup(specificKeyboardCreator.petSelectionMessageKeyboard());
             messageSender.sendImageMessage(sendPhoto);
         } catch (Exception e) {
@@ -41,7 +43,7 @@ public class MessageHandlerImpl implements MessageHandler {
     public void sendDogsButMessage(Long chatId) {
         log.info("Sending shelter for dogs message to {}", chatId);
         try {
-            SendPhoto sendPhoto = mediaMessageGenerator.dogsButMessagePhotoCreate(chatId);
+            SendPhoto sendPhoto = specificMediaMessageCreator.createDogSheltersListMessagePhoto(chatId);
             messageSender.sendImageMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send welcome message to {}", chatId, e);
@@ -53,7 +55,7 @@ public class MessageHandlerImpl implements MessageHandler {
     public void sendCatsButMessage(Long chatId) {
         log.info("Sending shelter for cats message to {}", chatId);
         try {
-            SendPhoto sendPhoto = mediaMessageGenerator.catsButMessagePhotoCreate(chatId);
+            SendPhoto sendPhoto = specificMediaMessageCreator.createCatSheltersListMessagePhoto(chatId);
             messageSender.sendImageMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send welcome message to {}", chatId, e);

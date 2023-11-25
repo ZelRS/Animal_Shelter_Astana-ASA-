@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.utils;
+package pro.sky.telegramBot.utils.keyboardUtils;
 
 import com.pengrad.telegrambot.model.request.Keyboard;
 import lombok.RequiredArgsConstructor;
