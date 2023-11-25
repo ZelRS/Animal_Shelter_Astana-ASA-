@@ -10,8 +10,8 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pro.sky.telegramBot.enums.CallbackData.CATS_BUT;
-import static pro.sky.telegramBot.enums.CallbackData.DOGS_BUT;
+import static pro.sky.telegramBot.enums.CallbackData.CAT_BUT;
+import static pro.sky.telegramBot.enums.CallbackData.DOG_BUT;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +30,11 @@ public class ButtonHandler implements Handler {
     @PostConstruct
     public void init() {
 
-        battonMap.put(DOGS_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
+        battonMap.put(DOG_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed DOG button");
             messageHandler.sendDogsButMessage(chatId);
         });
-        battonMap.put(CATS_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
+        battonMap.put(CAT_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed CAT button");
             messageHandler.sendCatsButMessage(chatId);
         });

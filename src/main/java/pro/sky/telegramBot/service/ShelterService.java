@@ -1,7 +1,7 @@
 package pro.sky.telegramBot.service;
 
-import pro.sky.telegramBot.enums.ShelterTypes;
+import pro.sky.telegramBot.enums.PetType;
 
 public interface ShelterService {
-    String getShelterNames(ShelterTypes type);
+    String getShelterNames(PetType type);
 }

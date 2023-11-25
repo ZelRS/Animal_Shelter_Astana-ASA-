@@ -8,14 +8,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
-import pro.sky.telegramBot.enums.ShelterTypes;
 import pro.sky.telegramBot.service.ShelterService;
 
 import java.io.IOException;
 
 import static pro.sky.telegramBot.enums.ImageNames.*;
-import static pro.sky.telegramBot.enums.ShelterTypes.CATS;
-import static pro.sky.telegramBot.enums.ShelterTypes.DOGS;
+import static pro.sky.telegramBot.enums.PetType.CAT;
+import static pro.sky.telegramBot.enums.PetType.DOG;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +49,7 @@ public class MediaMessageGenerator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(DOGS_IMG.getPath());
-        params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(DOGS));
+        params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(DOG));
         return createPhotoMessage(params);
     }
 
@@ -58,7 +57,7 @@ public class MediaMessageGenerator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CATS_IMG.getPath());
-        params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(CATS));
+        params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(CAT));
         return createPhotoMessage(params);
     }
 }

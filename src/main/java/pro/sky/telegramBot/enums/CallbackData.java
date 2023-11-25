@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum CallbackData {
-    DOGS_BUT("dogs_but"),
-    CATS_BUT("cats_but");
+    DOG_BUT("dogs_but"),
+    CAT_BUT("cats_but");
 
    private final String callbackData;
 
