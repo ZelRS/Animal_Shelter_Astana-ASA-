@@ -43,7 +43,8 @@ public class StartHandler {
     }
     private void sendUserStateSpecificMessage(User user, Long chatId) {
         switch (user.getState()) {
-//            case FREE:
+            case FREE:
+                messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
 //            case TRUSTED:
 //                messageSender.sendChooseShelterMessage(chatId);
 //                break;
