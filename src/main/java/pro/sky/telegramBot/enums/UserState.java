@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum UserState {
     // статусы пользователя
-    FREE("свободный"),
+//    FREE("свободный"),
     POTENTIAL("потенциальный усыновитель"),
     PROBATION("на испытательном сроке"),
     TRUSTED("проверенный"),

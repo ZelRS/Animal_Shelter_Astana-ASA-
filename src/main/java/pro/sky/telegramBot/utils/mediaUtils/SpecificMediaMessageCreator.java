@@ -23,16 +23,34 @@ public class SpecificMediaMessageCreator {
     private final BotConfig config;
     private final ShelterService shelterService;
 
-    // метод закрепляет конкретное фото за приветственным сообщением
-    public SendPhoto createWelcomePhotoMessage(long chatId, String firstName) throws IOException {
+    // метод создает фото-сообщение приветствия для пользователя, который зашел в чат впервые
+    public SendPhoto createFirstTimeWelcomePhotoMessage(long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
-        params.setFilePath(WELCOME_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_WELCOME(), firstName));
+        params.setFilePath(FIRST_TIME_WELCOME_MSG_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_SIMPLE_WELCOME(), firstName));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод закрепляет конкретное фото за сообщением со списком приютов для собак
+    // метод создает фото-сообщение приветствия для пользователя, который имеющего стутус UNTRUSTED("не надежный")
+    public SendPhoto createSorryWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(SORRY_WELCOME_MSG_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_SORRY_WELCOME(), firstName));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    // метод создает фото-сообщение приветствия для пользователя, который имеющего стутус BLOCKED("в черном списке")
+    public SendPhoto createBlockedWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(BLOCKED_WELCOME_MSG_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_BLOCKED_WELCOME(), firstName));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    // метод создает фото-сообщение выбора приюта для собак
     public SendPhoto createDogSheltersListPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -41,7 +59,7 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод закрепляет конкретное фото за сообщением со списком приютов для кошек
+    // метод создает фото-сообщение выбора приюта для кошек
     public SendPhoto createCatSheltersListPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -50,5 +68,5 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-//    ....... закрепление конкретного медиа-контента за определенным сообщением......
+//    ....... создает фото-сообщения для других целей......
 }

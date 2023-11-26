@@ -18,9 +18,15 @@ public class BotConfig {
     @Value("${REF_MSG_BACK}")
     private String REF_MSG_BACK;
 
-    // ПЕРЕМЕННЫЕ С ТЕКСТОМ ДЛЯ ОТВЕТНЫХ СООБЩЕНИЙ
-    @Value("${MSG_WELCOME}")
-    private String MSG_WELCOME;
+    // ПЕРЕМЕННЫЕ С ТЕКСТОМ ДЛЯ ОТВЕТНЫХ СООБЩЕНИЙ ПРИВЕТСТВИЯ
+    @Value("${MSG_SIMPLE_WELCOME}")
+    private String MSG_SIMPLE_WELCOME;
+    @Value("${MSG_UNTRUSTED_WELCOME}")
+    private String MSG_SORRY_WELCOME;
+    @Value("${MSG_BLOCKED_WELCOME}")
+    private String MSG_BLOCKED_WELCOME;
+
+    // ПЕРЕМЕННЫЕ С ТЕКСТОМ ДЛЯ ДРУГИХ ОТВЕТНЫХ СООБЩЕНИЙ
     @Value("${MSG_DEFAULT}")
     private String MSG_DEFAULT;
     @Value("${MSG_SHELTER_INTRO}")

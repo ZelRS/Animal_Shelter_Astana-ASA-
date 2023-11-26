@@ -8,4 +8,6 @@ public interface UserService {
     User findUserByChatId(Long chatId);
 
     User getById(Long id);
+
+    User create(User user);
 }
