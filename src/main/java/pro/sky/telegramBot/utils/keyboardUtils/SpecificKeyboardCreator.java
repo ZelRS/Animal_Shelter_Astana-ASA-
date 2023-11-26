@@ -28,8 +28,8 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for cats and dogs");
 
         List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button(config.getCats_but(), CAT_BUT.getCallbackData()));
-        buttons.add(new Button(config.getDogs_but(), DOG_BUT.getCallbackData()));
+        buttons.add(new Button(config.getBUT_WANT_CAT(), CAT_BUT.getCallbackData()));
+        buttons.add(new Button(config.getBUT_WANT_DOG(), DOG_BUT.getCallbackData()));
         return inlineKeyboardCreator.createInlineKeyboard(buttons);
     }
 
