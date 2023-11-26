@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.utils;
 
 import org.springframework.stereotype.Component;
+import pro.sky.telegramBot.enums.PetType;
 
 import java.util.List;
 
@@ -8,13 +9,13 @@ import java.util.List;
 @Component
 public class StringListCreator {
 
-    public String createStringList(List<String> names) {
+    public String createStringList(List<String> names, PetType type) {
 
         StringBuilder formattedNames = new StringBuilder();
         int count = 1;
 
         for (String name : names) {
-            formattedNames.append("/").append(count).append("- ").append(name).append("\n");
+            formattedNames.append("/").append(count).append("_").append(type).append(" - ").append(name).append("\n");
             count++;
         }
 

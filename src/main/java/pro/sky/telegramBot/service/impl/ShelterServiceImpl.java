@@ -11,8 +11,6 @@ import pro.sky.telegramBot.utils.StringListCreator;
 
 import java.util.List;
 
-
-// сервис для обработки запросов к БД приютов
 @Service
 @RequiredArgsConstructor
 public class ShelterServiceImpl implements ShelterService {
@@ -22,7 +20,7 @@ public class ShelterServiceImpl implements ShelterService {
     public String getShelterNames(PetType type) {
         List<String> shelters = shelterRepository.findAllShelterNamesByType(type);
         StringListCreator stringListCreator = new StringListCreator();
-        return stringListCreator.createStringList(shelters);
+        return stringListCreator.createStringList(shelters, type);
     }
 
     @Override
