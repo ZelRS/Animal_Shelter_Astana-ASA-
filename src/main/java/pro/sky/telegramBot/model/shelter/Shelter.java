@@ -1,5 +1,6 @@
 package pro.sky.telegramBot.model.shelter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,10 @@ public class Shelter {
     // фото приюта
     @Lob
     @Column(name = "photo")
+    @JsonIgnore
     private byte[] data;
 
     @OneToMany(mappedBy = "shelter")
+    @JsonIgnore
     private Collection<Pet> pets;
 }

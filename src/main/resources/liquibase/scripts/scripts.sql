@@ -47,3 +47,7 @@ CREATE TABLE pet (
 	CONSTRAINT FK_person_constraint FOREIGN KEY (owner_id) REFERENCES person(id),
 	CONSTRAINT FK_shelter_consraint FOREIGN KEY (shelter_id) REFERENCES shelter(id)
 );
+
+-- changeset RomanZeleinin:1
+ALTER TABLE pet ALTER COLUMN owner_id DROP NOT NULL;
+ALTER TABLE pet ALTER COLUMN shelter_id DROP NOT NULL;

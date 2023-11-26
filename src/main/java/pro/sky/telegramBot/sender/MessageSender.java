@@ -12,6 +12,7 @@ import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
+// класс формирует и отправляет сообщения определенного типа в чат
 @RequiredArgsConstructor
 @Service
 @Slf4j  // SLF4J logging
@@ -31,15 +32,42 @@ public class MessageSender {
         messageExecutor.executeHTMLMessage(message);
     }
 
-    // метод формирует и отправляет приветственное сообщение пользователю
-    // будет формироваться сообщение с фотографией и приветственным текстом
-    public void sendWelcomePhotoMessage(String firstName, Long chatId) {
-        log.info("Sending welcome message to {}: {}", firstName, chatId);
+    // метод формирует и отправляет приветственное фото-сообщение пользователю, пришедшему впервые
+    public void sendFirstTimeWelcomePhotoMessage(String firstName, Long chatId) {
+        log.info("Sending first time welcome message to {}: {}", firstName, chatId);
         try {
             // объявляется переменная SendPhoto для конкретного сообщения
-            SendPhoto sendPhoto = specificMediaMessageCreator.createWelcomePhotoMessage(chatId, firstName);
+            SendPhoto sendPhoto = specificMediaMessageCreator.createFirstTimeWelcomePhotoMessage(chatId, firstName);
             // внедряется клавиатура для выбора животного
             sendPhoto.replyMarkup(specificKeyboardCreator.petSelectionMessageKeyboard());
+            // выполняется отправление сообщения с фото
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send welcome message to {}: {}", firstName, chatId, e);
+        }
+    }
+
+    // метод формирует и отправляет приветственное фото-сообщение пользователю имеющему стутус UNTRUSTED("не надежный")
+    public void sendSorryWelcomePhotoMessage(String firstName, Long chatId) {
+        log.info("Sending sorry welcome message to {}: {}", firstName, chatId);
+        try {
+            // объявляется переменная SendPhoto для конкретного сообщения
+            SendPhoto sendPhoto = specificMediaMessageCreator.createSorryWelcomePhotoMessage(chatId, firstName);
+            // внедряется клавиатура для выбора животного
+            sendPhoto.replyMarkup(specificKeyboardCreator.petSelectionMessageKeyboard());
+            // выполняется отправление сообщения с фото
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send welcome message to {}: {}", firstName, chatId, e);
+        }
+    }
+
+    // метод формирует и отправляет приветственное фото-сообщение пользователю имеющему стутус BLOCKED("в черном списке")
+    public void sendBlockedWelcomePhotoMessage(String firstName, Long chatId) {
+        log.info("Sending blocked welcome message to {}: {}", firstName, chatId);
+        try {
+            // объявляется переменная SendPhoto для конкретного сообщения
+            SendPhoto sendPhoto = specificMediaMessageCreator.createBlockedWelcomePhotoMessage(chatId, firstName);
             // выполняется отправление сообщения с фото
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
@@ -85,14 +113,6 @@ public class MessageSender {
     }
 
     public void sendInfoForProbationUserMessage(Long chatId) {
-
-    }
-
-    public void sendSorryMessage(Long chatId) {
-
-    }
-
-    public void sendBlockedMessage(Long chatId) {
 
     }
 }
