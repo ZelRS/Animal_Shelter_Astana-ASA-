@@ -2,7 +2,7 @@ package pro.sky.telegramBot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.exception.PetNotFoundException;
+import pro.sky.telegramBot.exception.notFound.PetNotFoundException;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.repository.PetRepository;
 import pro.sky.telegramBot.service.PetService;
