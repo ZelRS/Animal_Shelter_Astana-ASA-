@@ -26,7 +26,7 @@ public class StartHandler {
             user = new User();
             user.setChatId(chatId);
             user.setUserName(firstName);
-            user.setState(UserState.POTENTIAL);
+            user.setState(UserState.FREE);
             userService.create(user);
             return;
         }
