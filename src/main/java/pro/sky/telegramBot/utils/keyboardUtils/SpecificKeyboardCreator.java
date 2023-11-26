@@ -23,7 +23,7 @@ public class SpecificKeyboardCreator {
     private final BotConfig config;
 
     // метод формирует ряд определенных кнопок для сообщения, в котором отражается возможность
-    // пользователю выбратьт тип животного, которое он хочет
+    // пользователю выбрать тип животного, которое он хочет
     public Keyboard petSelectionMessageKeyboard() {
         log.info("Creating keyboard markup for cats and dogs");
 

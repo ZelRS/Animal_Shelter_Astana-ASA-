@@ -12,7 +12,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Service
 @Slf4j  // SLF4J logging
-public class StartHandler {
+public class WelcomeMessageHandler {
     private final UserService userService;
 
     private final pro.sky.telegramBot.sender.MessageSender messageSender;
@@ -43,7 +43,8 @@ public class StartHandler {
     }
     private void sendUserStateSpecificMessage(User user, Long chatId) {
         switch (user.getState()) {
-//            case FREE:
+            case FREE:
+                messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
 //            case TRUSTED:
 //                messageSender.sendChooseShelterMessage(chatId);
 //                break;

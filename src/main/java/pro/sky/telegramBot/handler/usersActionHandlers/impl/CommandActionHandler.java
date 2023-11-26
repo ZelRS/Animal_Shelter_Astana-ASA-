@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.handler.specificHandlers.StartHandler;
+import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.sender.MessageSender;
 
@@ -20,7 +20,7 @@ import static pro.sky.telegramBot.enums.Command.START;
 @Slf4j  // SLF4J logging
 public class CommandActionHandler implements ActionHandler {
     private final MessageSender messageSender;
-    private final StartHandler startHandler;
+    private final WelcomeMessageHandler welcomeMessageHandler;
 
     @FunctionalInterface
     interface Command {
@@ -34,7 +34,7 @@ public class CommandActionHandler implements ActionHandler {
     public void init() {
         commandMap.put(START.getName(), (firstName, lastName, chatId) -> {
             log.info("Received START command");
-            startHandler.handleStartCommand(firstName, chatId);
+            welcomeMessageHandler.handleStartCommand(firstName, chatId);
         });
     }
 
