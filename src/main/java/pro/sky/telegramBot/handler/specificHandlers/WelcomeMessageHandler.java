@@ -65,6 +65,7 @@ public class WelcomeMessageHandler {
                 break;
         }
     }
+
     @FunctionalInterface
     private interface MessageSender {
         void send() throws IOException;
