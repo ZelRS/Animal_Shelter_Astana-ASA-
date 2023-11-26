@@ -12,6 +12,7 @@ import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
+// класс формирует и отправляет сообщения определенного типа в чат
 @RequiredArgsConstructor
 @Service
 @Slf4j  // SLF4J logging

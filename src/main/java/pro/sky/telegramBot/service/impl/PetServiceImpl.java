@@ -2,6 +2,8 @@ package pro.sky.telegramBot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.exception.PetNotFoundException;
+import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.repository.PetRepository;
 import pro.sky.telegramBot.service.PetService;
 
@@ -9,8 +11,11 @@ import pro.sky.telegramBot.service.PetService;
 @Service
 @RequiredArgsConstructor
 public class PetServiceImpl implements PetService {
-
     private final PetRepository petRepository;
 
-
+    @Override
+    public Pet getById(Long id) {
+        return petRepository.findById(id)
+                .orElseThrow(()-> new PetNotFoundException("Животное не найдено"));
+    }
 }
