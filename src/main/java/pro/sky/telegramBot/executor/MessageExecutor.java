@@ -27,8 +27,8 @@ public class MessageExecutor {
         telegramBot.execute(message);
     }
 
-    // метод выполняет отравку фото пользователю
-    public void executeImageMessage(SendPhoto sendPhoto) {
+    // метод выполняет отравку пользователю сообщения с фотографией
+    public void executePhotoMessage(SendPhoto sendPhoto) {
         log.info("Sending image message to user");
         telegramBot.execute(sendPhoto);
     }

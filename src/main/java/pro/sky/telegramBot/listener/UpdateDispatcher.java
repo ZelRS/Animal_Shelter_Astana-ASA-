@@ -5,40 +5,44 @@ import com.pengrad.telegrambot.model.Message;
 import com.pengrad.telegrambot.model.Update;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.handler.impl.ButtonHandler;
-import pro.sky.telegramBot.handler.impl.CommandHandler;
+import pro.sky.telegramBot.handler.usersActionHandlers.impl.ButtonActionHandler;
+import pro.sky.telegramBot.handler.usersActionHandlers.impl.CommandActionHandler;
 
-import java.io.IOException;
-
+// диспетчер принимает апдейты отслушателя и, проверяя на null, достает необходимые данные
 @Service
 @RequiredArgsConstructor
 public class UpdateDispatcher {
-    private final CommandHandler commandHandler;
-    private final ButtonHandler buttonHandler;
+    private final CommandActionHandler commandActionHandler;
+    private final ButtonActionHandler buttonActionHandler;
 
+    // главный метод диспетчера, орагинзующий проверку на null данных вытянутых из команды пользователя
     public void dispatch(Update update) {
         if (update.message() != null) {
-            handleMessage(update.message());
+            pullDataFromMessageCommand(update.message());
         } else if (update.callbackQuery() != null) {
-            handleCallbackQuery(update.callbackQuery());
+            pullDataFromButtonCommand(update.callbackQuery());
         }
-
     }
 
-    private void handleMessage(Message message) {
+    // метод достает из апдейта данные необходимые для формирования текстового ответа
+    // и отправляет их в обработчик команд
+    private void pullDataFromMessageCommand(Message message) {
         String messageText = message.text();
         long chatId = message.chat().id();
         String firstName = message.chat().firstName();
         String lastName = message.chat().lastName();
         if (messageText != null) {
-            commandHandler.handle(messageText, firstName, lastName, chatId);
+            commandActionHandler.handle(messageText, firstName, lastName, chatId);
         }
     }
-    private void handleCallbackQuery(CallbackQuery callbackQuery) {
+
+    // метод достает из апдейта данные необходимые для формирования ответа при нажатии кнопки пользователем
+    // и отправляет их в обработчик кнопок
+    private void pullDataFromButtonCommand(CallbackQuery callbackQuery) {
         String callbackData = callbackQuery.data();
         long chatId = callbackQuery.message().chat().id();
         String firstName = callbackQuery.from().firstName();
         String lastName = callbackQuery.from().lastName();
-        buttonHandler.handle(callbackData, firstName, lastName, chatId);
+        buttonActionHandler.handle(callbackData, firstName, lastName, chatId);
     }
 }

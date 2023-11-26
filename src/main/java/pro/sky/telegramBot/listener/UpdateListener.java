@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+// слушатель апдейтов боте
 @Component
 @RequiredArgsConstructor
 public class UpdateListener {
@@ -16,6 +17,7 @@ public class UpdateListener {
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(updates -> {
+            // для каждого апдейта применяется метод dispatch() класса диспетчеризации апдейтов
             updates.forEach(updateDispatcher::dispatch);
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });

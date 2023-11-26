@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 
+// модель информации о пользователе(БД)
 @Entity(name = "person_info")
 @RequiredArgsConstructor
 @Data
@@ -34,6 +35,7 @@ public class UserInfo {
     @Column(name = "phone_number")
     private String phone;
 
+    // фото пользователя
     @Lob
     @Column(name = "photo")
     private byte[] data;
