@@ -12,7 +12,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Service
 @Slf4j  // SLF4J logging
-public class StartHandler {
+public class WelcomeMessageHandler {
     private final UserService userService;
 
     private final pro.sky.telegramBot.sender.MessageSender messageSender;
