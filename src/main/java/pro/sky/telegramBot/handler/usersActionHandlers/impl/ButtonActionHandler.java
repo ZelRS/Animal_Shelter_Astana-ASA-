@@ -52,7 +52,7 @@ public class ButtonActionHandler implements ActionHandler {
         } else {
             log.warn("No handler found for button: {}", callbackData);
             // отправка дефолтного сообщения
-            messageSender.sendDefaultMessage(chatId);
+            messageSender.sendDefaultHTMLMessage(chatId);
         }
     }
 }

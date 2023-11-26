@@ -21,7 +21,7 @@ public class StartHandler {
 
         if (user == null) {
             log.info("Received START command from a first-time user");
-            sendMessageWithExceptionHandling(() -> messageSender.sendWelcomeMessage(firstName, chatId));
+            sendMessageWithExceptionHandling(() -> messageSender.sendWelcomePhotoMessage(firstName, chatId));
             return;
         }
         log.info("Received START command from user in state: {}", user.getState());
