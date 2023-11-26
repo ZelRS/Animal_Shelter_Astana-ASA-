@@ -13,7 +13,7 @@ import java.util.List;
 import static pro.sky.telegramBot.enums.CallbackData.CAT_BUT;
 import static pro.sky.telegramBot.enums.CallbackData.DOG_BUT;
 
-// класс получает логику создания однострочной клавиатуры и внедряет свойства кнопкам
+// класс получает логику создания конкретной однострочной клавиатуры и внедряет свойства кнопкам
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging

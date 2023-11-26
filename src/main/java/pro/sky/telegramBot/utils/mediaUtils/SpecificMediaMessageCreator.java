@@ -14,7 +14,7 @@ import static pro.sky.telegramBot.enums.MessageImage.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
 
-// класс содержит функционал, закрепляюищий определенный медиа-контент за конкретнымсообщением
+// класс содержит функционал, закрепляюищий конкретный медиа-контент за конкретным сообщением
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging
