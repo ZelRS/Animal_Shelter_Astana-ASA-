@@ -14,8 +14,13 @@ public class PetServiceImpl implements PetService {
     private final PetRepository petRepository;
 
     @Override
+    public Pet create(Pet pet) {
+        return petRepository.save(pet);
+    }
+
+    @Override
     public Pet getById(Long id) {
         return petRepository.findById(id)
-                .orElseThrow(()-> new PetNotFoundException("Животное не найдено"));
+                .orElseThrow(() -> new PetNotFoundException("Животное не найдено"));
     }
 }
