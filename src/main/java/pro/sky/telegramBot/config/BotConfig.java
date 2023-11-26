@@ -16,25 +16,25 @@ public class BotConfig {
 
 // предлагается разбить на разные конфиг классы поля, хранящие в себе строки для различных целей
 
-    @Value("${BACK_MES}")
+    @Value("${REF_MSG_BACK}")
     private String back_mes;
 
 
 
-    @Value("${WELCOME_MES}")
+    @Value("${MSG_WELCOME}")
     private String WELCOME_MES;
-    @Value("${DEFAULT_MES}")
+    @Value("${MSG_DEFAULT}")
     private String DEFAULT_MES;
-    @Value("${SHELTER_INTRO_MES}")
+    @Value("${MSG_SHELTER_INTRO}")
     private String SHELTER_INTRO_MES;
 
 
 
 
-    @Value("${DOGS_BUT}")
+    @Value("${BUT_WANT_DOG}")
     private String dogs_but;
 
-    @Value("${CATS_BUT}")
+    @Value("${BUT_WANT_CAT}")
     private String cats_but;
 
 
