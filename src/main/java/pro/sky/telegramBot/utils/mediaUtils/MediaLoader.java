@@ -25,6 +25,7 @@ public class MediaLoader {
         InputStream imageStream = getClass().getResourceAsStream(path);
         assert imageStream != null;
         byte[] imageBytes = imageStream.readAllBytes();
+        imageStream.close();
 
         SendPhoto sendPhoto = new SendPhoto(chatId, imageBytes);
         return sendPhoto.caption(message).parseMode(HTML);
