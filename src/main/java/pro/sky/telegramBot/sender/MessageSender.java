@@ -115,4 +115,17 @@ public class MessageSender {
     public void sendInfoForProbationUserMessage(Long chatId) {
 
     }
+
+    public void handleShelterInfoCommand(Long chatId) {
+        log.info("Sending shelter info message to {}", chatId);
+        try {
+            SendMessage message = new SendMessage(chatId, "Здесь нужно прописать меню для приюта,\n " +
+                                                          "потом нужно обработать новые команды.\n " +
+                                                          "В приютах могут быть разные требования, но,\n " +
+                                                          "думаю, схема должна быть одна");
+            messageExecutor.executeHTMLMessage(message);
+        } catch (Exception e) {
+            log.error("Failed to send info message to {}", chatId, e);
+        }
+    }
 }

@@ -4,15 +4,19 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.service.ShelterService;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
 import static pro.sky.telegramBot.enums.Command.START;
+import static pro.sky.telegramBot.enums.PetType.CAT;
+import static pro.sky.telegramBot.enums.PetType.DOG;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ import static pro.sky.telegramBot.enums.Command.START;
 public class CommandActionHandler implements ActionHandler {
     private final MessageSender messageSender;
     private final WelcomeMessageHandler welcomeMessageHandler;
+    private final ShelterService shelterService;
 
     @FunctionalInterface
     interface Command {
@@ -32,6 +37,22 @@ public class CommandActionHandler implements ActionHandler {
     // при запуске приложения происходит наполнение мапы с командами, на которые должен высылаться конкретный ответ
     @PostConstruct
     public void init() {
+        int cats = shelterService.getShelterNames(CAT).length();
+        int dogs = shelterService.getShelterNames(DOG).length();
+        for (int i = 0; i < cats; i++) {
+            int finalI = i;
+            commandMap.put("/" + (i + 1) + "_cat", (firstName, lastName, chatId) -> {
+                log.info("Received /{} CAT command", finalI);
+                messageSender.handleShelterInfoCommand(chatId);
+            });
+        }
+        for (int i = 0; i < dogs; i++) {
+            int finalI = i;
+            commandMap.put("/" + (i + 1) + "_dog", (firstName, lastName, chatId) -> {
+                log.info("Received /{} DOG command", finalI);
+                messageSender.handleShelterInfoCommand(chatId);
+            });
+        }
         commandMap.put(START.getName(), (firstName, lastName, chatId) -> {
             log.info("Received START command");
             welcomeMessageHandler.handleStartCommand(firstName, chatId);
