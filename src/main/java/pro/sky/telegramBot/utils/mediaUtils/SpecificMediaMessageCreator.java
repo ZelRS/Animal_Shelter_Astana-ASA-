@@ -14,7 +14,7 @@ import static pro.sky.telegramBot.enums.MessageImage.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
 
-// класс содержит функционал, закрепляюищий определенный медиа-контент за конкретнымсообщением
+// класс содержит функционал, закрепляюищий конкретный медиа-контент за конкретным сообщением
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging
@@ -24,29 +24,29 @@ public class SpecificMediaMessageCreator {
     private final ShelterService shelterService;
 
     // метод закрепляет конкретное фото за приветственным сообщением
-    public SendPhoto createWelcomeMessagePhoto(long chatId, String firstName) throws IOException {
+    public SendPhoto createWelcomePhotoMessage(long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(WELCOME_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getWELCOME_MES(), firstName));
+        params.setCaption(String.format(config.getMSG_WELCOME(), firstName));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
     // метод закрепляет конкретное фото за сообщением со списком приютов для собак
-    public SendPhoto createDogSheltersListMessagePhoto(Long chatId) throws IOException {
+    public SendPhoto createDogSheltersListPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(DOG_SHELTERS_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(DOG));
+        params.setCaption(String.format(config.getMSG_SHELTER_INTRO()) + shelterService.getShelterNames(DOG));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод закрепляет конкретное фото за сообщением со списком приютов для собак
-    public SendPhoto createCatSheltersListMessagePhoto(Long chatId) throws IOException {
+    // метод закрепляет конкретное фото за сообщением со списком приютов для кошек
+    public SendPhoto createCatSheltersListPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CAT_SHELTERS_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getSHELTER_INTRO_MES()) + shelterService.getShelterNames(CAT));
+        params.setCaption(String.format(config.getMSG_SHELTER_INTRO()) + shelterService.getShelterNames(CAT));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 

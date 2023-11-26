@@ -9,6 +9,7 @@ import pro.sky.telegramBot.model.pet.Pet;
 import javax.persistence.*;
 import java.util.Collection;
 
+// модель приюта(БД)
 @Entity(name = "shelter")
 @RequiredArgsConstructor
 @Data
@@ -29,6 +30,7 @@ public class Shelter {
     @Column(name = "type")
     private PetType type;
 
+    // фото приюта
     @Lob
     @Column(name = "photo")
     private byte[] data;

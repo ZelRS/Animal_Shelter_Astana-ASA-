@@ -10,7 +10,7 @@ import pro.sky.telegramBot.entity.MediaMessageParams;
 
 import java.io.IOException;
 
-// класс содержит функционал, закрепляюищий определенный медиа-контент за сообщением
+// класс содержит функционал, закрепляюищий загружаемый медиа-контент за сообщением
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging

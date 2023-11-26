@@ -1,9 +1,8 @@
-package pro.sky.telegramBot.handler.impl;
+package pro.sky.telegramBot.handler.specificHandlers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.handler.MessageHandler;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
 
@@ -15,14 +14,14 @@ import java.io.IOException;
 public class StartHandler {
 
     private final UserService userService;
-    private final MessageHandler messageHandler;
+    private final pro.sky.telegramBot.sender.MessageSender messageSender;
 
     public void handleStartCommand(String firstName, Long chatId) {
         User user = userService.findUserByChatId(chatId);
 
         if (user == null) {
             log.info("Received START command from a first-time user");
-            sendMessageWithExceptionHandling(() -> messageHandler.sendWelcomeMessage(firstName, chatId));
+            sendMessageWithExceptionHandling(() -> messageSender.sendWelcomeMessage(firstName, chatId));
             return;
         }
         log.info("Received START command from user in state: {}", user.getState());
@@ -40,19 +39,19 @@ public class StartHandler {
         switch (user.getState()) {
             case FREE:
             case TRUSTED:
-                messageHandler.sendChooseShelterMessage(chatId);
+                messageSender.sendChooseShelterMessage(chatId);
                 break;
             case POTENTIAL:
-                messageHandler.sendInfoForPotentialUserMessage(chatId);
+                messageSender.sendInfoForPotentialUserMessage(chatId);
                 break;
             case PROBATION:
-                messageHandler.sendInfoForProbationUserMessage(chatId);
+                messageSender.sendInfoForProbationUserMessage(chatId);
                 break;
             case UNTRUSTED:
-                messageHandler.sendSorryMessage(chatId);
+                messageSender.sendSorryMessage(chatId);
                 break;
             case BLOCKED:
-                messageHandler.sendBlockedMessage(chatId);
+                messageSender.sendBlockedMessage(chatId);
                 break;
             default:
                 log.warn("Unknown user state: {}", user.getState());

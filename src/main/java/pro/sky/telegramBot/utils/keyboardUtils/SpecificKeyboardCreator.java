@@ -13,7 +13,7 @@ import java.util.List;
 import static pro.sky.telegramBot.enums.CallbackData.CAT_BUT;
 import static pro.sky.telegramBot.enums.CallbackData.DOG_BUT;
 
-// класс получает логику создания однострочной клавиатуры и внедряет свойства кнопкам
+// класс получает логику создания конкретной однострочной клавиатуры и внедряет свойства кнопкам
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging
@@ -28,8 +28,8 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for cats and dogs");
 
         List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button(config.getCats_but(), CAT_BUT.getCallbackData()));
-        buttons.add(new Button(config.getDogs_but(), DOG_BUT.getCallbackData()));
+        buttons.add(new Button(config.getBUT_WANT_CAT(), CAT_BUT.getCallbackData()));
+        buttons.add(new Button(config.getBUT_WANT_DOG(), DOG_BUT.getCallbackData()));
         return inlineKeyboardCreator.createInlineKeyboard(buttons);
     }
 
