@@ -23,17 +23,17 @@ public class MessageSender {
 
     // метод формирует и отправляет дефолтное сообщение в HTML формате в чат
     // дефолтное сообщение существует в качестве заглушки на случай, когда функционал не реализован
-    public void sendDefaultMessage(Long chatId) {
+    public void sendDefaultHTMLMessage(Long chatId) {
         log.info("Sending about message to {}", chatId);
         SendMessage message = new SendMessage(String.valueOf(chatId),
                 String.format(config.getMSG_DEFAULT())).parseMode(HTML);
-        // выполняется отправление дефолтного сообщения
+        // выполняется отправление дефолтного сообщения в HTML формате
         messageExecutor.executeHTMLMessage(message);
     }
 
     // метод формирует и отправляет приветственное сообщение пользователю
     // будет формироваться сообщение с фотографией и приветственным текстом
-    public void sendWelcomeMessage(String firstName, Long chatId) {
+    public void sendWelcomePhotoMessage(String firstName, Long chatId) {
         log.info("Sending welcome message to {}: {}", firstName, chatId);
         try {
             // объявляется переменная SendPhoto для конкретного сообщения

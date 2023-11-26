@@ -49,7 +49,7 @@ public class CommandActionHandler implements ActionHandler {
         } else {
             log.warn("No handler found for command: {}", command);
             // отправка дефолтного сообщения
-            messageSender.sendDefaultMessage(chatId);
+            messageSender.sendDefaultHTMLMessage(chatId);
         }
     }
 }
