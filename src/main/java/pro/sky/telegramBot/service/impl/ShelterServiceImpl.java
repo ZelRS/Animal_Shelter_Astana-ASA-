@@ -9,6 +9,8 @@ import pro.sky.telegramBot.utils.StringListCreator;
 
 import java.util.List;
 
+
+// сервис для обработки запросов к БД приютов
 @Service
 @RequiredArgsConstructor
 public class ShelterServiceImpl implements ShelterService {

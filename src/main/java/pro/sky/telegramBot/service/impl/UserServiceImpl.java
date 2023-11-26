@@ -7,6 +7,7 @@ import pro.sky.telegramBot.repository.UserInfoRepository;
 import pro.sky.telegramBot.repository.UserRepository;
 import pro.sky.telegramBot.service.UserService;
 
+// сервис для обработки запросов к БД пользователей и информиции о пользователях
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
