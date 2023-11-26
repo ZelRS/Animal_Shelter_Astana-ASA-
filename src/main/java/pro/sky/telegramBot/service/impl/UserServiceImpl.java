@@ -20,11 +20,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByChatId(Long chatId) {
-        return null;
+        return userRepository.findByChatId(chatId);
     }
 
     @Override
     public User getById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+    }
+
+    public User create(User user) {
+        return userRepository.save(user);
     }
 }
