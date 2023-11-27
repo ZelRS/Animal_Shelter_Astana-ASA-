@@ -105,11 +105,11 @@ public class MessageSender {
 
     // метод формирует и отправляет сообщение пользователю после его выбора приюта
     // будет формироваться сообщение с информацией о приюте и кнопками выбора его действия
-    public void sendShelterFunctionalPhotoMessage(Long chatId) {
-        log.info("Sending shelter info message to {}", chatId);
+    public void sendShelterFunctionalPhotoMessage(Long chatId, String ref) {
+        log.info("Sending shelter functional message to {}", chatId);
         try {
             // объявляется переменная SendPhoto для конкретного сообщения
-            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
+            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId, ref);
             // внедряется клавиатура выбора действия пользователя c приютом
             sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
             // выполняется отправление сообщения с фото

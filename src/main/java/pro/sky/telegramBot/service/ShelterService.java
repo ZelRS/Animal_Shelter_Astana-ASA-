@@ -14,4 +14,6 @@ public interface ShelterService {
     List<String> findAllShelterNamesByType(PetType type);
 
     Shelter getById(Long id);
+
+    String getDescriptionBy(String name);
 }
