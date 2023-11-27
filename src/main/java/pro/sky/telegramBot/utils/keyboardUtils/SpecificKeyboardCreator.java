@@ -10,8 +10,7 @@ import pro.sky.telegramBot.entity.Button;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pro.sky.telegramBot.enums.CallbackData.CAT_BUT;
-import static pro.sky.telegramBot.enums.CallbackData.DOG_BUT;
+import static pro.sky.telegramBot.enums.CallbackData.*;
 
 // класс получает логику создания конкретной однострочной клавиатуры и внедряет свойства кнопкам
 @Service
@@ -28,8 +27,18 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for cats and dogs");
 
         List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button(config.getBUT_WANT_CAT(), CAT_BUT.getCallbackData()));
-        buttons.add(new Button(config.getBUT_WANT_DOG(), DOG_BUT.getCallbackData()));
+        buttons.add(new Button(config.getBUT_WANT_CAT(), BUT_WANT_CAT.getCallbackData()));
+        buttons.add(new Button(config.getBUT_WANT_DOG(), BUT_WANT_DOG.getCallbackData()));
+        return inlineKeyboardCreator.createInlineKeyboard(buttons);
+    }
+
+    public Keyboard shelterFunctionalMessageKeyboard() {
+        log.info("Creating keyboard markup for shelters functional");
+
+        List<Button> buttons = new ArrayList<>();
+        buttons.add(new Button(config.getBUT_WANT_TAKE_PET(), BUT_WANT_TAKE_PET.getCallbackData()));
+        buttons.add(new Button(config.getBUT_SEND_REPORT(), BUT_SEND_REPORT.getCallbackData()));
+        buttons.add(new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData()));
         return inlineKeyboardCreator.createInlineKeyboard(buttons);
     }
 
