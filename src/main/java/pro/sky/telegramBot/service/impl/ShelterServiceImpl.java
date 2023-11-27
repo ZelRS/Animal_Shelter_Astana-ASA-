@@ -24,17 +24,12 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
-    public List<String> getListOfShelterNames(PetType type) {
+    public List<String> findAllShelterNamesByType(PetType type) {
         return shelterRepository.findAllShelterNamesByType(type);
     }
 
     @Override
     public Shelter getById(Long id) {
         return shelterRepository.findById(id).orElseThrow(() -> new ShelterNotFoundException("Приют не найден"));
-    }
-
-    @Override
-    public Shelter create(Shelter shelter) {
-        return shelterRepository.save(shelter);
     }
 }

@@ -55,7 +55,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(DOG_SHELTERS_MSG_IMG.getPath());
-        int dogsCount = shelterService.getListOfShelterNames(DOG).size();
+        int dogsCount = shelterService.findAllShelterNamesByType(DOG).size();
         if (dogsCount == 0) {
             params.setCaption(String.format(config.getMSG_SHELTER_INTRO_NULL(), DOG.getAccusative()));
         } else if (dogsCount == 1) {
@@ -73,7 +73,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CAT_SHELTERS_MSG_IMG.getPath());
-        int catsCount = shelterService.getListOfShelterNames(CAT).size();
+        int catsCount = shelterService.findAllShelterNamesByType(CAT).size();
         if (catsCount == 0) {
             params.setCaption(String.format(config.getMSG_SHELTER_INTRO_NULL(), CAT.getAccusative()));
         } else if (catsCount == 1) {
