@@ -56,6 +56,7 @@ public class CommandActionHandler implements ActionHandler {
             int finalI = i;
             commandMap.put("/" + (i + 1) + "_dog", (firstName, lastName, chatId) -> {
                 log.info("Received /{} DOG command", finalI);
+                messageSender.setSelectedShelter(sheltersDog.get(finalI));
                 messageSender.sendShelterInfoHTMLMessage(chatId);
             });
         }
