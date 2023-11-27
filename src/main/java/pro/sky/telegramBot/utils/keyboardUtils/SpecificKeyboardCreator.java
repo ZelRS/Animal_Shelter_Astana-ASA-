@@ -36,6 +36,7 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for shelters functional");
 
         List<Button> buttons = new ArrayList<>();
+        buttons.add(new Button(config.getBUT_GET_FULL_INFO(), BUT_GET_FULL_INFO.getCallbackData()));
         buttons.add(new Button(config.getBUT_WANT_TAKE_PET(), BUT_WANT_TAKE_PET.getCallbackData()));
         buttons.add(new Button(config.getBUT_SEND_REPORT(), BUT_SEND_REPORT.getCallbackData()));
         buttons.add(new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData()));

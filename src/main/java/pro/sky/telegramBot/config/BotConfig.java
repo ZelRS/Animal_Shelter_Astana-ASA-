@@ -43,6 +43,8 @@ public class BotConfig {
     private String BUT_WANT_DOG;
     @Value("${BUT_WANT_CAT}")
     private String BUT_WANT_CAT;
+    @Value("${BUT_GET_FULL_INFO}")
+    private String BUT_GET_FULL_INFO;
     @Value("${BUT_WANT_TAKE_PET}")
     private String BUT_WANT_TAKE_PET;
     @Value("${BUT_SEND_REPORT}")
