@@ -8,7 +8,8 @@ public enum MessageImage {
     SORRY_WELCOME_MSG_IMG("/photos/sorry_welcome_msg.jpg"),
     BLOCKED_WELCOME_MSG_IMG("/photos/blocked_welcome_msg.jpg"),
     CAT_SHELTERS_MSG_IMG("/photos/cats.jpg"),
-    DOG_SHELTERS_MSG_IMG("/photos/dogs.jpg");
+    DOG_SHELTERS_MSG_IMG("/photos/dogs.jpg"),
+    SHELTER_FUNC_MSG_IMG("/photos/shelter_func_msg.jpg");
 
     private final String path;
 

@@ -37,6 +37,8 @@ public class BotConfig {
     private String MSG_SHELTER_INTRO_TWO;
     @Value("${MSG_SHELTER_INTRO_THREE}")
     private String MSG_SHELTER_INTRO_THREE;
+    @Value("${MSG_SHELTER_FUNC}")
+    private String MSG_SHELTER_FUNC;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")

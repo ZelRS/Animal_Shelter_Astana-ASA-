@@ -103,7 +103,7 @@ public class MessageSender {
         }
     }
 
-//    .........отравка сообщений пользователю на любые другие случаи........
+//    .........отправка сообщений пользователю на любые другие случаи........
 
 
     public void sendChooseShelterMessage(Long chatId) {
@@ -123,19 +123,12 @@ public class MessageSender {
     public void sendShelterInfoHTMLMessage(Long chatId) {
         log.info("Sending shelter info message to {}", chatId);
         try {
-            // объявляется переменная SendMessage для конкретного сообщения
-            SendMessage message = new SendMessage(chatId, "Тут будет основная информация о приюте,\n " +
-                    "а под этим сообщением я (Роман)\n " +
-                    "разместил стандартный функционал кнопок для всех приютов.\n " +
-                    "реакция на них будет разная в зависимости от приюта\n" +
-                    "можно внедрить отдельную кнопку для адреса и схемы проезда\n" +
-                    "и какой-то другой доп. информации.\n" +
-                    "хорошо бы еще переработать функционал создания клавиатуры,\n" +
-                    "чтобы можно быть эти кнопки по ставить не в ряд, а в столбец");
+            // объявляется переменная SendPhoto для конкретного сообщения
+            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
             // внедряется клавиатура выбора действия пользователя c приютом
-            message.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
+            sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
             // выполняется отправление сообщения с фото
-            messageExecutor.executeHTMLMessage(message);
+            messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send info message to {}", chatId, e);
         }

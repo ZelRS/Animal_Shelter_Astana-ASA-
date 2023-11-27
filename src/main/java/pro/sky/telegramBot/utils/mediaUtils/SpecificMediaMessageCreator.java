@@ -86,5 +86,14 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    // метод создает фото-сообщение с функционалом выбранного приюта при нажатии на соответствующий приют
+    public SendPhoto createShelterFunctionalPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(SHELTER_FUNC_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_SHELTER_FUNC());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 //    ....... создает фото-сообщения для других целей......
 }
