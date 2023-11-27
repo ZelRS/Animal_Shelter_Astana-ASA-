@@ -32,19 +32,35 @@ public class ButtonActionHandler implements ActionHandler {
     public void init() {
         buttonMap.put(BUT_WANT_TAKE_PET.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed WANT_TAKE_PET button");
-            messageSender.sendShelterInfoHTMLMessage(chatId);
+
+            // внизу заглушка! там должен быть метод, который будет высылаиь ответ при нажатии кнопки "взять животное"
+            // на кнопки пока не нажимайте. прилложение завалится. этот метод закомментирован и не подходит под реализуцию,
+            // пожалуйста не вводите его из комментов. реализуйте сюда свой send по вашему заданию
+
+//            messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
         buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed SEND_REPORT button");
-            messageSender.sendShelterInfoHTMLMessage(chatId);
+
+            // внизу заглушка! там должен быть метод, который будет высылать ответ при нажатии кнопки "отправить отчет"
+            // на кнопки пока не нажимайте. прилложение завалится. этот метод закомментирован и не подходит под реализуцию,
+            // пожалуйста не вводите его из комментов. реализуйте сюда свой send по вашему заданию
+
+//            messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
         buttonMap.put(BUT_CALL_VOLUNTEER.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed CALL_VOLUNTEER button");
-            messageSender.sendShelterInfoHTMLMessage(chatId);
+
+            // внизу заглушка! там должен быть метод, который будет высылаиь ответ при нажатии кнопки "позвать волонтера"
+            // на кнопки пока не нажимайте. прилложение завалится. этот метод закомментирован и не подходит под реализуцию,
+            // пожалуйста не вводите его из комментов. реализуйте сюда свой send по вашему заданию
+
+            // messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
         buttonMap.put(BUT_GET_FULL_INFO.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed CALL_VOLUNTEER button");
-            messageSender.sendShelterInfoHTMLMessage(chatId);
+            // внизу заглушка! там должен быть метод, который будет высылаиь ответ при нажатии кнопки "информация о приюте"
+//            messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
         buttonMap.put(BUT_WANT_DOG.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed WANT_DOG button");
