@@ -75,12 +75,9 @@ public class CommandActionHandler implements ActionHandler {
     }
 
     public Shelter create(Shelter shelter) {
-        int count = shelterRepository.findAllShelterNamesByType(shelter.getType()).size();
-        String key = "/" + (count + 1) + "_" + shelter.getType();
-        commandMap.put(key, (firstName, lastName, chatId) -> {
-            messageSender.handleShelterInfoCommand(chatId);
-        });
-        return shelterRepository.save(shelter);
+        Shelter newShelter = shelterRepository.save(shelter);
+        init();
+        return newShelter;
     }
 
 }
