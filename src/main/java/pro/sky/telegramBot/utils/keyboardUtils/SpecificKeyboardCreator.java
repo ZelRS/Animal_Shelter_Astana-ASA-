@@ -32,6 +32,8 @@ public class SpecificKeyboardCreator {
         return inlineKeyboardCreator.createInlineKeyboard(buttons);
     }
 
+    // метод формирует ряд определенных кнопок для сообщения, в котором отражается функционал
+    // выбранного приюта пользователем
     public Keyboard shelterFunctionalMessageKeyboard() {
         log.info("Creating keyboard markup for shelters functional");
 

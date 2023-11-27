@@ -17,7 +17,7 @@ import java.io.IOException;
 public class MediaMessageCreator {
     private final MediaLoader mediaLoader;
 
-    // метод для закрепления загруженноого фото за сообщением
+    // метод для закрепления загруженного фото за сообщением
     public SendPhoto createPhotoMessage(MediaMessageParams params) throws IOException {
         return mediaLoader.imageLoader(params.getChatId(), params.getFilePath(), params.getCaption());
     }
