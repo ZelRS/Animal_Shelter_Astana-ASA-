@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pro.sky.telegramBot.handler.usersActionHandlers.impl.CommandActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.service.ShelterService;
 
@@ -15,11 +16,12 @@ import pro.sky.telegramBot.service.ShelterService;
 @Tag(name = "API для работы с приютами")
 public class ShelterController {
     private final ShelterService shelterservice;
+    private final CommandActionHandler commandActionHandler;
 
     @PostMapping
     @Operation(summary = "Создать приют")
     public ResponseEntity<Shelter> create(@RequestBody Shelter shelterRq) {
-        Shelter shelter = shelterservice.create(shelterRq);
+        Shelter shelter = commandActionHandler.create(shelterRq);
         return ResponseEntity.ok(shelter);
     }
 

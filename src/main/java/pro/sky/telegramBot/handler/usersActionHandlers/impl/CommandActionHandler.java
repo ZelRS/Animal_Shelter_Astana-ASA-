@@ -6,8 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
+import pro.sky.telegramBot.model.shelter.Shelter;
+import pro.sky.telegramBot.repository.ShelterRepository;
 import pro.sky.telegramBot.sender.MessageSender;
-import pro.sky.telegramBot.service.ShelterService;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -24,7 +25,7 @@ import static pro.sky.telegramBot.enums.PetType.DOG;
 public class CommandActionHandler implements ActionHandler {
     private final MessageSender messageSender;
     private final WelcomeMessageHandler welcomeMessageHandler;
-    private final ShelterService shelterService;
+    private final ShelterRepository shelterRepository;
 
     @FunctionalInterface
     interface Command {
@@ -36,8 +37,8 @@ public class CommandActionHandler implements ActionHandler {
     // при запуске приложения происходит наполнение мапы с командами, на которые должен высылаться конкретный ответ
     @PostConstruct
     public void init() {
-        int cats = shelterService.getListOfShelterNames(CAT).size();
-        int dogs = shelterService.getListOfShelterNames(DOG).size();
+        int cats = shelterRepository.findAllShelterNamesByType(CAT).size();
+        int dogs = shelterRepository.findAllShelterNamesByType(DOG).size();
         for (int i = 0; i < cats; i++) {
             int finalI = i;
             commandMap.put("/" + (i + 1) + "_cat", (firstName, lastName, chatId) -> {
@@ -72,4 +73,14 @@ public class CommandActionHandler implements ActionHandler {
             messageSender.sendDefaultHTMLMessage(chatId);
         }
     }
+
+    public Shelter create(Shelter shelter) {
+        int count = shelterRepository.findAllShelterNamesByType(shelter.getType()).size();
+        String key = "/" + (count + 1) + "_" + shelter.getType();
+        commandMap.put(key, (firstName, lastName, chatId) -> {
+            messageSender.handleShelterInfoCommand(chatId);
+        });
+        return shelterRepository.save(shelter);
+    }
+
 }
