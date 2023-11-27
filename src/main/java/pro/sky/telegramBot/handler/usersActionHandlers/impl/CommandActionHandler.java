@@ -42,7 +42,7 @@ public class CommandActionHandler implements ActionHandler {
             int finalI = i;
             commandMap.put("/" + (i + 1) + "_cat", (firstName, lastName, chatId) -> {
                 log.info("Received /{} CAT command", finalI);
-                messageSender.sendShelterInfoHTMLMessage(chatId);
+                messageSender.sendShelterFunctionalPhotoMessage(chatId);
             });
         }
 
@@ -51,7 +51,7 @@ public class CommandActionHandler implements ActionHandler {
             int finalI = i;
             commandMap.put("/" + (i + 1) + "_dog", (firstName, lastName, chatId) -> {
                 log.info("Received /{} DOG command", finalI);
-                messageSender.sendShelterInfoHTMLMessage(chatId);
+                messageSender.sendShelterFunctionalPhotoMessage(chatId);
             });
         }
 

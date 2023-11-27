@@ -103,6 +103,22 @@ public class MessageSender {
         }
     }
 
+    // метод формирует и отправляет сообщение пользователю после его выбора приюта
+    // будет формироваться сообщение с информацией о приюте и кнопками выбора его действия
+    public void sendShelterFunctionalPhotoMessage(Long chatId) {
+        log.info("Sending shelter info message to {}", chatId);
+        try {
+            // объявляется переменная SendPhoto для конкретного сообщения
+            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
+            // внедряется клавиатура выбора действия пользователя c приютом
+            sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
+            // выполняется отправление сообщения с фото
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send info message to {}", chatId, e);
+        }
+    }
+
 //    .........отправка сообщений пользователю на любые другие случаи........
 
 
@@ -116,21 +132,5 @@ public class MessageSender {
 
     public void sendInfoForProbationUserMessage(Long chatId) {
 
-    }
-
-    // метод формирует и отправляет сообщение пользователю после его выбора приюта
-    // будет формироваться сообщение с информацией о приюте и кнопками выбора его действия
-    public void sendShelterInfoHTMLMessage(Long chatId) {
-        log.info("Sending shelter info message to {}", chatId);
-        try {
-            // объявляется переменная SendPhoto для конкретного сообщения
-            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
-            // внедряется клавиатура выбора действия пользователя c приютом
-            sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
-            // выполняется отправление сообщения с фото
-            messageExecutor.executePhotoMessage(sendPhoto);
-        } catch (Exception e) {
-            log.error("Failed to send info message to {}", chatId, e);
-        }
     }
 }
