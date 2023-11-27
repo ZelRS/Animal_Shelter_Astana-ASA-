@@ -4,12 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum PetType {
-    DOG("собака"),
-    CAT("кошка");
+    DOG("собака", "собак"),
+    CAT("кошка", "кошек");
 
     private final String type;
+    private final String accusative;
 
-    PetType(String type) {
+    PetType(String type, String accusative) {
         this.type = type;
+        this.accusative = accusative;
     }
 }
