@@ -116,7 +116,7 @@ public class MessageSender {
 
     }
 
-    public void handleShelterInfoCommand(Long chatId) {
+    public void sendShelterInfoHTMLMessage(Long chatId) {
         log.info("Sending shelter info message to {}", chatId);
         try {
             SendMessage message = new SendMessage(chatId, "Здесь нужно прописать меню для приюта,\n " +
