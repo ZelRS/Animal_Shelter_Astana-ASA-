@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
-import pro.sky.telegramBot.repository.ShelterRepository;
 import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.service.ShelterService;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -25,7 +25,7 @@ import static pro.sky.telegramBot.enums.PetType.DOG;
 public class CommandActionHandler implements ActionHandler {
     private final MessageSender messageSender;
     private final WelcomeMessageHandler welcomeMessageHandler;
-    private final ShelterRepository shelterRepository;
+    private final ShelterService shelterService;
 
     @FunctionalInterface
     interface Command {
@@ -37,22 +37,24 @@ public class CommandActionHandler implements ActionHandler {
     // при запуске приложения происходит наполнение мапы с командами, на которые должен высылаться конкретный ответ
     @PostConstruct
     public void init() {
-        int cats = shelterRepository.findAllShelterNamesByType(CAT).size();
-        int dogs = shelterRepository.findAllShelterNamesByType(DOG).size();
-        for (int i = 0; i < cats; i++) {
+        int catShelterSize = shelterService.findAllShelterNamesByType(CAT).size();
+        for (int i = 0; i < catShelterSize; i++) {
             int finalI = i;
             commandMap.put("/" + (i + 1) + "_cat", (firstName, lastName, chatId) -> {
                 log.info("Received /{} CAT command", finalI);
-                messageSender.handleShelterInfoCommand(chatId);
+                messageSender.sendShelterInfoHTMLMessage(chatId);
             });
         }
-        for (int i = 0; i < dogs; i++) {
+
+        int dogShelterSize = shelterService.findAllShelterNamesByType(DOG).size();
+        for (int i = 0; i < dogShelterSize; i++) {
             int finalI = i;
             commandMap.put("/" + (i + 1) + "_dog", (firstName, lastName, chatId) -> {
                 log.info("Received /{} DOG command", finalI);
-                messageSender.handleShelterInfoCommand(chatId);
+                messageSender.sendShelterInfoHTMLMessage(chatId);
             });
         }
+
         commandMap.put(START.getName(), (firstName, lastName, chatId) -> {
             log.info("Received START command");
             welcomeMessageHandler.handleStartCommand(firstName, chatId);
@@ -75,7 +77,7 @@ public class CommandActionHandler implements ActionHandler {
     }
 
     public Shelter create(Shelter shelter) {
-        Shelter newShelter = shelterRepository.save(shelter);
+        Shelter newShelter = shelterService.create(shelter);
         init();
         return newShelter;
     }

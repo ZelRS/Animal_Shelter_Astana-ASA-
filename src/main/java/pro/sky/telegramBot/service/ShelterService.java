@@ -7,6 +7,8 @@ import java.util.List;
 
 // интерфейс сервиса для обработки запросов к БД приютов
 public interface ShelterService {
+    Shelter create(Shelter shelter);
+
     String getStringOfShelterNames(PetType type);
     List<String> findAllShelterNamesByType(PetType type);
 
