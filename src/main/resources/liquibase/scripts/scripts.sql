@@ -51,3 +51,6 @@ CREATE TABLE pet (
 -- changeset RomanZeleinin:1
 ALTER TABLE pet ALTER COLUMN owner_id DROP NOT NULL;
 ALTER TABLE pet ALTER COLUMN shelter_id DROP NOT NULL;
+
+-- changeset RomanZelenin:2
+ALTER TABLE shelter ADD description VARCHAR(255) NULL;
