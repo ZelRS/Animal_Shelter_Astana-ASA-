@@ -29,8 +29,14 @@ public class BotConfig {
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ ДЛЯ ДРУГИХ ОТВЕТНЫХ СООБЩЕНИЙ
     @Value("${MSG_DEFAULT}")
     private String MSG_DEFAULT;
-    @Value("${MSG_SHELTER_INTRO}")
-    private String MSG_SHELTER_INTRO;
+    @Value("${MSG_SHELTER_INTRO_NULL}")
+    private String MSG_SHELTER_INTRO_NULL;
+    @Value("${MSG_SHELTER_INTRO_ONE}")
+    private String MSG_SHELTER_INTRO_ONE;
+    @Value("${MSG_SHELTER_INTRO_TWO}")
+    private String MSG_SHELTER_INTRO_TWO;
+    @Value("${MSG_SHELTER_INTRO_THREE}")
+    private String MSG_SHELTER_INTRO_THREE;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")

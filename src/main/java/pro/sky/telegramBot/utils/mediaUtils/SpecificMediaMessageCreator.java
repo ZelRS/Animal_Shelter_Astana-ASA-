@@ -1,6 +1,5 @@
 package pro.sky.telegramBot.utils.mediaUtils;
 
-import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +55,16 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(DOG_SHELTERS_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_SHELTER_INTRO()) + shelterService.getShelterNames(DOG));
+        int dogsCount = shelterService.getListOfShelterNames(DOG).size();
+        if (dogsCount == 0) {
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_NULL(), DOG.getAccusative()));
+        } else if (dogsCount == 1) {
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_ONE(), dogsCount, DOG.getAccusative()) + shelterService.getStringOfShelterNames(DOG));
+        } else if (dogsCount == 2 || dogsCount == 3) {
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_TWO(), dogsCount, DOG.getAccusative()) + shelterService.getStringOfShelterNames(DOG));
+        } else {
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_THREE(), dogsCount, DOG.getAccusative()) + shelterService.getStringOfShelterNames(DOG));
+        }
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -65,7 +73,16 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CAT_SHELTERS_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_SHELTER_INTRO()) + shelterService.getShelterNames(CAT));
+        int catsCount = shelterService.getListOfShelterNames(CAT).size();
+        if (catsCount == 0) {
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_NULL(), CAT.getAccusative()));
+        } else if (catsCount == 1) {
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_ONE(), catsCount, CAT.getAccusative()) + shelterService.getStringOfShelterNames(CAT));
+        } else if (catsCount == 2 || catsCount == 3) {
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_TWO(), catsCount, CAT.getAccusative()) + shelterService.getStringOfShelterNames(CAT));
+        } else {
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_THREE(), catsCount, CAT.getAccusative()) + shelterService.getStringOfShelterNames(CAT));
+        }
         return mediaMessageCreator.createPhotoMessage(params);
     }
 

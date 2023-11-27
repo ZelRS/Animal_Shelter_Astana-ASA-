@@ -17,10 +17,15 @@ public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository shelterRepository;
 
     @Override
-    public String getShelterNames(PetType type) {
+    public String getStringOfShelterNames(PetType type) {
         List<String> shelters = shelterRepository.findAllShelterNamesByType(type);
         StringListCreator stringListCreator = new StringListCreator();
         return stringListCreator.createStringList(shelters, type);
+    }
+
+    @Override
+    public List<String> getListOfShelterNames(PetType type) {
+        return shelterRepository.findAllShelterNamesByType(type);
     }
 
     @Override

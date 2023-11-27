@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.sender.MessageSender;
@@ -37,8 +36,8 @@ public class CommandActionHandler implements ActionHandler {
     // при запуске приложения происходит наполнение мапы с командами, на которые должен высылаться конкретный ответ
     @PostConstruct
     public void init() {
-        int cats = shelterService.getShelterNames(CAT).length();
-        int dogs = shelterService.getShelterNames(DOG).length();
+        int cats = shelterService.getListOfShelterNames(CAT).size();
+        int dogs = shelterService.getListOfShelterNames(DOG).size();
         for (int i = 0; i < cats; i++) {
             int finalI = i;
             commandMap.put("/" + (i + 1) + "_cat", (firstName, lastName, chatId) -> {
