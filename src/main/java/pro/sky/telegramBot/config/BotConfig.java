@@ -43,6 +43,12 @@ public class BotConfig {
     private String BUT_WANT_DOG;
     @Value("${BUT_WANT_CAT}")
     private String BUT_WANT_CAT;
+    @Value("${BUT_WANT_TAKE_PET}")
+    private String BUT_WANT_TAKE_PET;
+    @Value("${BUT_SEND_REPORT}")
+    private String BUT_SEND_REPORT;
+    @Value("${BUT_CALL_VOLUNTEER}")
+    private String BUT_CALL_VOLUNTEER;
 
     @Bean
     public TelegramBot telegramBot() {

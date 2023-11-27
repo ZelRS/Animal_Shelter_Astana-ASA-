@@ -11,8 +11,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pro.sky.telegramBot.enums.CallbackData.CAT_BUT;
-import static pro.sky.telegramBot.enums.CallbackData.DOG_BUT;
+import static pro.sky.telegramBot.enums.CallbackData.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +30,24 @@ public class ButtonActionHandler implements ActionHandler {
     // при запуске приложения происходит наполнение мапы с кнопками, при нажатии которых должен высылаться конкретный ответ
     @PostConstruct
     public void init() {
-        buttonMap.put(DOG_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
-            log.info("Pressed DOG button");
+        buttonMap.put(BUT_WANT_TAKE_PET.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed WANT_TAKE_PET button");
+            messageSender.sendShelterInfoHTMLMessage(chatId);
+        });
+        buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed SEND_REPORT button");
+            messageSender.sendShelterInfoHTMLMessage(chatId);
+        });
+        buttonMap.put(BUT_CALL_VOLUNTEER.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed CALL_VOLUNTEER button");
+            messageSender.sendShelterInfoHTMLMessage(chatId);
+        });
+        buttonMap.put(BUT_WANT_DOG.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed WANT_DOG button");
             messageSender.sendDogSheltersListPhotoMessage(chatId);
         });
-        buttonMap.put(CAT_BUT.getCallbackData(), (firstName, lastName, chatId) -> {
-            log.info("Pressed CAT button");
+        buttonMap.put(BUT_WANT_CAT.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed WANT_CAT button");
             messageSender.sendCatSheltersListPhotoMessage(chatId);
         });
     }

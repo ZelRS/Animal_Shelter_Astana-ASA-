@@ -94,7 +94,9 @@ public class MessageSender {
     public void sendCatSheltersListPhotoMessage(Long chatId) {
         log.info("Sending shelter for cats message to {}", chatId);
         try {
+            // объявляется переменная SendPhoto для конкретного сообщения
             SendPhoto sendPhoto = specificMediaMessageCreator.createCatSheltersListPhotoMessage(chatId);
+            // выполняется отправление сообщения с фото
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send welcome message to {}", chatId, e);
@@ -116,13 +118,23 @@ public class MessageSender {
 
     }
 
+    // метод формирует и отправляет сообщение пользователю после его выбора приюта
+    // будет формироваться сообщение с информацией о приюте и кнопками выбора его действия
     public void sendShelterInfoHTMLMessage(Long chatId) {
         log.info("Sending shelter info message to {}", chatId);
         try {
-            SendMessage message = new SendMessage(chatId, "Здесь нужно прописать меню для приюта,\n " +
-                                                          "потом нужно обработать новые команды.\n " +
-                                                          "В приютах могут быть разные требования, но,\n " +
-                                                          "думаю, схема должна быть одна");
+            // объявляется переменная SendMessage для конкретного сообщения
+            SendMessage message = new SendMessage(chatId, "Тут будет основная информация о приюте,\n " +
+                    "а под этим сообщением я (Роман)\n " +
+                    "разместил стандартный функционал кнопок для всех приютов.\n " +
+                    "реакция на них будет разная в зависимости от приюта\n" +
+                    "можно внедрить отдельную кнопку для адреса и схемы проезда\n" +
+                    "и какой-то другой доп. информации.\n" +
+                    "хорошо бы еще переработать функционал создания клавиатуры,\n" +
+                    "чтобы можно быть эти кнопки по ставить не в ряд, а в столбец");
+            // внедряется клавиатура выбора действия пользователя c приютом
+            message.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
+            // выполняется отправление сообщения с фото
             messageExecutor.executeHTMLMessage(message);
         } catch (Exception e) {
             log.error("Failed to send info message to {}", chatId, e);

@@ -32,7 +32,7 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод создает фото-сообщение приветствия для пользователя, который имеющего стутус UNTRUSTED("не надежный")
+    // метод создает фото-сообщение приветствия для пользователя, который имеющего статус UNTRUSTED("не надежный")
     public SendPhoto createSorryWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -41,7 +41,7 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод создает фото-сообщение приветствия для пользователя, который имеющего стутус BLOCKED("в черном списке")
+    // метод создает фото-сообщение приветствия для пользователя, который имеющего статус BLOCKED("в черном списке")
     public SendPhoto createBlockedWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
