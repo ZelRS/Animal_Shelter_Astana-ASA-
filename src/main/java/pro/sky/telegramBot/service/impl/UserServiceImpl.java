@@ -28,6 +28,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
     }
 
+    @Override
     public User create(User user) {
         return userRepository.save(user);
     }

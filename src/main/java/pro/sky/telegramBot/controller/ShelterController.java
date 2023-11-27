@@ -25,6 +25,13 @@ public class ShelterController {
         return ResponseEntity.ok(shelter);
     }
 
+    @PutMapping
+    @Operation(summary = "Изменить существующий приют")
+    public ResponseEntity<Shelter> update(@RequestBody Shelter shelterRq) {
+        Shelter shelter = shelterservice.update(shelterRq);
+        return ResponseEntity.ok(shelter);
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Получить приют по id")
     public ResponseEntity<Shelter> getById(@PathVariable("id") Long id) {

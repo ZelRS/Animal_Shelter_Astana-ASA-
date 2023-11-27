@@ -22,6 +22,11 @@ public class ShelterServiceImpl implements ShelterService {
     }
 
     @Override
+    public Shelter update(Shelter shelter) {
+        return shelterRepository.save(shelter);
+    }
+
+    @Override
     public String getStringOfShelterNames(PetType type) {
         List<String> shelters = shelterRepository.findAllShelterNamesByType(type);
         StringListCreator stringListCreator = new StringListCreator();
