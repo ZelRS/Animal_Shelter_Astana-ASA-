@@ -43,8 +43,8 @@ public class ButtonActionHandler implements ActionHandler {
             messageSender.sendShelterInfoHTMLMessage(chatId);
         });
         buttonMap.put(BUT_GET_FULL_INFO.getCallbackData(), (firstName, lastName, chatId) -> {
-            log.info("Pressed CALL_VOLUNTEER button");
-            messageSender.sendShelterInfoHTMLMessage(chatId);
+            log.info("Pressed GET_FULL_INFO button");
+            messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
         });
         buttonMap.put(BUT_WANT_DOG.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed WANT_DOG button");

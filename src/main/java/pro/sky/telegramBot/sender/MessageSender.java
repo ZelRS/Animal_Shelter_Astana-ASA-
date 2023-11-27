@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.executor.MessageExecutor;
+import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 
@@ -21,6 +22,12 @@ public class MessageSender {
     private final MessageExecutor messageExecutor;
     private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
+    private Shelter selectedShelter;
+
+    public void setSelectedShelter(Shelter selectedShelter) {
+        this.selectedShelter = selectedShelter;
+    }
+
 
     // метод формирует и отправляет дефолтное сообщение в HTML формате в чат
     // дефолтное сообщение существует в качестве заглушки на случай, когда функционал не реализован
@@ -132,5 +139,14 @@ public class MessageSender {
         } catch (Exception e) {
             log.error("Failed to send info message to {}", chatId, e);
         }
+    }
+
+    //    Метод используется для предоставления подробной информации о приюте
+    //    Также тут пользователь может отправить свои контактные данные и создать запрос на обратный звонок
+    public void sendShelterFullInfoHTMLMessage(String firstName, String lastName, Long chatId) {
+        log.debug("Sending hello message to user {} with ChatID {}", firstName + " " + lastName, chatId);
+        messageExecutor.executeHTMLMessage(new SendMessage(chatId, "Здравствуйте, " + firstName + " " + lastName + ".\n\n" +
+                "Мы рады вас приветствовать в приюте \"" + selectedShelter.getName() + "\n\n" + "Описание приюта:\n" +
+                selectedShelter.getDescription()));
     }
 }
