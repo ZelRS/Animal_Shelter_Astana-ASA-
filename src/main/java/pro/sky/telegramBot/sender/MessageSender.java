@@ -110,6 +110,22 @@ public class MessageSender {
         }
     }
 
+    // метод формирует и отправляет сообщение пользователю после его выбора приюта
+    // будет формироваться сообщение с информацией о приюте и кнопками выбора его действия
+    public void sendShelterFunctionalPhotoMessage(Long chatId, String ref) {
+        log.info("Sending shelter functional message to {}", chatId);
+        try {
+            // объявляется переменная SendPhoto для конкретного сообщения
+            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId, ref);
+            // внедряется клавиатура выбора действия пользователя c приютом
+            sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
+            // выполняется отправление сообщения с фото
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send info message to {}", chatId, e);
+        }
+    }
+
 //    .........отправка сообщений пользователю на любые другие случаи........
 
 
@@ -124,7 +140,7 @@ public class MessageSender {
     public void sendInfoForProbationUserMessage(Long chatId) {
 
     }
-
+//4-YuriiYatsenkoFeature
     // метод формирует и отправляет сообщение пользователю после его выбора приюта
     // будет формироваться сообщение с информацией о приюте и кнопками выбора его действия
     public void sendShelterInfoHTMLMessage(Long chatId) {
@@ -149,4 +165,5 @@ public class MessageSender {
                 "Мы рады вас приветствовать в приюте \"" + selectedShelter.getName() + "\n\n" + "Описание приюта:\n" +
                 selectedShelter.getDescription()));
     }
+  //4-YuriiYatsenkoFeature
 }

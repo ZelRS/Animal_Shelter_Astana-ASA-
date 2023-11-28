@@ -44,20 +44,30 @@ public class CommandActionHandler implements ActionHandler {
         int catShelterSize = sheltersCat.size();
         for (int i = 0; i < catShelterSize; i++) {
             int finalI = i;
-            commandMap.put("/" + (i + 1) + "_cat", (firstName, lastName, chatId) -> {
+            String refCat = "/" + (i + 1) + "_cat";
+            commandMap.put(refCat, (firstName, lastName, chatId) -> {
                 log.info("Received /{} CAT command", finalI);
+// 4-YuriiYatsenkoFeature
                 messageSender.setSelectedShelter(sheltersCat.get(finalI));
                 messageSender.sendShelterInfoHTMLMessage(chatId);
+// 4-YuriiYatsenkoFeature
+               // messageSender.sendShelterFunctionalPhotoMessage(chatId, refCat);
+
             });
         }
 
         int dogShelterSize = sheltersDog.size();
         for (int i = 0; i < dogShelterSize; i++) {
             int finalI = i;
-            commandMap.put("/" + (i + 1) + "_dog", (firstName, lastName, chatId) -> {
+            String refDog = "/" + (i + 1) + "_dog";
+            commandMap.put(refDog, (firstName, lastName, chatId) -> {
                 log.info("Received /{} DOG command", finalI);
+//4-YuriiYatsenkoFeature
                 messageSender.setSelectedShelter(sheltersDog.get(finalI));
                 messageSender.sendShelterInfoHTMLMessage(chatId);
+// 4-YuriiYatsenkoFeature
+             //   messageSender.sendShelterFunctionalPhotoMessage(chatId, refDog);
+
             });
         }
 

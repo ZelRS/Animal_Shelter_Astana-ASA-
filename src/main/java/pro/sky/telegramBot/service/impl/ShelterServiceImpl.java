@@ -45,4 +45,9 @@ public class ShelterServiceImpl implements ShelterService {
     public Shelter getById(Long id) {
         return shelterRepository.findById(id).orElseThrow(() -> new ShelterNotFoundException("Приют не найден"));
     }
+
+    @Override
+    public String getDescriptionBy(String name) {
+        return shelterRepository.findDescriptionBy(name);
+    }
 }
