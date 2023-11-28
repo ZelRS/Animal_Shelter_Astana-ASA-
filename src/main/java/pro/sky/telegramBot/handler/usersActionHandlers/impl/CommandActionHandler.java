@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
-import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.repository.sender.MessageSender;
 import pro.sky.telegramBot.service.ShelterService;
 
 import javax.annotation.PostConstruct;

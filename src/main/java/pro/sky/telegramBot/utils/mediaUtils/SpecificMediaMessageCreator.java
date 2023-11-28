@@ -91,7 +91,6 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(SHELTER_DEFAULT_PREVIEW_MSG_IMG.getPath());
-        params.setCaption(config.getMSG_SHELTER_DEFAULT_PREVIEW());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 

@@ -15,7 +15,7 @@ import java.io.IOException;
 public class WelcomeMessageHandler {
     private final UserService userService;
 
-    private final pro.sky.telegramBot.sender.MessageSender messageSender;
+    private final pro.sky.telegramBot.repository.sender.MessageSender messageSender;
 
     public void handleStartCommand(String firstName, Long chatId) {
         User user = userService.findUserByChatId(chatId);

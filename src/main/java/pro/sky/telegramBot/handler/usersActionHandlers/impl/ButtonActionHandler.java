@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
-import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.repository.sender.MessageSender;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
