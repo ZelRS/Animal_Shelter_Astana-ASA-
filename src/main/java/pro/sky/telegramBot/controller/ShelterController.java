@@ -5,9 +5,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegramBot.handler.usersActionHandlers.impl.CommandActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.service.ShelterService;
+
+import java.io.IOException;
+
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 // контроллер для обработки с эндпоинтов, связанных с приютами
 @RestController
@@ -25,7 +30,15 @@ public class ShelterController {
         return ResponseEntity.ok(shelter);
     }
 
-    @PutMapping
+    @PostMapping(value = "/{id}", consumes = MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Загрузить фотографию приюта по id")
+    public ResponseEntity<String> uploadPhoto(@PathVariable("id") Long id,
+                                              @RequestParam MultipartFile multipartFile) throws IOException {
+        shelterservice.uploadPhoto(id, multipartFile);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Изменить существующий приют")
     public ResponseEntity<Shelter> update(@RequestBody Shelter shelterRq) {
         Shelter shelter = shelterservice.update(shelterRq);
