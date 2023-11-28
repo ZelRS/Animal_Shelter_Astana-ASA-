@@ -1,4 +1,5 @@
-package pro.sky.telegramBot.sender;
+package pro.sky.telegramBot.repository.sender;
+
 
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
@@ -111,19 +112,22 @@ public class MessageSender {
     }
 
     // метод формирует и отправляет сообщение пользователю после его выбора приюта
-    // будет формироваться превью приюта и кнопками выбора действия с этиm приютом
+    // будет формироваться превью приюта и кнопками выбора действия с этим приютом
     public void sendShelterFunctionalPhotoMessage(Long chatId) {
         log.info("Sending shelter functional message to {}", chatId);
         try {
-            // объявляется переменная SendPhoto для конкретного сообщения
-            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
+            SendPhoto sendPhoto;
+            if (selectedShelter.getData() != null) {
+                sendPhoto = new SendPhoto(chatId, selectedShelter.getData());
+            } else {
+                sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
+            }
             if (selectedShelter.getPreview() != null && !selectedShelter.getPreview().equals("")) {
                 sendPhoto.caption("\"" + selectedShelter.getName() +
                         "\"\n------------\n" + selectedShelter.getPreview());
+            } else {
+                sendPhoto.caption(config.getMSG_SHELTER_DEFAULT_PREVIEW());
             }
-//            if (selectedShelter.getData() != null) {
-//                sendPhoto.);
-//            }
             // внедряется клавиатура выбора действия пользователя c приютом
             sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
             // выполняется отправление сообщения с фото
