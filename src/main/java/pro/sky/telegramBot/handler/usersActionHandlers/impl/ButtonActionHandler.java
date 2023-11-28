@@ -30,6 +30,8 @@ public class ButtonActionHandler implements ActionHandler {
     // при запуске приложения происходит наполнение мапы с кнопками, при нажатии которых должен высылаться конкретный ответ
     @PostConstruct
     public void init() {
+
+// ОТСЮДА НАЧИНАЕТСЯ РАБОТА РОМАНА
         buttonMap.put(BUT_WANT_TAKE_PET.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed WANT_TAKE_PET button");
 
@@ -39,6 +41,8 @@ public class ButtonActionHandler implements ActionHandler {
 
 //            messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
+
+// ОТСЮДА НАЧИНАЕТСЯ РАБОТА ЮРИЯ ПЕТУХОВА
         buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed SEND_REPORT button");
 
@@ -48,6 +52,8 @@ public class ButtonActionHandler implements ActionHandler {
 
 //            messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
+
+// ОТСЮДА НАЧИНАЕТСЯ РАБОТА АЛЕКСЕЯ
         buttonMap.put(BUT_CALL_VOLUNTEER.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed CALL_VOLUNTEER button");
 
@@ -57,6 +63,8 @@ public class ButtonActionHandler implements ActionHandler {
 
             // messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
+
+// ОТСЮДА НАЧИНАЕТСЯ РАБОТА ЮРИЯ ЯЦЕНКО
         buttonMap.put(BUT_GET_FULL_INFO.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed GET_FULL_INFO button");
             messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
