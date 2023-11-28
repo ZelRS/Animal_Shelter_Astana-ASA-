@@ -97,4 +97,6 @@ public class SpecificMediaMessageCreator {
 
 
 //    ....... создает фото-сообщения для других целей......
+
+
 }
