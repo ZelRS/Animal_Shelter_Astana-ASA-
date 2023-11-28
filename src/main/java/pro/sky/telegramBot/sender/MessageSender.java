@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.shelter.Shelter;
-import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
+import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
@@ -121,6 +121,9 @@ public class MessageSender {
                 sendPhoto.caption("\"" + selectedShelter.getName() +
                         "\"\n------------\n" + selectedShelter.getPreview());
             }
+//            if (selectedShelter.getData() != null) {
+//                sendPhoto.);
+//            }
             // внедряется клавиатура выбора действия пользователя c приютом
             sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
             // выполняется отправление сообщения с фото

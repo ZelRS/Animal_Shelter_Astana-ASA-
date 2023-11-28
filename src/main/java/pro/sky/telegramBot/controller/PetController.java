@@ -5,8 +5,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.service.PetService;
+
+import java.io.IOException;
+
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 
 // контроллер для обработки с эндпоинтов, связанных с животными
@@ -22,6 +27,14 @@ public class PetController {
     public ResponseEntity<Pet> create(@RequestBody Pet petRq) {
         Pet pet = petService.create(petRq);
         return ResponseEntity.ok(pet);
+    }
+
+    @PostMapping(value = "/{id}", consumes = MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Загрузить фотографию животного по id")
+    public ResponseEntity<String> uploadPhoto(@PathVariable("id") Long id,
+                                              @RequestParam MultipartFile multipartFile) throws IOException {
+        petService.uploadPhoto(id, multipartFile);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}")
