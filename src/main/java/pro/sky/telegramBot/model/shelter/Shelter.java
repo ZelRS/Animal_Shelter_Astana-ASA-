@@ -27,6 +27,9 @@ public class Shelter {
     @Column(name="description")
     private String description;
 
+    @Column(name="preview")
+    private String preview;
+
     @Column(name = "address")
     private String address;
 

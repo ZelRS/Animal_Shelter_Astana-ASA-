@@ -111,12 +111,16 @@ public class MessageSender {
     }
 
     // метод формирует и отправляет сообщение пользователю после его выбора приюта
-    // будет формироваться сообщение с информацией о приюте и кнопками выбора его действия
-    public void sendShelterFunctionalPhotoMessage(Long chatId, String ref) {
+    // будет формироваться превью приюта и кнопками выбора действия с этиm приютом
+    public void sendShelterFunctionalPhotoMessage(Long chatId) {
         log.info("Sending shelter functional message to {}", chatId);
         try {
             // объявляется переменная SendPhoto для конкретного сообщения
-            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId, ref);
+            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
+            if (selectedShelter.getPreview() != null && !selectedShelter.getPreview().equals("")) {
+                sendPhoto.caption("\"" + selectedShelter.getName() +
+                        "\"\n------------\n" + selectedShelter.getPreview());
+            }
             // внедряется клавиатура выбора действия пользователя c приютом
             sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
             // выполняется отправление сообщения с фото
@@ -124,6 +128,17 @@ public class MessageSender {
         } catch (Exception e) {
             log.error("Failed to send info message to {}", chatId, e);
         }
+    }
+
+
+    /////////////////////////    ЮРА ЯЦЕНКО, ТВОЙ МЕТОД ТУТ)))))))
+    //    Метод используется для предоставления подробной информации о приюте
+    //    Также тут пользователь может отправить свои контактные данные и создать запрос на обратный звонок
+    public void sendShelterFullInfoHTMLMessage(String firstName, String lastName, Long chatId) {
+        log.debug("Sending hello message to user {} with ChatID {}", firstName + " " + lastName, chatId);
+        messageExecutor.executeHTMLMessage(new SendMessage(chatId, "Здравствуйте, " + firstName + " " + lastName + ".\n\n" +
+                "Мы рады вас приветствовать в приюте \"" + selectedShelter.getName() + "\n\n" + "Описание приюта:\n" +
+                selectedShelter.getDescription()));
     }
 
 //    .........отправка сообщений пользователю на любые другие случаи........
@@ -140,30 +155,4 @@ public class MessageSender {
     public void sendInfoForProbationUserMessage(Long chatId) {
 
     }
-//4-YuriiYatsenkoFeature
-    // метод формирует и отправляет сообщение пользователю после его выбора приюта
-    // будет формироваться сообщение с информацией о приюте и кнопками выбора его действия
-    public void sendShelterInfoHTMLMessage(Long chatId) {
-        log.info("Sending shelter info message to {}", chatId);
-        try {
-            // объявляется переменная SendPhoto для конкретного сообщения
-            SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
-            // внедряется клавиатура выбора действия пользователя c приютом
-            sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
-            // выполняется отправление сообщения с фото
-            messageExecutor.executePhotoMessage(sendPhoto);
-        } catch (Exception e) {
-            log.error("Failed to send info message to {}", chatId, e);
-        }
-    }
-
-    //    Метод используется для предоставления подробной информации о приюте
-    //    Также тут пользователь может отправить свои контактные данные и создать запрос на обратный звонок
-    public void sendShelterFullInfoHTMLMessage(String firstName, String lastName, Long chatId) {
-        log.debug("Sending hello message to user {} with ChatID {}", firstName + " " + lastName, chatId);
-        messageExecutor.executeHTMLMessage(new SendMessage(chatId, "Здравствуйте, " + firstName + " " + lastName + ".\n\n" +
-                "Мы рады вас приветствовать в приюте \"" + selectedShelter.getName() + "\n\n" + "Описание приюта:\n" +
-                selectedShelter.getDescription()));
-    }
-  //4-YuriiYatsenkoFeature
 }

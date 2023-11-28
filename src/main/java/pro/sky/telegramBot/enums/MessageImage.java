@@ -7,9 +7,9 @@ public enum MessageImage {
     FIRST_TIME_WELCOME_MSG_IMG("/photos/first_time_welcome_msg.jpg"),
     SORRY_WELCOME_MSG_IMG("/photos/sorry_welcome_msg.jpg"),
     BLOCKED_WELCOME_MSG_IMG("/photos/blocked_welcome_msg.jpg"),
-    CAT_SHELTERS_MSG_IMG("/photos/cats.jpg"),
-    DOG_SHELTERS_MSG_IMG("/photos/dogs.jpg"),
-    SHELTER_FUNC_MSG_IMG("/photos/shelter_func_msg.jpg");
+    CAT_SHELTERS_MSG_IMG("/photos/cat_shelters_msg.jpg"),
+    DOG_SHELTERS_MSG_IMG("/photos/dog_shelters_msg.jpg"),
+    SHELTER_DEFAULT_PREVIEW_MSG_IMG("/photos/shelter_default_preview_msg.jpg");
 
     private final String path;
 

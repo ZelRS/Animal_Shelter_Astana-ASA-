@@ -54,3 +54,6 @@ ALTER TABLE pet ALTER COLUMN shelter_id DROP NOT NULL;
 
 -- changeset RomanZelenin:2
 ALTER TABLE shelter ADD description VARCHAR(255) NULL;
+
+-- changeset RomanZelenin:3
+ALTER TABLE shelter ADD preview VARCHAR(255) NULL;
