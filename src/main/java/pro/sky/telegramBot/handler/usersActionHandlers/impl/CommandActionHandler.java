@@ -12,6 +12,7 @@ import pro.sky.telegramBot.service.ShelterService;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static pro.sky.telegramBot.enums.Command.START;
@@ -37,23 +38,36 @@ public class CommandActionHandler implements ActionHandler {
     // при запуске приложения происходит наполнение мапы с командами, на которые должен высылаться конкретный ответ
     @PostConstruct
     public void init() {
-        int catShelterSize = shelterService.findAllShelterNamesByType(CAT).size();
+        List<Shelter> sheltersCat = shelterService.findAllShelterNamesByType(CAT);
+        List<Shelter> sheltersDog = shelterService.findAllShelterNamesByType(DOG);
+
+        int catShelterSize = sheltersCat.size();
         for (int i = 0; i < catShelterSize; i++) {
             int finalI = i;
             String refCat = "/" + (i + 1) + "_cat";
             commandMap.put(refCat, (firstName, lastName, chatId) -> {
                 log.info("Received /{} CAT command", finalI);
-                messageSender.sendShelterFunctionalPhotoMessage(chatId, refCat);
+// 4-YuriiYatsenkoFeature
+                messageSender.setSelectedShelter(sheltersCat.get(finalI));
+                messageSender.sendShelterInfoHTMLMessage(chatId);
+// 4-YuriiYatsenkoFeature
+               // messageSender.sendShelterFunctionalPhotoMessage(chatId, refCat);
+
             });
         }
 
-        int dogShelterSize = shelterService.findAllShelterNamesByType(DOG).size();
+        int dogShelterSize = sheltersDog.size();
         for (int i = 0; i < dogShelterSize; i++) {
             int finalI = i;
             String refDog = "/" + (i + 1) + "_dog";
             commandMap.put(refDog, (firstName, lastName, chatId) -> {
                 log.info("Received /{} DOG command", finalI);
-                messageSender.sendShelterFunctionalPhotoMessage(chatId, refDog);
+//4-YuriiYatsenkoFeature
+                messageSender.setSelectedShelter(sheltersDog.get(finalI));
+                messageSender.sendShelterInfoHTMLMessage(chatId);
+// 4-YuriiYatsenkoFeature
+             //   messageSender.sendShelterFunctionalPhotoMessage(chatId, refDog);
+
             });
         }
 

@@ -10,6 +10,7 @@ import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.utils.StringListCreator;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,14 +29,16 @@ public class ShelterServiceImpl implements ShelterService {
 
     @Override
     public String getStringOfShelterNames(PetType type) {
-        List<String> shelters = shelterRepository.findAllShelterNamesByType(type);
+        List<String> shelters = shelterRepository.findByTypeOrderById(type).stream()
+                .map(Shelter::getName)
+                .collect(Collectors.toList());
         StringListCreator stringListCreator = new StringListCreator();
         return stringListCreator.createStringList(shelters, type);
     }
 
     @Override
-    public List<String> findAllShelterNamesByType(PetType type) {
-        return shelterRepository.findAllShelterNamesByType(type);
+    public List<Shelter> findAllShelterNamesByType(PetType type) {
+        return shelterRepository.findByTypeOrderById(type);
     }
 
     @Override

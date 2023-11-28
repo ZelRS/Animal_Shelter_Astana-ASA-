@@ -40,7 +40,7 @@ public class Shelter {
     @JsonIgnore
     private byte[] data;
 
-    @OneToMany(mappedBy = "shelter")
+    @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
     @JsonIgnore
     private Collection<Pet> pets;
 }

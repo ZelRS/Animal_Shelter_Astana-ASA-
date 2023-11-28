@@ -27,6 +27,7 @@ public class UpdateDispatcher {
     // метод достает из апдейта данные необходимые для формирования текстового ответа
     // и отправляет их в обработчик команд
     private void pullDataFromMessageCommand(Message message) {
+
         String messageText = message.text();
         long chatId = message.chat().id();
         String firstName = message.chat().firstName();
