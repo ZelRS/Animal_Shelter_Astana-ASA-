@@ -26,7 +26,10 @@ public class ShelterController {
     private final CommandActionHandler commandActionHandler;
 
     @PostMapping
-    @Operation(summary = "Создать приют")
+    @Operation(summary = "Создать приют",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Используется автогенерация id. Введенный id будет проигнорирован")
+    )
     public ResponseEntity<Shelter> create(@RequestBody Shelter shelterRq) {
         Shelter shelter = commandActionHandler.create(shelterRq);
         return ResponseEntity.ok(shelter);
@@ -42,7 +45,10 @@ public class ShelterController {
     }
 
     @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
-    @Operation(summary = "Изменить существующий приют")
+    @Operation(summary = "Изменить существующий приют",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Приют, подлежащий изменению определяется по полю id")
+    )
     public ResponseEntity<Shelter> update(@RequestBody Shelter shelterRq) {
         Shelter shelter = shelterservice.update(shelterRq);
         return ResponseEntity.ok(shelter);

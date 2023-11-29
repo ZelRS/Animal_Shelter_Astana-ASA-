@@ -43,6 +43,14 @@ public class PetServiceImpl implements PetService {
     }
 
     /**
+     * изменить животное в БД
+     */
+    @Override
+    public Pet update(Pet pet) {
+        return petRepository.save(pet);
+    }
+
+    /**
      * получить животное из БД по id
      */
     @Override

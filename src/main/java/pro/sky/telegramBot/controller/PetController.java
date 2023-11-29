@@ -24,7 +24,10 @@ public class PetController {
     private final PetService petService;
 
     @PostMapping
-    @Operation(summary = "Создать животное")
+    @Operation(summary = "Создать животное",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Используется автогенерация id. Введенный id будет проигнорирован")
+    )
     public ResponseEntity<Pet> create(@RequestBody Pet petRq) {
         Pet pet = petService.create(petRq);
         return ResponseEntity.ok(pet);
@@ -37,6 +40,16 @@ public class PetController {
                                               MultipartFile multipartFile) throws IOException {
         petService.uploadPhoto(id, multipartFile);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Изменить существующее животное",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Животное, подлежащее изменению определяется по полю id")
+    )
+    public ResponseEntity<Pet> update(@RequestBody Pet petRq) {
+        Pet pet = petService.update(petRq);
+        return ResponseEntity.ok(pet);
     }
 
     @GetMapping("/{id}")
