@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
 
-// контроллер для обработки с эндпоинтов, связанных с пользователями и информацие о пользователях
+/**
+ * контроллер для обработки с эндпоинтов, связанных с пользователями и информацией о них
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")

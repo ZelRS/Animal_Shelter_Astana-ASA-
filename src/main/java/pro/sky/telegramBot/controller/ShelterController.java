@@ -14,7 +14,9 @@ import java.io.IOException;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
-// контроллер для обработки с эндпоинтов, связанных с приютами
+/**
+ * контроллер для обработки с эндпоинтов, связанных с приютами
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/shelter")
@@ -33,7 +35,8 @@ public class ShelterController {
     @PostMapping(value = "/{id}", consumes = MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Загрузить фотографию приюта по id")
     public ResponseEntity<String> uploadPhoto(@PathVariable("id") Long id,
-                                              @RequestParam MultipartFile multipartFile) throws IOException {
+                                              @RequestParam(name = "Фото приюта")
+                                              MultipartFile multipartFile) throws IOException {
         shelterservice.uploadPhoto(id, multipartFile);
         return ResponseEntity.ok().build();
     }
