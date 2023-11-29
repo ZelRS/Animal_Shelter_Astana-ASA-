@@ -13,8 +13,9 @@ import java.io.IOException;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
-
-// контроллер для обработки с эндпоинтов, связанных с животными
+/**
+ * контроллер для обработки с эндпоинтов, связанных с животными
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/pet")
@@ -23,7 +24,10 @@ public class PetController {
     private final PetService petService;
 
     @PostMapping
-    @Operation(summary = "Создать животное")
+    @Operation(summary = "Создать животное",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Используется автогенерация id. Введенный id будет проигнорирован")
+    )
     public ResponseEntity<Pet> create(@RequestBody Pet petRq) {
         Pet pet = petService.create(petRq);
         return ResponseEntity.ok(pet);
@@ -32,9 +36,20 @@ public class PetController {
     @PostMapping(value = "/{id}", consumes = MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Загрузить фотографию животного по id")
     public ResponseEntity<String> uploadPhoto(@PathVariable("id") Long id,
-                                              @RequestParam MultipartFile multipartFile) throws IOException {
+                                              @RequestParam(name = "Фото животного")
+                                              MultipartFile multipartFile) throws IOException {
         petService.uploadPhoto(id, multipartFile);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Изменить существующее животное",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Животное, подлежащее изменению определяется по полю id")
+    )
+    public ResponseEntity<Pet> update(@RequestBody Pet petRq) {
+        Pet pet = petService.update(petRq);
+        return ResponseEntity.ok(pet);
     }
 
     @GetMapping("/{id}")

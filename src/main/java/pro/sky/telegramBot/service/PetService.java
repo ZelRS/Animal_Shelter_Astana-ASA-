@@ -23,4 +23,6 @@ public interface PetService {
      * загрузить в БД фото животного
      */
     void uploadPhoto(Long id, MultipartFile multipartFile) throws IOException;
+
+    Pet update(Pet petRq);
 }
