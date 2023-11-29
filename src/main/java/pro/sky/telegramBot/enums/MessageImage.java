@@ -2,6 +2,9 @@ package pro.sky.telegramBot.enums;
 
 import lombok.Getter;
 
+/**
+ * enum для определения пути к конкретному медиа-контенту
+ */
 @Getter
 public enum MessageImage {
     FIRST_TIME_WELCOME_MSG_IMG("/photos/first_time_welcome_msg.jpg"),

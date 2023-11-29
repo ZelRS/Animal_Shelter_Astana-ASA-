@@ -2,6 +2,9 @@ package pro.sky.telegramBot.enums;
 
 import lombok.Getter;
 
+/**
+ * enum для определения callBackData кнопок
+ */
 @Getter
 public enum CallbackData {
     BUT_WANT_DOG("dogs_but"),

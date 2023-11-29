@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
-import pro.sky.telegramBot.repository.sender.MessageSender;
+import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.ShelterService;
 
 import javax.annotation.PostConstruct;
@@ -19,6 +19,10 @@ import static pro.sky.telegramBot.enums.Command.START;
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
 
+/**
+ * класс для обработки сообщения, которое должно быть выслано пользователю<br>
+ * при отправке им какой-либо определенной команды
+ */
 @Service
 @RequiredArgsConstructor
 @Getter
@@ -35,7 +39,10 @@ public class CommandActionHandler implements ActionHandler {
 
     private final Map<String, Command> commandMap = new HashMap<>();
 
-    // при запуске приложения происходит наполнение мапы с командами, на которые должен высылаться конкретный ответ
+    /**
+     * при запуске приложения происходит наполнение {@link #commandMap} с командами,<br>
+     * при получении которых должен высылаться конкретный ответ
+     */
     @PostConstruct
     public void init() {
         List<Shelter> sheltersCat = shelterService.findAllShelterNamesByType(CAT);
@@ -71,9 +78,11 @@ public class CommandActionHandler implements ActionHandler {
         });
     }
 
-    // метод ищет, есть ли в мапе команда по ключу.
-    // Если команда есть, совершает логику, лежащую в значении по этому ключу.
-    // Если такой команды в мапе нет, отправляет дефолтное сообщение
+    /**
+     * Метод ищет, есть ли в {@link #commandMap} кнопка по ключу.
+     * Если кнопка найдена, совершается логика, лежащая по значению этого ключа.
+     * Если такой команды нет, отправляется дефолтное сообщение
+     */
     @Override
     public void handle(String command, String firstName, String lastName, Long chatId) {
         Command commandToRun = commandMap.get(command.toLowerCase());

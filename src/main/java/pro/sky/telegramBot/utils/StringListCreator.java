@@ -5,10 +5,15 @@ import pro.sky.telegramBot.enums.PetType;
 
 import java.util.List;
 
-// класс, выполняющий логику создания списка, содержащего строки в определенном формате
+/**
+ * класс для формирования списка строк в конкретном формате
+ */
 @Component
 public class StringListCreator {
 
+    /**
+     * логика создания списка, содержащего строки в определенном формате
+     */
     public String createStringList(List<String> names, PetType type) {
 
         StringBuilder formattedNames = new StringBuilder();

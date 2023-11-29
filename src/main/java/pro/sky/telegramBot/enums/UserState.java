@@ -2,9 +2,11 @@ package pro.sky.telegramBot.enums;
 
 import lombok.Getter;
 
+/**
+ * enum для определения статуса пользователя
+ */
 @Getter
 public enum UserState {
-    // статусы пользователя
     FREE("свободный"),
     POTENTIAL("потенциальный усыновитель"),
     PROBATION("на испытательном сроке"),

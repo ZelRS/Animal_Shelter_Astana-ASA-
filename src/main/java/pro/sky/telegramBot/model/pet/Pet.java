@@ -10,7 +10,9 @@ import pro.sky.telegramBot.model.users.User;
 
 import javax.persistence.*;
 
-// модель животного(БД)
+/**
+ * модель животного в базе данных
+ */
 @Entity(name = "pet")
 @RequiredArgsConstructor
 @Data

@@ -11,7 +11,10 @@ import pro.sky.telegramBot.entity.Button;
 import java.util.ArrayList;
 import java.util.List;
 
-// класс содержит мето для создания абстрактной однострочной клавиатуры под сообщение, отправляемое пользователю
+/**
+ * класс содержит метод для создания абстрактной однострочной<br>
+ * клавиатуры для вставки под сообщение, отправляемое пользователю
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging

@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.repository.sender;
+package pro.sky.telegramBot.sender;
 
 
 import com.pengrad.telegrambot.request.SendMessage;
@@ -14,7 +14,11 @@ import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
-// класс формирует и отправляет сообщения определенного типа в чат
+/**
+ * методы класса группируют компоненты и формируют сообщения ответа,<br>
+ * а затем вызывают {@link #messageExecutor}, который выполняет отправку<br>
+ * этого сообщения
+ */
 @RequiredArgsConstructor
 @Service
 @Slf4j  // SLF4J logging
@@ -30,7 +34,9 @@ public class MessageSender {
     }
 
 
-    // метод формирует и отправляет дефолтное сообщение в HTML формате в чат
+    /**
+     * метод формирует и отправляет дефолтное сообщение в HTML формате
+     */
     // дефолтное сообщение существует в качестве заглушки на случай, когда функционал не реализован
     public void sendDefaultHTMLMessage(Long chatId) {
         log.info("Sending about message to {}", chatId);
@@ -40,7 +46,9 @@ public class MessageSender {
         messageExecutor.executeHTMLMessage(message);
     }
 
-    // метод формирует и отправляет приветственное фото-сообщение пользователю, пришедшему впервые
+    /**
+     * метод формирует и отправляет приветственное фото-сообщение пользователю, пришедшему впервые
+     */
     public void sendFirstTimeWelcomePhotoMessage(String firstName, Long chatId) {
         log.info("Sending first time welcome message to {}: {}", firstName, chatId);
         try {
@@ -55,7 +63,10 @@ public class MessageSender {
         }
     }
 
-    // метод формирует и отправляет приветственное фото-сообщение пользователю имеющему стутус UNTRUSTED("не надежный")
+    /**
+     * метод формирует и отправляет приветственное фото-сообщение пользователю,<br>
+     * имеющему статус UNTRUSTED("не надежный")
+     */
     public void sendSorryWelcomePhotoMessage(String firstName, Long chatId) {
         log.info("Sending sorry welcome message to {}: {}", firstName, chatId);
         try {
@@ -70,7 +81,10 @@ public class MessageSender {
         }
     }
 
-    // метод формирует и отправляет приветственное фото-сообщение пользователю имеющему стутус BLOCKED("в черном списке")
+    /**
+     * метод формирует и отправляет приветственное фото-сообщение пользователю,<br>
+     * имеющему статус BLOCKED("в черном списке")
+     */
     public void sendBlockedWelcomePhotoMessage(String firstName, Long chatId) {
         log.info("Sending blocked welcome message to {}: {}", firstName, chatId);
         try {
@@ -83,7 +97,9 @@ public class MessageSender {
         }
     }
 
-    // метод формирует и отправляет сообщение пользователю после его нажатия на кнопку "хочу собаку"
+    /**
+     * метод формирует и отправляет сообщение пользователю после его нажатия на кнопку "хочу собаку"
+     */
     // будет формироваться сообщение с фотографией и списком приютов для собак
     public void sendDogSheltersListPhotoMessage(Long chatId) {
         log.info("Sending shelter for dogs message to {}", chatId);
@@ -97,7 +113,9 @@ public class MessageSender {
         }
     }
 
-    // метод формирует и отправляет сообщение пользователю после его нажатия на кнопку "хочу кошку"
+    /**
+     * метод формирует и отправляет сообщение пользователю после его нажатия на кнопку "хочу кошку"
+     */
     // будет формироваться сообщение с фотографией и списком приютов для кошек
     public void sendCatSheltersListPhotoMessage(Long chatId) {
         log.info("Sending shelter for cats message to {}", chatId);
@@ -111,7 +129,9 @@ public class MessageSender {
         }
     }
 
-    // метод формирует и отправляет сообщение пользователю после его выбора приюта
+    /**
+     * метод формирует и отправляет превью сообщение пользователю после его выбора конкретного приюта
+     */
     // будет формироваться превью приюта и кнопками выбора действия с этим приютом
     public void sendShelterFunctionalPhotoMessage(Long chatId) {
         log.info("Sending shelter functional message to {}", chatId);
@@ -139,8 +159,10 @@ public class MessageSender {
 
 
     /////////////////////////    ЮРА ЯЦЕНКО, ТВОЙ МЕТОД ТУТ)))))))
-    //    Метод используется для предоставления подробной информации о приюте
-    //    Также тут пользователь может отправить свои контактные данные и создать запрос на обратный звонок
+    /**
+     * метод формирует и отправляет сообщение пользователю<br>
+     * для предоставления подробной информации о приюте
+     */
     public void sendShelterFullInfoHTMLMessage(String firstName, String lastName, Long chatId) {
         log.debug("Sending hello message to user {} with ChatID {}", firstName + " " + lastName, chatId);
         messageExecutor.executeHTMLMessage(new SendMessage(chatId, "Здравствуйте, " + firstName + " " + lastName + ".\n\n" +

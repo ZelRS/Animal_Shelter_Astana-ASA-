@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * в этом классе формируется бин {@link #telegramBot()},<br>
+ * а также инициализируются все текстовые переменные, данные которых<br>
+ * берутся из application.properties
+ */
 @Configuration
 @Data
 public class BotConfig {

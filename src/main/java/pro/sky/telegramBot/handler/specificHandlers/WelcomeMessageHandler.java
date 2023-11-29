@@ -9,13 +9,16 @@ import pro.sky.telegramBot.service.UserService;
 
 import java.io.IOException;
 
+/**
+ * класс для обработки стартового приветственного сообщения
+ */
 @RequiredArgsConstructor
 @Service
 @Slf4j  // SLF4J logging
 public class WelcomeMessageHandler {
     private final UserService userService;
 
-    private final pro.sky.telegramBot.repository.sender.MessageSender messageSender;
+    private final pro.sky.telegramBot.sender.MessageSender messageSender;
 
     public void handleStartCommand(String firstName, Long chatId) {
         User user = userService.findUserByChatId(chatId);

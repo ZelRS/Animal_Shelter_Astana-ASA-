@@ -12,7 +12,9 @@ import pro.sky.telegramBot.service.PetService;
 import javax.transaction.Transactional;
 import java.io.IOException;
 
-// сервис для обработки запросов к БД животных
+/**
+ * сервис для обработки запросов к БД животных
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -20,11 +22,17 @@ import java.io.IOException;
 public class PetServiceImpl implements PetService {
     private final PetRepository petRepository;
 
+    /**
+     * создать и сохранить животное в БД
+     */
     @Override
     public Pet create(Pet pet) {
         return petRepository.save(pet);
     }
 
+    /**
+     * загрузить в БД фото животного
+     */
     @Override
     public void uploadPhoto(Long id, MultipartFile multipartFile) throws IOException {
         log.info("Was invoked method for upload photo to shelter with ID = {}", id);
@@ -34,6 +42,9 @@ public class PetServiceImpl implements PetService {
         log.debug("The avatar was uploaded successfully");
     }
 
+    /**
+     * получить животное из БД по id
+     */
     @Override
     public Pet getById(Long id) {
         return petRepository.findById(id)

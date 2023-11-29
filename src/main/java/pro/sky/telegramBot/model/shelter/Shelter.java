@@ -10,7 +10,9 @@ import pro.sky.telegramBot.model.pet.Pet;
 import javax.persistence.*;
 import java.util.Collection;
 
-// модель приюта(БД)
+/**
+ * модель приюта в базе данных
+ */
 @Entity(name = "shelter")
 @RequiredArgsConstructor
 @Data

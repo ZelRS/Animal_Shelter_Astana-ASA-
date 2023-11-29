@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
-import pro.sky.telegramBot.repository.sender.MessageSender;
+import pro.sky.telegramBot.sender.MessageSender;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -13,6 +13,10 @@ import java.util.Map;
 
 import static pro.sky.telegramBot.enums.CallbackData.*;
 
+/**
+ * класс для обработки сообщения, которое должно быть выслано пользователю<br>
+ * при его нажатии на определенную кнопку
+ */
 @Service
 @RequiredArgsConstructor
 @Getter
@@ -27,7 +31,10 @@ public class ButtonActionHandler implements ActionHandler {
 
     private final Map<String, Button> buttonMap = new HashMap<>();
 
-    // при запуске приложения происходит наполнение мапы с кнопками, при нажатии которых должен высылаться конкретный ответ
+    /**
+     * при запуске приложения происходит наполнение {@link #buttonMap} с кнопками,<br>
+     * при нажатии которых должен высылаться конкретный ответ
+     */
     @PostConstruct
     public void init() {
 
@@ -80,9 +87,11 @@ public class ButtonActionHandler implements ActionHandler {
         });
     }
 
-    // метод ищет, есть ли в мапе кнопка по ключу.
-    // Если кнопка есть, совершает логику, лежащую в значении по этому ключу.
-    // Если такой команды в мапе нет, отправляет дефолтное сообщение
+    /**
+     * Метод ищет, есть ли в {@link #buttonMap} кнопка по ключу.
+     * Если кнопка найдена, совершается логика, лежащая по значению этого ключа.
+     * Если такой команды нет, отправляется дефолтное сообщение
+     */
     @Override
     public void handle(String callbackData, String firstName, String lastName, Long chatId) {
         Button commandToRun = buttonMap.get(callbackData.toLowerCase());

@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.listener;
+package pro.sky.telegramBot.executor.listener;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
@@ -8,14 +8,18 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.usersActionHandlers.impl.ButtonActionHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.impl.CommandActionHandler;
 
-// диспетчер принимает апдейты отслушателя и, проверяя на null, достает необходимые данные
+/**
+ * диспетчер принимает апдейты от слушателя и, проверяя на null, достает необходимые данные
+ */
 @Service
 @RequiredArgsConstructor
 public class UpdateDispatcher {
     private final CommandActionHandler commandActionHandler;
     private final ButtonActionHandler buttonActionHandler;
 
-    // главный метод диспетчера, орагинзующий проверку на null данных вытянутых из команды пользователя
+    /**
+     * главный метод диспетчера, организующий проверку на null данных вытянутых из команды пользователя
+     */
     public void dispatch(Update update) {
         if (update.message() != null) {
             pullDataFromMessageCommand(update.message());
@@ -24,8 +28,11 @@ public class UpdateDispatcher {
         }
     }
 
-    // метод достает из апдейта данные необходимые для формирования текстового ответа
-    // и отправляет их в обработчик команд
+    /**
+     * метод достает из апдейта необходимые данные для формирования ответа<br>
+     * при получении текстовой команды от пользователя.<br>
+     * Далее данные отправляются в обработчик команд {@link #commandActionHandler}
+     */
     private void pullDataFromMessageCommand(Message message) {
 
         String messageText = message.text();
@@ -37,8 +44,12 @@ public class UpdateDispatcher {
         }
     }
 
-    // метод достает из апдейта данные необходимые для формирования ответа при нажатии кнопки пользователем
-    // и отправляет их в обработчик кнопок
+    /**
+     * метод достает из апдейта необходимые данные для формирования ответа<br>
+     * при нажатии на кнопку пользователем.<br>
+     * Далее данные отправляются в обработчик кнопок<br>
+     * {@link #buttonActionHandler}
+     */
     private void pullDataFromButtonCommand(CallbackQuery callbackQuery) {
         String callbackData = callbackQuery.data();
         long chatId = callbackQuery.message().chat().id();
