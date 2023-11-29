@@ -15,11 +15,15 @@ import java.nio.file.StandardCopyOption;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
-// класс с функционалом загрузки медиа-контента для последующего добавления его к сообщению
+/**
+ * класс с функционалом загрузки медиа-контента для последующего добавления его к сообщению
+ */
 @Service
 @Slf4j  // SLF4J logging
 public class MediaLoader {
-    // метод загрузки фотограифии
+    /**
+     * загрузка фото
+     */
     public SendPhoto imageLoader(Long chatId, String path, String message) throws IOException {
         log.info("Creating send photo object");
         InputStream imageStream = getClass().getResourceAsStream(path);
@@ -32,7 +36,9 @@ public class MediaLoader {
         return sendPhoto.caption(message).parseMode(HTML);
     }
 
-    // метод загрузки видео
+    /**
+     * загрузка видео
+     */
     public SendVideo videoLoader(Long chatId, String filePath, String fileName) throws IOException {
         log.info("Creating send mp4 video object");
         InputStream videoStream = getClass().getResourceAsStream(filePath);
@@ -45,7 +51,9 @@ public class MediaLoader {
         return new SendVideo(chatId, video.getFile());
     }
 
-    // метод загрузки документа
+    /**
+     * загрузка документа
+     */
     public SendDocument documentLoader(Long chatId, String filePath, String fileName) throws IOException {
         log.info("Creating send pdf document object");
         InputStream fileStream = getClass().getResourceAsStream(filePath);

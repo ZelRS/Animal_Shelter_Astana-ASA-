@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
-// данный класс предназначен для выполнения отпрвки (execute) сообщений определенного содержания пользователю
+/**
+ * класс для выполнения отправки (execute) сообщений определенного содержания пользователю
+ */
 @Service
 @RequiredArgsConstructor
 @Getter
@@ -20,26 +22,34 @@ import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 public class MessageExecutor {
     private final TelegramBot telegramBot;
 
-    // метод выполняет отправку текстового сообщения пользователю с HTML разметкой
+    /**
+     * отправка текстового сообщения пользователю с HTML разметкой
+     */
     public void executeHTMLMessage(SendMessage message) {
         log.info("Sending HTML text message to user");
         message.parseMode(HTML);
         telegramBot.execute(message);
     }
 
-    // метод выполняет отправку пользователю сообщения с фотографией
+    /**
+     * отправка пользователю фото сообщения
+     */
     public void executePhotoMessage(SendPhoto sendPhoto) {
         log.info("Sending image message to user");
         telegramBot.execute(sendPhoto);
     }
 
-    // метод выполняет отправку видео пользователю
+    /**
+     * отправка пользователю видео сообщения
+     */
     public void executeVideo(SendVideo sendVideoRequest) {
         log.info("Sending video message to user");
         telegramBot.execute(sendVideoRequest);
     }
 
-    // метод выполняет отправку пользователю документа
+    /**
+     * отправка пользователю документа
+     */
     public void executeDocument(Long chatId, SendDocument sendDoc) {
         log.info("Sending document message to user");
         telegramBot.execute(sendDoc);

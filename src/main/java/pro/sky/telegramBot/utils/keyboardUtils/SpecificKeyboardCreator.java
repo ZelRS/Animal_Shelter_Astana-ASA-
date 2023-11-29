@@ -12,7 +12,10 @@ import java.util.List;
 
 import static pro.sky.telegramBot.enums.CallbackData.*;
 
-// класс получает логику создания конкретной однострочной клавиатуры и внедряет свойства кнопкам
+/**
+ * методы класса получают логику создания конкретной однострочной<br>
+ * клавиатуры и задают свойства кнопкам
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging
@@ -21,8 +24,11 @@ public class SpecificKeyboardCreator {
     private final InlineKeyboardCreator inlineKeyboardCreator;
     private final BotConfig config;
 
-    // метод формирует ряд определенных кнопок для сообщения, в котором отражается возможность
-    // пользователю выбрать тип животного, которое он хочет
+    /**
+     * метод формирует для сообщения ряд определенных кнопок,<br>
+     * с помощью которых пользователь может выбрать тип животного,<br>
+     * которым он интересуется
+     */
     public Keyboard petSelectionMessageKeyboard() {
         log.info("Creating keyboard markup for cats and dogs");
 
@@ -32,8 +38,11 @@ public class SpecificKeyboardCreator {
         return inlineKeyboardCreator.createInlineKeyboard(buttons);
     }
 
-    // метод формирует ряд определенных кнопок для сообщения, в котором отражается функционал
-    // выбранного приюта пользователем
+
+    /**
+     * метод формирует для сообщения ряд определенных кнопок ,<br>
+     * в которых отражается функционал приюта, выбранного пользователем
+     */
     public Keyboard shelterFunctionalMessageKeyboard() {
         log.info("Creating keyboard markup for shelters functional");
 

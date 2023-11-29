@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 
-// модель информации о пользователе(БД)
+/**
+ * модель информации о пользователе в базе данных
+ */
 @Entity(name = "person_info")
 @RequiredArgsConstructor
 @Data

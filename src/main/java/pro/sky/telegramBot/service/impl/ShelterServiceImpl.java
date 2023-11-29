@@ -16,6 +16,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * сервис для обработки запросов к БД приютов
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,16 +26,25 @@ import java.util.stream.Collectors;
 public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository shelterRepository;
 
+    /**
+     * создать и сохранить приют в БД
+     */
     @Override
     public Shelter create(Shelter shelter) {
         return shelterRepository.save(shelter);
     }
 
+    /**
+     * изменить приют в БД
+     */
     @Override
     public Shelter update(Shelter shelter) {
         return shelterRepository.save(shelter);
     }
 
+    /**
+     * получить список названий приютов из БД
+     */
     @Override
     public String getStringOfShelterNames(PetType type) {
         List<String> shelters = shelterRepository.findByTypeOrderById(type).stream()
@@ -42,16 +54,25 @@ public class ShelterServiceImpl implements ShelterService {
         return stringListCreator.createStringList(shelters, type);
     }
 
+    /**
+     * получить список всех названий приютов из БД по их типу
+     */
     @Override
     public List<Shelter> findAllShelterNamesByType(PetType type) {
         return shelterRepository.findByTypeOrderById(type);
     }
 
+    /**
+     * получить приют из БД по id
+     */
     @Override
     public Shelter getById(Long id) {
         return shelterRepository.findById(id).orElseThrow(() -> new ShelterNotFoundException("Приют не найден"));
     }
 
+    /**
+     * загрузить в БД фото приюта
+     */
     @Override
     public void uploadPhoto(Long id, MultipartFile multipartFile) throws IOException {
         log.info("Was invoked method for upload photo to shelter with ID = {}", id);

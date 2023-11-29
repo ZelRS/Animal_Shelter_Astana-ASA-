@@ -7,17 +7,37 @@ import pro.sky.telegramBot.model.shelter.Shelter;
 import java.io.IOException;
 import java.util.List;
 
-// интерфейс сервиса для обработки запросов к БД приютов
+/**
+ * интерфейс сервиса для обработки запросов к БД приютов
+ */
 public interface ShelterService {
+    /**
+     * создать и сохранить приют в БД
+     */
     Shelter create(Shelter shelter);
 
+    /**
+     * изменить приют в БД
+     */
     Shelter update(Shelter shelter);
 
+    /**
+     * получить список названий приютов из БД
+     */
     String getStringOfShelterNames(PetType type);
 
+    /**
+     * получить список всех названий приютов из БД по их типу
+     */
     List<Shelter> findAllShelterNamesByType(PetType type);
 
+    /**
+     * получить приют из БД по id
+     */
     Shelter getById(Long id);
 
+    /**
+     * загрузить в БД фото приюта
+     */
     void uploadPhoto(Long id, MultipartFile multipartFile) throws IOException;
 }

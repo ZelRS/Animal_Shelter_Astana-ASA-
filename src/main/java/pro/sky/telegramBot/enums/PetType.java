@@ -2,6 +2,9 @@ package pro.sky.telegramBot.enums;
 
 import lombok.Getter;
 
+/**
+ * enum для определения типа животного
+ */
 @Getter
 public enum PetType {
     DOG("собака", "собак"),

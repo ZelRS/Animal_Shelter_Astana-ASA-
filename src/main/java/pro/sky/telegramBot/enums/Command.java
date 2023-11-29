@@ -2,6 +2,9 @@ package pro.sky.telegramBot.enums;
 
 import lombok.Getter;
 
+/**
+ * enum для определения команд от пользователя
+ */
 @Getter
 public enum Command {
     START("/start");

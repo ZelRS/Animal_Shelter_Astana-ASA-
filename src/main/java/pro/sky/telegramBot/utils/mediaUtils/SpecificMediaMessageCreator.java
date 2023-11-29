@@ -14,7 +14,9 @@ import static pro.sky.telegramBot.enums.MessageImage.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
 
-// класс содержит функционал, закрепляюищий конкретный медиа-контент за конкретным сообщением
+/**
+ * методы класса собирают компоненты для конкретного сообщения, содержащего медиа-контент
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging
@@ -23,7 +25,10 @@ public class SpecificMediaMessageCreator {
     private final BotConfig config;
     private final ShelterService shelterService;
 
-    // метод создает фото-сообщение приветствия для пользователя, который зашел в чат впервые
+    /**
+     * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
+     * который зашел в чат впервые
+     */
     public SendPhoto createFirstTimeWelcomePhotoMessage(long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -32,7 +37,10 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод создает фото-сообщение приветствия для пользователя, который имеющего статус UNTRUSTED("не надежный")
+    /**
+     * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
+     * имеющего статус UNTRUSTED("не надежный")
+     */
     public SendPhoto createSorryWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -41,7 +49,10 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод создает фото-сообщение приветствия для пользователя, который имеющего статус BLOCKED("в черном списке")
+    /**
+     * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
+     * имеющего статус BLOCKED("в черном списке")
+     */
     public SendPhoto createBlockedWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -50,7 +61,9 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод создает фото-сообщение выбора приюта для собак
+    /**
+     * сборка компонентов для фото-сообщения выбора приюта для собак
+     */
     public SendPhoto createDogSheltersListPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -68,7 +81,9 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод создает фото-сообщение выбора приюта для кошек
+    /**
+     * сборка компонентов для фото-сообщения выбора приюта для кошек
+     */
     public SendPhoto createCatSheltersListPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -86,7 +101,9 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    // метод создает фото-сообщение с функционалом выбранного приюта при нажатии на соответствующий приют
+    /**
+     * сборка компонентов для фото-сообщения превью конкретного приюта,<br>
+     */
     public SendPhoto createShelterFunctionalPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -95,7 +112,7 @@ public class SpecificMediaMessageCreator {
     }
 
 
-//    ....... создает фото-сообщения для других целей......
+//    .......  фото-сообщения для других целей......
 
 
 }

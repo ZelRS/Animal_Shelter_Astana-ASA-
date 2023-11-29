@@ -10,24 +10,32 @@ import pro.sky.telegramBot.entity.MediaMessageParams;
 
 import java.io.IOException;
 
-// класс содержит функционал, закрепляюищий загружаемый медиа-контент за сообщением
+/**
+ * класс содержит логику, закрепляющую загружаемый медиа-контент за сообщением
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging
 public class MediaMessageCreator {
     private final MediaLoader mediaLoader;
 
-    // метод для закрепления загруженного фото за сообщением
+    /**
+     * закрепление загруженного фото за сообщением
+     */
     public SendPhoto createPhotoMessage(MediaMessageParams params) throws IOException {
         return mediaLoader.imageLoader(params.getChatId(), params.getFilePath(), params.getCaption());
     }
 
-    // метод для закрепления загруженноого видео за сообщением
+    /**
+     * закрепление загруженного видео за сообщением
+     */
     public SendVideo createVideoMessage(MediaMessageParams params) throws IOException {
         return mediaLoader.videoLoader(params.getChatId(), params.getFilePath(), params.getFileName());
     }
 
-    // метод для закрепления загруженноого документа за сообщением
+    /**
+     * закрепление загруженного документа за сообщением
+     */
     public SendDocument createDocumentMessage(MediaMessageParams params) throws IOException {
         return mediaLoader.documentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
     }
