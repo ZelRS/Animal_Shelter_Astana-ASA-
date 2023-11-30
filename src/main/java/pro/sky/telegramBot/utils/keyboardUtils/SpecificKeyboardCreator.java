@@ -57,7 +57,7 @@ public class SpecificKeyboardCreator {
     public Keyboard takingPetMessageKeyboard() {
         log.info("Creating keyboard markup for taking pet message");
         List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button(config.getBUT_CARE_PET_RECOMMENDATIONS(), BUT_CARE_PET_RECOMMENDATIONS.getCallbackData()));
+        buttons.add(new Button(config.getBUT_CARE_PET_REC(), BUT_CARE_PET_REC.getCallbackData()));
         buttons.add(new Button(config.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()));
         return inlineKeyboardCreator.createInlineKeyboard(buttons);
     }

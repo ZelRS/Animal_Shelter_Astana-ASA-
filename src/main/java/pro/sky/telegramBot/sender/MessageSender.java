@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
+import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.shelter.Shelter;
@@ -30,19 +31,12 @@ public class MessageSender {
     private final MessageExecutor messageExecutor;
     private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
-
     private final UserService userService;
     private Shelter selectedShelter;
-
-//    private User selectedUser;
 
     public void setSelectedShelter(Shelter selectedShelter) {
         this.selectedShelter = selectedShelter;
     }
-
-//    public void setSelectedUser(Long chatId) {
-//        this.selectedUser = userService.findUserByChatId(chatId);
-//    }
 
 
     /**
@@ -154,7 +148,7 @@ public class MessageSender {
             } else {
                 sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
             }
-            // если у приюта нет превью, будет высыласть дефолтное превью
+            // если у приюта нет превью, будет высылать дефолтное превью
             if (selectedShelter.getPreview() != null && !selectedShelter.getPreview().equals("")) {
                 sendPhoto.caption("\"" + selectedShelter.getName() +
                         "\"\n------------\n" + selectedShelter.getPreview());
@@ -189,7 +183,7 @@ public class MessageSender {
      * когда он нажал на кнопку "взять животное"
      */
     public void sendTakingPetPhotoMessage(Long chatId, String firstName) {
-        log.info("Sending \"want to take pet\" message to {}", chatId);
+        log.info("Sending \"Taking Pet\" message to {}", chatId);
         try {
             SendPhoto sendPhoto;
             User user = userService.findUserByChatId(chatId);
@@ -205,9 +199,48 @@ public class MessageSender {
             // выполняется отправление сообщения с фото
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
-            log.error("Failed to send \"want to take pet\" message to {}", chatId, e);
+            log.error("Failed to send \"Taking Pet\" message to {}", chatId, e);
         }
     }
+
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он нажал на кнопку "Рекомендации и советы"
+     */
+    public void sendCarePetRecMessage(Long chatId) {
+        log.info("Sending \"Care Pet Recommendation\" message to {}", chatId);
+        try {
+            SendPhoto sendPhoto;
+            // выполняется проверка типа выбранного приюта для формирования конкретного списка рекомендаций
+            if (selectedShelter.getType().equals(PetType.DOG)) {
+                sendPhoto = specificMediaMessageCreator.createCareDogRecMessage(chatId);
+            } else {
+                sendPhoto = specificMediaMessageCreator.createCareCatRecMessage(chatId);
+            }
+            // выполняется отправление сообщения с фото
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send \"Care Pet Recommendation\" message to {}", chatId, e);
+        }
+    }
+
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он нажал на кнопку "Начать оформление"
+     */
+//    после внесению данных о себе, пользователю будет присвоен статус POTENTIAL
+    public void sendStartRegistrationMessage(Long chatId, String firstName) {
+        log.info("Sending \"Start Registration\" message to {}", chatId);
+        try {
+
+
+            // выполняется отправление сообщения с фото
+//            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send \"Start Registration\" message to {}", chatId, e);
+        }
+    }
+
 
 //    .........отправка сообщений пользователю на любые другие случаи........
 
