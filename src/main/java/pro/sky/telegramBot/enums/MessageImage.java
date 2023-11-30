@@ -12,7 +12,9 @@ public enum MessageImage {
     BLOCKED_WELCOME_MSG_IMG("/photos/blocked_welcome_msg.jpg"),
     CAT_SHELTERS_MSG_IMG("/photos/cat_shelters_msg.jpg"),
     DOG_SHELTERS_MSG_IMG("/photos/dog_shelters_msg.jpg"),
-    SHELTER_DEFAULT_PREVIEW_MSG_IMG("/photos/shelter_default_preview_msg.jpg");
+    SHELTER_DEFAULT_PREVIEW_MSG_IMG("/photos/shelter_default_preview_msg.jpg"),
+
+    TAKING_PET_MSG_IMG("/photos/taking_pet_msg.jpg");
 
     private final String path;
 

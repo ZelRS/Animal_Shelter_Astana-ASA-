@@ -7,8 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.shelter.Shelter;
+import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
@@ -27,11 +30,19 @@ public class MessageSender {
     private final MessageExecutor messageExecutor;
     private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
+
+    private final UserService userService;
     private Shelter selectedShelter;
+
+//    private User selectedUser;
 
     public void setSelectedShelter(Shelter selectedShelter) {
         this.selectedShelter = selectedShelter;
     }
+
+//    public void setSelectedUser(Long chatId) {
+//        this.selectedUser = userService.findUserByChatId(chatId);
+//    }
 
 
     /**
@@ -137,11 +148,13 @@ public class MessageSender {
         log.info("Sending shelter functional message to {}", chatId);
         try {
             SendPhoto sendPhoto;
+            // если у приюта нет фото, будет высылаться дефолное фото
             if (selectedShelter.getData() != null) {
                 sendPhoto = new SendPhoto(chatId, selectedShelter.getData());
             } else {
                 sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
             }
+            // если у приюта нет превью, будет высыласть дефолтное превью
             if (selectedShelter.getPreview() != null && !selectedShelter.getPreview().equals("")) {
                 sendPhoto.caption("\"" + selectedShelter.getName() +
                         "\"\n------------\n" + selectedShelter.getPreview());
@@ -153,12 +166,13 @@ public class MessageSender {
             // выполняется отправление сообщения с фото
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
-            log.error("Failed to send info message to {}", chatId, e);
+            log.error("Failed to send shelter functional message to {}", chatId, e);
         }
     }
 
 
     /////////////////////////    ЮРА ЯЦЕНКО, ТВОЙ МЕТОД ТУТ)))))))
+
     /**
      * метод формирует и отправляет сообщение пользователю<br>
      * для предоставления подробной информации о приюте
@@ -168,6 +182,31 @@ public class MessageSender {
         messageExecutor.executeHTMLMessage(new SendMessage(chatId, "Здравствуйте, " + firstName + " " + lastName + ".\n\n" +
                 "Мы рады вас приветствовать в приюте \"" + selectedShelter.getName() + "\n\n" + "Описание приюта:\n" +
                 selectedShelter.getDescription()));
+    }
+
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он нажал на кнопку "взять животное"
+     */
+    public void sendTakingPetPhotoMessage(Long chatId, String firstName) {
+        log.info("Sending \"want to take pet\" message to {}", chatId);
+        try {
+            SendPhoto sendPhoto;
+            User user = userService.findUserByChatId(chatId);
+            // происходит проверка статуса пользователя на UNTRUSTED и BLOCKED
+            if (user.getState().equals(UserState.UNTRUSTED)) {
+                sendPhoto = specificMediaMessageCreator.createSorryWelcomePhotoMessage(chatId, firstName);
+            } else if (user.getState().equals(UserState.BLOCKED)) {
+                sendPhoto = specificMediaMessageCreator.createBlockedWelcomePhotoMessage(chatId, firstName);
+            } else {
+                sendPhoto = specificMediaMessageCreator.createTakingPetPhotoMessage(chatId, firstName);
+                sendPhoto.replyMarkup(specificKeyboardCreator.takingPetMessageKeyboard());
+            }
+            // выполняется отправление сообщения с фото
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send \"want to take pet\" message to {}", chatId, e);
+        }
     }
 
 //    .........отправка сообщений пользователю на любые другие случаи........

@@ -111,6 +111,18 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    /**
+     * сборка компонентов для фото-сообщения,<br>
+     * когда пользователь нажал кнопку "выбрать животное"
+     */
+    public SendPhoto createTakingPetPhotoMessage(Long chatId, String firstName) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(TAKING_PET_MSG_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_TAKING_PET(), firstName));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 
 //    .......  фото-сообщения для других целей......
 

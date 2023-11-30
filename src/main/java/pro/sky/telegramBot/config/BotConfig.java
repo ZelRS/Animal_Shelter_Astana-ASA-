@@ -44,6 +44,8 @@ public class BotConfig {
     private String MSG_SHELTER_INTRO_THREE;
     @Value("${MSG_SHELTER_DEFAULT_PREVIEW}")
     private String MSG_SHELTER_DEFAULT_PREVIEW;
+    @Value("${MSG_TAKING_PET}")
+    private String MSG_TAKING_PET;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
@@ -52,12 +54,16 @@ public class BotConfig {
     private String BUT_WANT_CAT;
     @Value("${BUT_GET_FULL_INFO}")
     private String BUT_GET_FULL_INFO;
-    @Value("${BUT_WANT_TAKE_PET}")
-    private String BUT_WANT_TAKE_PET;
+    @Value("${BUT_TAKING_PET}")
+    private String BUT_TAKING_PET;
     @Value("${BUT_SEND_REPORT}")
     private String BUT_SEND_REPORT;
     @Value("${BUT_CALL_VOLUNTEER}")
     private String BUT_CALL_VOLUNTEER;
+    @Value("${BUT_CARE_PET_RECOMMENDATIONS}")
+    private String BUT_CARE_PET_RECOMMENDATIONS;
+    @Value("${BUT_START_REGISTRATION}")
+    private String BUT_START_REGISTRATION;
 
     @Bean
     public TelegramBot telegramBot() {
