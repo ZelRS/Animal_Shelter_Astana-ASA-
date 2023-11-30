@@ -10,7 +10,6 @@ import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
-import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
@@ -32,12 +31,6 @@ public class MessageSender {
     private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
     private final UserService userService;
-    private Shelter selectedShelter;
-
-    public void setSelectedShelter(Shelter selectedShelter) {
-        this.selectedShelter = selectedShelter;
-    }
-
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -142,16 +135,17 @@ public class MessageSender {
         log.info("Sending shelter functional message to {}", chatId);
         try {
             SendPhoto sendPhoto;
+            User user = userService.findUserByChatId(chatId);
             // если у приюта нет фото, будет высылаться дефолное фото
-            if (selectedShelter.getData() != null) {
-                sendPhoto = new SendPhoto(chatId, selectedShelter.getData());
+            if (user.getShelter().getData() != null) {
+                sendPhoto = new SendPhoto(chatId, user.getShelter().getData());
             } else {
                 sendPhoto = specificMediaMessageCreator.createShelterFunctionalPhotoMessage(chatId);
             }
             // если у приюта нет превью, будет высылать дефолтное превью
-            if (selectedShelter.getPreview() != null && !selectedShelter.getPreview().equals("")) {
-                sendPhoto.caption("\"" + selectedShelter.getName() +
-                        "\"\n------------\n" + selectedShelter.getPreview());
+            if (user.getShelter().getPreview() != null && !user.getShelter().getPreview().equals("")) {
+                sendPhoto.caption("\"" + user.getShelter().getName() +
+                        "\"\n------------\n" + user.getShelter().getPreview());
             } else {
                 sendPhoto.caption(config.getMSG_SHELTER_DEFAULT_PREVIEW());
             }
@@ -173,9 +167,10 @@ public class MessageSender {
      */
     public void sendShelterFullInfoHTMLMessage(String firstName, String lastName, Long chatId) {
         log.debug("Sending hello message to user {} with ChatID {}", firstName + " " + lastName, chatId);
+        User user = userService.findUserByChatId(chatId);
         messageExecutor.executeHTMLMessage(new SendMessage(chatId, "Здравствуйте, " + firstName + " " + lastName + ".\n\n" +
-                "Мы рады вас приветствовать в приюте \"" + selectedShelter.getName() + "\n\n" + "Описание приюта:\n" +
-                selectedShelter.getDescription()));
+                "Мы рады вас приветствовать в приюте \"" + user.getShelter().getName() + "\n\n" + "Описание приюта:\n" +
+                user.getShelter().getDescription()));
     }
 
     /**
@@ -211,8 +206,9 @@ public class MessageSender {
         log.info("Sending \"Care Pet Recommendation\" message to {}", chatId);
         try {
             SendPhoto sendPhoto;
+            User user = userService.findUserByChatId(chatId);
             // выполняется проверка типа выбранного приюта для формирования конкретного списка рекомендаций
-            if (selectedShelter.getType().equals(PetType.DOG)) {
+            if (user.getShelter().getType().equals(PetType.DOG)) {
                 sendPhoto = specificMediaMessageCreator.createCareDogRecMessage(chatId);
             } else {
                 sendPhoto = specificMediaMessageCreator.createCareCatRecMessage(chatId);
@@ -233,6 +229,7 @@ public class MessageSender {
         log.info("Sending \"Start Registration\" message to {}", chatId);
         try {
 
+//ФУНКЦИОНАЛ НАХОДИТСЯ В РАЗРАБОТКЕ. Roman
 
             // выполняется отправление сообщения с фото
 //            messageExecutor.executePhotoMessage(sendPhoto);
