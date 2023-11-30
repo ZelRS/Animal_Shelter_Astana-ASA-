@@ -46,6 +46,10 @@ public class BotConfig {
     private String MSG_SHELTER_DEFAULT_PREVIEW;
     @Value("${MSG_TAKING_PET}")
     private String MSG_TAKING_PET;
+    @Value("${MSG_CARE_PET_REC}")
+    private String MSG_CARE_PET_REC;
+    @Value("${MSG_CARE_DOG_SPEC_REC}")
+    private String MSG_CARE_DOG_SPEC_REC;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
@@ -60,8 +64,8 @@ public class BotConfig {
     private String BUT_SEND_REPORT;
     @Value("${BUT_CALL_VOLUNTEER}")
     private String BUT_CALL_VOLUNTEER;
-    @Value("${BUT_CARE_PET_RECOMMENDATIONS}")
-    private String BUT_CARE_PET_RECOMMENDATIONS;
+    @Value("${BUT_CARE_PET_REC}")
+    private String BUT_CARE_PET_REC;
     @Value("${BUT_START_REGISTRATION}")
     private String BUT_START_REGISTRATION;
 

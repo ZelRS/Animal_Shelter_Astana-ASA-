@@ -92,11 +92,14 @@ public class SpecificMediaMessageCreator {
         if (catsCount == 0) {
             params.setCaption(String.format(config.getMSG_SHELTER_INTRO_NULL(), CAT.getAccusative()));
         } else if (catsCount == 1) {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_ONE(), catsCount, CAT.getAccusative()) + shelterService.getStringOfShelterNames(CAT));
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_ONE(), catsCount, CAT.getAccusative()) +
+                    shelterService.getStringOfShelterNames(CAT));
         } else if (catsCount == 2 || catsCount == 3) {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_TWO(), catsCount, CAT.getAccusative()) + shelterService.getStringOfShelterNames(CAT));
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_TWO(), catsCount, CAT.getAccusative()) +
+                    shelterService.getStringOfShelterNames(CAT));
         } else {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_THREE(), catsCount, CAT.getAccusative()) + shelterService.getStringOfShelterNames(CAT));
+            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_THREE(), catsCount, CAT.getAccusative()) +
+                    shelterService.getStringOfShelterNames(CAT));
         }
         return mediaMessageCreator.createPhotoMessage(params);
     }
@@ -120,6 +123,22 @@ public class SpecificMediaMessageCreator {
         params.setChatId(chatId);
         params.setFilePath(TAKING_PET_MSG_IMG.getPath());
         params.setCaption(String.format(config.getMSG_TAKING_PET(), firstName));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createCareDogRecMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(CARE_DOG_REC_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_CARE_PET_REC() + config.getMSG_CARE_DOG_SPEC_REC());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createCareCatRecMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(CARE_CAT_REC_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_CARE_PET_REC());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
