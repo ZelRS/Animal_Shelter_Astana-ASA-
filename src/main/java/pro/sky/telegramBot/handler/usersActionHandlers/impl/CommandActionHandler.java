@@ -7,10 +7,13 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
+import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.ShelterService;
+import pro.sky.telegramBot.service.UserService;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,7 @@ import static pro.sky.telegramBot.enums.PetType.DOG;
  * при отправке им какой-либо определенной команды
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 @Getter
 @Slf4j  // SLF4J logging
@@ -31,6 +35,7 @@ public class CommandActionHandler implements ActionHandler {
     private final MessageSender messageSender;
     private final WelcomeMessageHandler welcomeMessageHandler;
     private final ShelterService shelterService;
+    private final UserService userService;
 
     @FunctionalInterface
     interface Command {
@@ -54,7 +59,9 @@ public class CommandActionHandler implements ActionHandler {
             String refCat = "/" + (i + 1) + "_cat";
             commandMap.put(refCat, (firstName, lastName, chatId) -> {
                 log.info("Received /{} CAT command", finalI);
-                messageSender.setSelectedShelter(sheltersCat.get(finalI));
+                User user = userService.findUserByChatId(chatId);
+                user.setShelter(sheltersCat.get(finalI));
+                userService.update(user);
                 messageSender.sendShelterFunctionalPhotoMessage(chatId);
 
             });
@@ -66,7 +73,9 @@ public class CommandActionHandler implements ActionHandler {
             String refDog = "/" + (i + 1) + "_dog";
             commandMap.put(refDog, (firstName, lastName, chatId) -> {
                 log.info("Received /{} DOG command", finalI);
-                messageSender.setSelectedShelter(sheltersDog.get(finalI));
+                User user = userService.findUserByChatId(chatId);
+                user.setShelter(sheltersDog.get(finalI));
+                userService.update(user);
                 messageSender.sendShelterFunctionalPhotoMessage(chatId);
 
             });

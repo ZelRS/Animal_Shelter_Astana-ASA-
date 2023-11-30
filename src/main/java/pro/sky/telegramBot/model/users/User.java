@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.pet.Pet;
+import pro.sky.telegramBot.model.shelter.Shelter;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -38,4 +39,8 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Collection<Pet> pets;
+
+    @OneToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "shelter_id")
+    private Shelter shelter;
 }

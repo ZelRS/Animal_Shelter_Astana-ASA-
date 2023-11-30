@@ -22,4 +22,9 @@ public interface UserService {
      * создать и сохранить пользователя в БД
      */
     User create(User user);
+
+    /**
+     * изменить пользователя в БД
+     */
+    User update(User user);
 }
