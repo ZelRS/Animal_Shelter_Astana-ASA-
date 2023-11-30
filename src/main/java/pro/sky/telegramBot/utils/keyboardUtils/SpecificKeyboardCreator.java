@@ -21,7 +21,7 @@ import static pro.sky.telegramBot.enums.CallbackData.*;
 @Slf4j  // SLF4J logging
 public class SpecificKeyboardCreator {
 
-    private final InlineKeyboardCreator inlineKeyboardCreator;
+    private final KeyboardCreator keyboardCreator;
     private final BotConfig config;
 
     /**
@@ -35,7 +35,7 @@ public class SpecificKeyboardCreator {
         List<Button> buttons = new ArrayList<>();
         buttons.add(new Button(config.getBUT_WANT_CAT(), BUT_WANT_CAT.getCallbackData()));
         buttons.add(new Button(config.getBUT_WANT_DOG(), BUT_WANT_DOG.getCallbackData()));
-        return inlineKeyboardCreator.createInlineKeyboard(buttons);
+        return keyboardCreator.createInlineKeyboard(buttons);
     }
 
 
@@ -51,7 +51,7 @@ public class SpecificKeyboardCreator {
         buttons.add(new Button(config.getBUT_TAKING_PET(), BUT_TAKING_PET.getCallbackData()));
         buttons.add(new Button(config.getBUT_SEND_REPORT(), BUT_SEND_REPORT.getCallbackData()));
         buttons.add(new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData()));
-        return inlineKeyboardCreator.createInlineKeyboard(buttons);
+        return keyboardCreator.createInlineKeyboard(buttons);
     }
 
     public Keyboard takingPetMessageKeyboard() {
@@ -59,7 +59,7 @@ public class SpecificKeyboardCreator {
         List<Button> buttons = new ArrayList<>();
         buttons.add(new Button(config.getBUT_CARE_PET_REC(), BUT_CARE_PET_REC.getCallbackData()));
         buttons.add(new Button(config.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()));
-        return inlineKeyboardCreator.createInlineKeyboard(buttons);
+        return keyboardCreator.createInlineKeyboard(buttons);
     }
 
 //    ...... клавиатуры для других типов сообщений.....
