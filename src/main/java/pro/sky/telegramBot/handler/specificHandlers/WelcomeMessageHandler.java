@@ -48,6 +48,7 @@ public class WelcomeMessageHandler {
         switch (user.getState()) {
             case FREE:
                 messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
+                break;
 //            case TRUSTED:
 //                messageSender.sendChooseShelterMessage(chatId);
 //                break;

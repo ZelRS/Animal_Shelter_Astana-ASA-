@@ -39,15 +39,20 @@ public class ButtonActionHandler implements ActionHandler {
     public void init() {
 
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА РОМАНА
-        buttonMap.put(BUT_WANT_TAKE_PET.getCallbackData(), (firstName, lastName, chatId) -> {
-            log.info("Pressed WANT_TAKE_PET button");
-
-            // внизу заглушка! там должен быть метод, который будет высылаиь ответ при нажатии кнопки "взять животное"
-            // на кнопки пока не нажимайте. прилложение завалится. этот метод закомментирован и не подходит под реализуцию,
-            // пожалуйста не вводите его из комментов. реализуйте сюда свой send по вашему заданию
-
-//            messageSender.sendShelterFunctionalPhotoMessage(chatId);
+        buttonMap.put(BUT_TAKING_PET.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed BUT_TAKING_PET button");
+            messageSender.sendTakingPetPhotoMessage(chatId, firstName);
         });
+//!!!!!
+//        buttonMap.put(BUT_TAKING_PET.getCallbackData(), (firstName, lastName, chatId) -> {
+//            log.info("Pressed BUT_TAKING_PET button");
+//            messageSender.sendTakingPetPhotoMessage(chatId, firstName);
+//        });
+//!!!!
+//        buttonMap.put(BUT_TAKING_PET.getCallbackData(), (firstName, lastName, chatId) -> {
+//            log.info("Pressed BUT_TAKING_PET button");
+//            messageSender.sendTakingPetPhotoMessage(chatId, firstName);
+//        });
 
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА ЮРИЯ ПЕТУХОВА
         buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId) -> {
