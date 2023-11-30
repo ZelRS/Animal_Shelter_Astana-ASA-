@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.executor.listener;
+package pro.sky.telegramBot.listener;
 
 import com.pengrad.telegrambot.model.CallbackQuery;
 import com.pengrad.telegrambot.model.Message;
