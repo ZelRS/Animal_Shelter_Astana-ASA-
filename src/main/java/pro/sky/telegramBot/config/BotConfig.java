@@ -50,6 +50,8 @@ public class BotConfig {
     private String MSG_CARE_PET_REC;
     @Value("${MSG_CARE_DOG_SPEC_REC}")
     private String MSG_CARE_DOG_SPEC_REC;
+    @Value("${MSG_DOWNLOAD_REPORT_MESSEGE}")
+    private String MSG_DOWNLOAD_REPORT_MESSEGE;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")

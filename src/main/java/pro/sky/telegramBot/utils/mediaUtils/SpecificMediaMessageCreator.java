@@ -142,6 +142,14 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    public SendPhoto createDownloadMessege(Long chatId) throws IOException{
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(DOWNLOAD_REPORT_MESSEGE_IMG.getPath());
+        params.setCaption(config.getMSG_DOWNLOAD_REPORT_MESSEGE());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 
 //    .......  фото-сообщения для других целей......
 

@@ -253,4 +253,14 @@ public class MessageSender {
     public void sendInfoForProbationUserMessage(Long chatId) {
 
     }
+
+    public void sendReporSendMessege(Long chatId, String firstName) {
+        log.info("Sending \"Report\" message to {}", chatId);
+        try {
+            SendPhoto sendPhoto = specificMediaMessageCreator.createDownloadMessege(chatId);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send \"Care Pet Recommendation\" message to {}", chatId, e);
+        }
+    }
 }

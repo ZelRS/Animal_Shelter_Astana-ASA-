@@ -19,6 +19,7 @@ public enum CallbackData {
     BUT_START_REGISTRATION("start_registration_but");
 
 
+
     private final String callbackData;
 
     CallbackData(String callbackData) {
