@@ -50,6 +50,10 @@ public class BotConfig {
     private String MSG_CARE_PET_REC;
     @Value("${MSG_CARE_DOG_SPEC_REC}")
     private String MSG_CARE_DOG_SPEC_REC;
+    @Value("${MSG_SEND_REPORT_TWO_OPTIONS}")
+    private String MSG_SEND_REPORT_TWO_OPTIONS;
+    @Value("${MSG_SEND_REPORT_ONE_OPTION}")
+    private String MSG_SEND_REPORT_ONE_OPTION;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
@@ -68,6 +72,10 @@ public class BotConfig {
     private String BUT_CARE_PET_REC;
     @Value("${BUT_START_REGISTRATION}")
     private String BUT_START_REGISTRATION;
+    @Value("${BUT_FILL_OUT_REPORT_ON}")
+    private String BUT_FILL_OUT_REPORT_ON;
+    @Value("${BUT_FILL_OUT_REPORT_OFF}")
+    private String BUT_FILL_OUT_REPORT_OFF;
 
     @Bean
     public TelegramBot telegramBot() {
