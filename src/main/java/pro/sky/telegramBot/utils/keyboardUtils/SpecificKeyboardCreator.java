@@ -62,6 +62,20 @@ public class SpecificKeyboardCreator {
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
+    public Keyboard fillOutReportActiveMessageKeyboard() {
+        log.info("Creating keyboard markup for taking pet message");
+        List<Button> buttons = new ArrayList<>();
+        buttons.add(new Button(config.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_ON.getCallbackData()));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+
+    public Keyboard fillOutReportNotActiveMessageKeyboard() {
+        log.info("Creating keyboard markup for taking pet message");
+        List<Button> buttons = new ArrayList<>();
+        buttons.add(new Button(config.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_OFF.getCallbackData()));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+
 //    ...... клавиатуры для других типов сообщений.....
 
 }

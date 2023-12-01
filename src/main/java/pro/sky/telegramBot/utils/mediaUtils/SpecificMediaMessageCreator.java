@@ -142,6 +142,22 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    public SendPhoto createReportSendTwoOptionsPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(TWO_OPTIONS_SEND_REPORT_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_SEND_REPORT_TWO_OPTIONS());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createReportSendOneOptionPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(ONE_OPTION_SEND_REPORT_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_SEND_REPORT_ONE_OPTION());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 
 //    .......  фото-сообщения для других целей......
 

@@ -15,6 +15,9 @@ import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
 /**
@@ -252,5 +255,26 @@ public class MessageSender {
 
     public void sendInfoForProbationUserMessage(Long chatId) {
 
+    }
+
+    public void sendReportPhotoMessage(Long chatId) {
+        log.info("Sending report message to {}", chatId);
+        LocalDateTime currentTime = LocalDateTime.now();
+        SendPhoto sendPhoto;
+        try {
+            if(currentTime.toLocalTime().isAfter(LocalTime.of(18, 0))
+               && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))){
+                // объявляется переменная SendPhoto для конкретного сообщения
+                sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
+                sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
+            } else {
+                sendPhoto = specificMediaMessageCreator.createReportSendOneOptionPhotoMessage(chatId);
+                sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportNotActiveMessageKeyboard());
+            }
+            // выполняется отправление сообщения с фото
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send welcome message to {}", chatId, e);
+        }
     }
 }
