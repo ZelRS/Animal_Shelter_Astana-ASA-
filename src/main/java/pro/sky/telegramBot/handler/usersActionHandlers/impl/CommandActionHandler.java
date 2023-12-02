@@ -66,7 +66,6 @@ public class CommandActionHandler implements ActionHandler {
                 user.setShelter(sheltersCat.get(finalI));
                 userService.update(user);
                 messageSender.sendShelterFunctionalPhotoMessage(chatId);
-
             });
         }
 
@@ -80,7 +79,6 @@ public class CommandActionHandler implements ActionHandler {
                 user.setShelter(sheltersDog.get(finalI));
                 userService.update(user);
                 messageSender.sendShelterFunctionalPhotoMessage(chatId);
-
             });
         }
 
@@ -88,6 +86,7 @@ public class CommandActionHandler implements ActionHandler {
             log.info("Received START command");
             welcomeMessageHandler.handleStartCommand(firstName, chatId);
         });
+
         commandMap.put(REPORT.getName(), (firstName, lastName, chatId) -> {
             log.info("Received REPORT command");
             User user = userService.findUserByChatId(chatId);
@@ -97,6 +96,17 @@ public class CommandActionHandler implements ActionHandler {
                 messageSender.sendNotSupportedMessage(chatId);
             }
         });
+
+        int refRecDocCount = 9; // число равно максимальному количеству(n) документов в /{n}rec в application.properties
+        for (int i = 1; i <= refRecDocCount; i++) {
+
+            String command = "/" + i + "rec";
+            int refNum = i;
+            commandMap.put(command, (firstName, lastName, chatId) -> {
+                log.info("Received getting {} RecDoc file command", refNum);
+                messageSender.sendRecDocDocumentMessage(refNum, chatId);
+            });
+        }
     }
 
     /**

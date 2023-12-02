@@ -129,6 +129,10 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    /**
+     * сборка компонентов для фото-сообщения,<br>
+     * когда пользователь нажал кнопку "Рекомендации и советы" для собак
+     */
     public SendPhoto createCareDogRecMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -137,6 +141,10 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    /**
+     * сборка компонентов для фото-сообщения,<br>
+     * когда пользователь нажал кнопку "Рекомендации и советы" для кошек
+     */
     public SendPhoto createCareCatRecMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -168,6 +176,7 @@ public class SpecificMediaMessageCreator {
         params.setCaption(config.getMSG_SEND_REPORT_ONE_OPTION());
         return mediaMessageCreator.createPhotoMessage(params);
     }
+
     /**
      * сборка компонентов для отправки документа,<br>
      * когда пользователь выбрал команду /report
@@ -180,8 +189,24 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createDocumentMessage(params);
     }
 
+    /**
+     * сборка компонентов для отправки документа,<br>
+     * когда пользователь нажал на ссылку у конкретного документа
+     */
+    public SendDocument createRecDocDocumentMessage(Integer refNum, Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        for (int i = 1; i <= 9; i++) {
+            if (i == refNum) {
+                params.setFilePath("/documents/tips_and_tricks/" + i + "rec.txt");
+                params.setFileName(i + "rec");
+            }
+        }
+        return mediaMessageCreator.createTXTDocumentMessage(params);
+    }
 
-//    .......  фото-сообщения для других целей......
+
+//    .......  медиа-сообщения для других целей......
 
 
 }

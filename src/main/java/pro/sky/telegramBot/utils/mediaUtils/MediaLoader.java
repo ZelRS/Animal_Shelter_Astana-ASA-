@@ -87,4 +87,24 @@ public class MediaLoader {
             return null;
         }
     }
+
+    public SendDocument TXTDocumentLoader(Long chatId, String filePath, String fileName){
+        log.info("Creating send txt document object");
+        try (InputStream fileStream = getClass().getResourceAsStream(filePath)) {
+            if (fileStream != null) {
+                File tempFile = File.createTempFile("rec", ".txt");
+                Files.copy(fileStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                InputFile report = new InputFile(tempFile, fileName, "application/txt");
+                return new SendDocument(chatId, report.getFile());
+            } else {
+                log.error("Creating send txt document object failed");
+                return null;
+            }
+        } catch (IOException e) {
+            log.error("Creating send txt document object failed");
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

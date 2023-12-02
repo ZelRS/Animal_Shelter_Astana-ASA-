@@ -34,9 +34,15 @@ public class MediaMessageCreator {
     }
 
     /**
-     * закрепление загруженного документа за сообщением
+     * закрепление загруженного документа XLSX формата за сообщением
      */
     public SendDocument createDocumentMessage(MediaMessageParams params) throws IOException {
         return mediaLoader.XLSXDocumentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
+    }
+    /**
+     * закрепление загруженного документа TXT формата за сообщением
+     */
+    public SendDocument createTXTDocumentMessage(MediaMessageParams params) throws IOException {
+        return mediaLoader.TXTDocumentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
     }
 }

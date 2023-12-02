@@ -1,7 +1,6 @@
 package pro.sky.telegramBot.sender;
 
 
-import com.pengrad.telegrambot.model.request.InputFile;
 import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
@@ -15,16 +14,9 @@ import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
-import pro.sky.telegramBot.utils.mediaUtils.MediaLoader;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
 import javax.transaction.Transactional;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -45,7 +37,7 @@ public class MessageSender {
     private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
     private final UserService userService;
-    private final MediaLoader mediaLoader;
+//    private final MediaLoader mediaLoader;
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -173,9 +165,7 @@ public class MessageSender {
         }
     }
 
-
     /////////////////////////    ЮРА ЯЦЕНКО, ТВОЙ МЕТОД ТУТ)))))))
-
     /**
      * метод формирует и отправляет сообщение пользователю<br>
      * для предоставления подробной информации о приюте
@@ -243,30 +233,11 @@ public class MessageSender {
     public void sendStartRegistrationMessage(Long chatId, String firstName) {
 //        log.info("Sending \"Start Registration\" message to {}", chatId);
         try {
-
 //ФУНКЦИОНАЛ НАХОДИТСЯ В РАЗРАБОТКЕ. Roman
-
-            // выполняется отправление сообщения с фото
-//            messageExecutor.executePhotoMessage(sendPhoto);
+            sendDefaultHTMLMessage(chatId);
         } catch (Exception e) {
             log.error("Failed to send \"Start Registration\" message to {}", chatId, e);
         }
-    }
-
-
-//    .........отправка сообщений пользователю на любые другие случаи........
-
-
-    public void sendChooseShelterMessage(Long chatId) {
-
-    }
-
-    public void sendInfoForPotentialUserMessage(Long chatId) {
-
-    }
-
-    public void sendInfoForProbationUserMessage(Long chatId) {
-
     }
 
     /**
@@ -313,6 +284,7 @@ public class MessageSender {
 
         messageExecutor.executeDocument(sendDocument);
     }
+
     /**
      * метод формирует и отправляет сообщение пользователю,<br>
      * когда он выбирает команду "/report", не имея на то полномочий
@@ -324,5 +296,35 @@ public class MessageSender {
         SendMessage message = new SendMessage(String.valueOf(chatId),
                 String.format(config.getMSG_NOT_SUPPORTED())).parseMode(HTML);
         messageExecutor.executeHTMLMessage(message);
+    }
+
+    /**
+     * метод формирует и отправляет файл пользователю,<br>
+     * когда он нажимает на ссылку рядом с выбранным документом
+     */
+    public void sendRecDocDocumentMessage(Integer refNum, Long chatId) {
+        log.info("Sending recommendation document to {}", chatId);
+        try {
+            SendDocument sendDoc = specificMediaMessageCreator.createRecDocDocumentMessage(refNum, chatId);
+            messageExecutor.executeDocument(sendDoc);
+        } catch (Exception e) {
+            log.error("Failed to send recommendation document to {}", chatId, e);
+        }
+    }
+
+    //    .........отправка сообщений пользователю на любые другие случаи........
+
+
+    public void sendChooseShelterMessage(Long chatId) {
+
+    }
+
+    public void sendInfoForPotentialUserMessage(Long chatId) {
+
+    }
+
+    public void sendInfoForProbationUserMessage(Long chatId) {
+
+
     }
 }
