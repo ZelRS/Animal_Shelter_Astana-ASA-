@@ -64,8 +64,8 @@ public class ShelterController {
     @PostMapping(value = "/{id}/schema", consumes = MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Загрузить схему проезда")
     public ResponseEntity<String> uploadSchema(@PathVariable("id") Long id,
-                                               @RequestParam MultipartFile multipartFile) throws Exception {
-        if (!shelterservice.uploadSchema(id, multipartFile)) {
+                                               @RequestParam MultipartFile multipartFile, @RequestParam Integer imageWidth) throws Exception {
+        if (!shelterservice.uploadSchema(id, multipartFile, imageWidth)) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().build();

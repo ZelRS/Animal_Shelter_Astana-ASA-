@@ -250,10 +250,9 @@ public class MessageSender {
      */
     public void sendShelterSchemaMessage(Long chatId) {
         User user = userService.findUserByChatId(chatId);
-//        Метод еще не доделан. Тут будет дополнительный код
-        SendMessage message = new SendMessage(chatId, user.getShelter().getSchedule());
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        messageExecutor.executeHTMLMessage(message);
+        SendPhoto sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
+        sendPhoto.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        messageExecutor.executePhotoMessage(sendPhoto);
     }
 
     /**
