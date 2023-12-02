@@ -1,5 +1,6 @@
 package pro.sky.telegramBot.utils.mediaUtils;
 
+import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -141,7 +142,11 @@ public class SpecificMediaMessageCreator {
         params.setCaption(config.getMSG_CARE_PET_REC());
         return mediaMessageCreator.createPhotoMessage(params);
     }
-
+    /**
+     * сборка компонентов для фото-сообщения,<br>
+     * когда пользователь нажал кнопку "отправить отчет"<br>
+     * в интервале с 18:88 и до 21:00
+     */
     public SendPhoto createReportSendTwoOptionsPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -149,13 +154,28 @@ public class SpecificMediaMessageCreator {
         params.setCaption(config.getMSG_SEND_REPORT_TWO_OPTIONS());
         return mediaMessageCreator.createPhotoMessage(params);
     }
-
+    /**
+     * сборка компонентов для фото-сообщения,<br>
+     * когда пользователь нажал кнопку "отправить отчет"<br>
+     * в интервале до 18:88 и после 21:00
+     */
     public SendPhoto createReportSendOneOptionPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(ONE_OPTION_SEND_REPORT_MSG_IMG.getPath());
         params.setCaption(config.getMSG_SEND_REPORT_ONE_OPTION());
         return mediaMessageCreator.createPhotoMessage(params);
+    }
+    /**
+     * сборка компонентов для отправки документа,<br>
+     * когда пользователь выбрал команду /report
+     */
+    public SendDocument createReportSendDocumentMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath("/documents/report.xlsx");
+        params.setFileName("report");
+        return mediaMessageCreator.createDocumentMessage(params);
     }
 
 
