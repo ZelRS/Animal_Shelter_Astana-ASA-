@@ -40,7 +40,7 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Collection<Pet> pets;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
 }
