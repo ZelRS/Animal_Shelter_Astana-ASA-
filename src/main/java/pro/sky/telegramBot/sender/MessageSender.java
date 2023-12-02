@@ -18,6 +18,7 @@ import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaLoader;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +36,7 @@ import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
  */
 @RequiredArgsConstructor
 @Service
+@Transactional
 @Slf4j  // SLF4J logging
 public class MessageSender {
     private final SpecificMediaMessageCreator specificMediaMessageCreator;
@@ -238,7 +240,7 @@ public class MessageSender {
      */
 //    после внесению данных о себе, пользователю будет присвоен статус POTENTIAL
     public void sendStartRegistrationMessage(Long chatId, String firstName) {
-        log.info("Sending \"Start Registration\" message to {}", chatId);
+//        log.info("Sending \"Start Registration\" message to {}", chatId);
         try {
 
 //ФУНКЦИОНАЛ НАХОДИТСЯ В РАЗРАБОТКЕ. Roman

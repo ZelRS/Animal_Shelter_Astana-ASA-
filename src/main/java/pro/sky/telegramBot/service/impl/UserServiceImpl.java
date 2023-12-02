@@ -8,12 +8,15 @@ import pro.sky.telegramBot.repository.UserInfoRepository;
 import pro.sky.telegramBot.repository.UserRepository;
 import pro.sky.telegramBot.service.UserService;
 
+import javax.transaction.Transactional;
+
 /**
  * сервис для обработки запросов к БД пользователей и информации о пользователях
  */
 //  предполагается, что данным сервисом буду обрабатываться оба репозитория - User и UserInfo
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
