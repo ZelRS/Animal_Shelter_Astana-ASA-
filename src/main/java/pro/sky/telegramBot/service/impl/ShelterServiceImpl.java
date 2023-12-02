@@ -11,9 +11,16 @@ import pro.sky.telegramBot.repository.ShelterRepository;
 import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.utils.StringListCreator;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -80,5 +87,40 @@ public class ShelterServiceImpl implements ShelterService {
         shelter.setData(multipartFile.getBytes());
         shelterRepository.save(shelter);
         log.debug("The avatar was uploaded successfully");
+    }
+
+    /**
+     * метод для загрузки схемы проезда в базу
+     */
+    @Override
+    public boolean uploadSchema(Long id, MultipartFile schema) throws Exception {
+        Optional<Shelter> shelter = shelterRepository.findById(id);
+        if (shelter.isPresent()) {
+            shelter.get().setSchema(resizeImage(schema));
+        } else {
+            return false;
+        }
+        shelterRepository.save(shelter.get());
+        return true;
+    }
+
+    /**
+     * метод для масштабирования картинки
+     */
+    private byte[] resizeImage(MultipartFile file) throws Exception {
+        try (InputStream inputStream = file.getInputStream();
+             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
+             ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream()) {
+            BufferedImage image = ImageIO.read(bufferedInputStream);
+
+            int height = image.getHeight() / (image.getWidth() / 100);
+            BufferedImage resizedImage = new BufferedImage(100, height, image.getType());
+            Graphics2D graphics = resizedImage.createGraphics();
+            graphics.drawImage(image, 0, 0, 100, height, null);
+            graphics.dispose();
+
+            ImageIO.write(resizedImage, "jpg", arrayOutputStream);
+            return arrayOutputStream.toByteArray();
+        }
     }
 }

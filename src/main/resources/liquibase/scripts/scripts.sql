@@ -81,3 +81,15 @@ ALTER TABLE person
         FOREIGN KEY (shelter_id)
             REFERENCES shelter (id)
             ON DELETE SET NULL;
+
+-- changeset YuriiYatsenko:2
+ALTER TABLE shelter
+    ALTER COLUMN description TYPE VARCHAR(2000);
+ALTER TABLE shelter
+    ADD schema oid NULL;
+ALTER TABLE shelter
+    ADD schedule VARCHAR(255) NULL;
+ALTER TABLE shelter
+    ADD security_phone VARCHAR(255) NULL;
+ALTER TABLE shelter
+    ADD safety_rules VARCHAR(1000) NULL;

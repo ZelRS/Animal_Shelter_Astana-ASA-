@@ -59,4 +59,15 @@ public class ShelterController {
     public ResponseEntity<Shelter> getById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(shelterservice.getById(id));
     }
+
+    // метод для загрузки в базу схемы проезда к приюту
+    @PostMapping(value = "/{id}/schema", consumes = MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Загрузить схему проезда")
+    public ResponseEntity<String> uploadSchema(@PathVariable("id") Long id,
+                                               @RequestParam MultipartFile multipartFile) throws Exception {
+        if (!shelterservice.uploadSchema(id, multipartFile)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().build();
+    }
 }

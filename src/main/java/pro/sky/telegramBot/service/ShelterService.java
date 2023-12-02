@@ -40,4 +40,9 @@ public interface ShelterService {
      * загрузить в БД фото приюта
      */
     void uploadPhoto(Long id, MultipartFile multipartFile) throws IOException;
+
+    /**
+     * загрузить схему проезда в базу
+     */
+    boolean uploadSchema(Long id, MultipartFile schema) throws Exception;
 }
