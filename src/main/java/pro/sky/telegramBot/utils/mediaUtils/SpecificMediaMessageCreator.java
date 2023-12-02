@@ -152,6 +152,7 @@ public class SpecificMediaMessageCreator {
         params.setCaption(config.getMSG_CARE_PET_REC());
         return mediaMessageCreator.createPhotoMessage(params);
     }
+
     /**
      * сборка компонентов для фото-сообщения,<br>
      * когда пользователь нажал кнопку "отправить отчет"<br>
@@ -164,6 +165,7 @@ public class SpecificMediaMessageCreator {
         params.setCaption(config.getMSG_SEND_REPORT_TWO_OPTIONS());
         return mediaMessageCreator.createPhotoMessage(params);
     }
+
     /**
      * сборка компонентов для фото-сообщения,<br>
      * когда пользователь нажал кнопку "отправить отчет"<br>
@@ -196,12 +198,8 @@ public class SpecificMediaMessageCreator {
     public SendDocument createRecDocDocumentMessage(Integer refNum, Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
-        for (int i = 1; i <= 9; i++) {
-            if (i == refNum) {
-                params.setFilePath("/documents/tips_and_tricks/" + i + "rec.txt");
-                params.setFileName(i + "rec");
-            }
-        }
+        params.setFilePath("/documents/tips_and_tricks/" + refNum + "rec.txt");
+        params.setFileName(refNum + "rec");
         return mediaMessageCreator.createTXTDocumentMessage(params);
     }
 
