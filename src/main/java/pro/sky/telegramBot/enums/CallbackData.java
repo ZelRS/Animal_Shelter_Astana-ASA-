@@ -18,8 +18,12 @@ public enum CallbackData {
     BUT_CARE_PET_REC("care_pet_rec_but"),
     BUT_START_REGISTRATION("start_registration_but"),
     BUT_FILL_OUT_REPORT_ON("but_fill_out_report_on"),
-    BUT_FILL_OUT_REPORT_OFF("but_fill_out_report_off");
+    BUT_FILL_OUT_REPORT_OFF("but_fill_out_report_off"),
 
+    // навигационные кнопки для модуля информации о приюте
+    BUT_MORE_INFORMATION("but_more_information"),
+    BUT_GO_TO_MAIN("but_go_to_main"),
+    BUT_GO_TO_SHELTER_SELECT("but_go_to_shelter_select");
 
     private final String callbackData;
 
