@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
@@ -18,9 +19,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static pro.sky.telegramBot.enums.Command.REPORT;
 import static pro.sky.telegramBot.enums.Command.START;
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
+import static pro.sky.telegramBot.enums.UserState.PROBATION;
 
 /**
  * класс для обработки сообщения, которое должно быть выслано пользователю<br>
@@ -84,6 +87,15 @@ public class CommandActionHandler implements ActionHandler {
         commandMap.put(START.getName(), (firstName, lastName, chatId) -> {
             log.info("Received START command");
             welcomeMessageHandler.handleStartCommand(firstName, chatId);
+        });
+        commandMap.put(REPORT.getName(), (firstName, lastName, chatId) -> {
+            log.info("Received REPORT command");
+            User user = userService.findUserByChatId(chatId);
+            if (user.getState().equals(PROBATION)) {
+                messageSender.sendReportToUserDocumentMessage(chatId);
+            } else {
+                messageSender.sendNotSupportedMessage(chatId);
+            }
         });
     }
 

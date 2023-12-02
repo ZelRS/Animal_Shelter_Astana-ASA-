@@ -1,5 +1,6 @@
 package pro.sky.telegramBot.handler.specificHandlers;
 
+import com.pengrad.telegrambot.request.SendDocument;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
