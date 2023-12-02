@@ -8,6 +8,7 @@ import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.service.ShelterService;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 
 import static pro.sky.telegramBot.enums.MessageImage.*;
@@ -19,6 +20,7 @@ import static pro.sky.telegramBot.enums.PetType.DOG;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 @Slf4j  // SLF4J logging
 public class SpecificMediaMessageCreator {
     private final MediaMessageCreator mediaMessageCreator;
