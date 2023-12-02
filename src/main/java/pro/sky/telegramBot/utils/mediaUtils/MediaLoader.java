@@ -88,6 +88,9 @@ public class MediaLoader {
         }
     }
 
+    /**
+     * загрузка документа в формате txt
+     */
     public SendDocument TXTDocumentLoader(Long chatId, String filePath, String fileName){
         log.info("Creating send txt document object");
         try (InputStream fileStream = getClass().getResourceAsStream(filePath)) {
