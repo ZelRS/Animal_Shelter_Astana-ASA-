@@ -71,12 +71,7 @@ public class ButtonActionHandler implements ActionHandler {
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА АЛЕКСЕЯ
         buttonMap.put(BUT_CALL_VOLUNTEER.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed CALL_VOLUNTEER button");
-
-            // внизу заглушка! там должен быть метод, который будет высылаиь ответ при нажатии кнопки "позвать волонтера"
-            // на кнопки пока не нажимайте. прилложение завалится. этот метод закомментирован и не подходит под реализуцию,
-            // пожалуйста не вводите его из комментов. реализуйте сюда свой send по вашему заданию
-
-            // messageSender.sendShelterFunctionalPhotoMessage(chatId);
+            messageSender.sendCallVolunteerPhotoMessage(chatId);
         });
 
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА ЮРИЯ ЯЦЕНКО

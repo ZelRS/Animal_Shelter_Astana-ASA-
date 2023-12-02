@@ -327,4 +327,11 @@ public class MessageSender {
 
 
     }
+
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он нажал на кнопку "Позвать Волонтёра"
+     */
+    public void sendCallVolunteerPhotoMessage(Long chatId) {
+    }
 }
