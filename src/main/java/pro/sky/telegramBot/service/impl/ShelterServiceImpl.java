@@ -10,6 +10,7 @@ import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.repository.ShelterRepository;
 import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.utils.StringListCreator;
+import pro.sky.telegramBot.utils.mediaUtils.MediaLoader;
 
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository shelterRepository;
+    private final MediaLoader mediaLoader;
 
     /**
      * создать и сохранить приют в БД
@@ -93,34 +95,14 @@ public class ShelterServiceImpl implements ShelterService {
      * метод для загрузки схемы проезда в базу
      */
     @Override
-    public boolean uploadSchema(Long id, MultipartFile schema) throws Exception {
+    public boolean uploadSchema(Long id, MultipartFile schema, Integer imageNewWidth) throws Exception {
         Optional<Shelter> shelter = shelterRepository.findById(id);
         if (shelter.isPresent()) {
-            shelter.get().setSchema(resizeImage(schema));
+            shelter.get().setSchema(mediaLoader.resizeImage(schema, imageNewWidth));
         } else {
             return false;
         }
         shelterRepository.save(shelter.get());
         return true;
-    }
-
-    /**
-     * метод для масштабирования картинки
-     */
-    private byte[] resizeImage(MultipartFile file) throws Exception {
-        try (InputStream inputStream = file.getInputStream();
-             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
-             ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream()) {
-            BufferedImage image = ImageIO.read(bufferedInputStream);
-
-            int height = image.getHeight() / (image.getWidth() / 100);
-            BufferedImage resizedImage = new BufferedImage(100, height, image.getType());
-            Graphics2D graphics = resizedImage.createGraphics();
-            graphics.drawImage(image, 0, 0, 100, height, null);
-            graphics.dispose();
-
-            ImageIO.write(resizedImage, "jpg", arrayOutputStream);
-            return arrayOutputStream.toByteArray();
-        }
     }
 }
