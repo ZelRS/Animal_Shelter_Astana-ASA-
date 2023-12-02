@@ -34,6 +34,8 @@ public class BotConfig {
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ ДЛЯ ДРУГИХ ОТВЕТНЫХ СООБЩЕНИЙ
     @Value("${MSG_DEFAULT}")
     private String MSG_DEFAULT;
+    @Value("${MSG_NOT_SUPPORTED}")
+    private String MSG_NOT_SUPPORTED;
     @Value("${MSG_SHELTER_INTRO_NULL}")
     private String MSG_SHELTER_INTRO_NULL;
     @Value("${MSG_SHELTER_INTRO_ONE}")

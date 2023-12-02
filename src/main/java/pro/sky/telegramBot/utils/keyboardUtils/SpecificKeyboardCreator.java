@@ -61,14 +61,20 @@ public class SpecificKeyboardCreator {
         buttons.add(new Button(config.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
-
+    /**
+     * метод формирует для сообщения активную кнопку ,<br>
+     * загрузки отчета
+     */
     public Keyboard fillOutReportActiveMessageKeyboard() {
         log.info("Creating keyboard markup for taking pet message");
         List<Button> buttons = new ArrayList<>();
         buttons.add(new Button(config.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_ON.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
-
+    /**
+     * метод формирует для сообщения неактивную кнопку ,<br>
+     * загрузки отчета
+     */
     public Keyboard fillOutReportNotActiveMessageKeyboard() {
         log.info("Creating keyboard markup for taking pet message");
         List<Button> buttons = new ArrayList<>();
