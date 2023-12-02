@@ -37,7 +37,7 @@ public class MediaLoader {
     }
 
     /**
-     * загрузка видео
+     * загрузка видео в формате mp4
      */
     public SendVideo videoLoader(Long chatId, String filePath, String fileName) throws IOException {
         log.info("Creating send mp4 video object");
@@ -52,9 +52,9 @@ public class MediaLoader {
     }
 
     /**
-     * загрузка документа
+     * загрузка документа в формате pdf
      */
-    public SendDocument documentLoader(Long chatId, String filePath, String fileName) throws IOException {
+    public SendDocument PDFDocumentLoader(Long chatId, String filePath, String fileName) throws IOException {
         log.info("Creating send pdf document object");
         InputStream fileStream = getClass().getResourceAsStream(filePath);
         assert fileStream != null;
@@ -64,5 +64,27 @@ public class MediaLoader {
 
         InputFile SoftGPT = new InputFile(tempFile, fileName, "application/pdf");
         return new SendDocument(chatId, SoftGPT.getFile());
+    }
+    /**
+     * загрузка документа в формате xlsx
+     */
+    public SendDocument XLSXDocumentLoader(Long chatId, String filePath, String fileName){
+        log.info("Creating send xlsx document object");
+        try (InputStream fileStream = getClass().getResourceAsStream(filePath)) {
+            if (fileStream != null) {
+                File tempFile = File.createTempFile("report", ".xlsx");
+                Files.copy(fileStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                InputFile report = new InputFile(tempFile, fileName, "application/xlsx");
+                return new SendDocument(chatId, report.getFile());
+            } else {
+                log.error("Creating send xlsx document object failed");
+                return null;
+            }
+        } catch (IOException e) {
+            log.error("Creating send xlsx document object failed");
+            e.printStackTrace();
+            return null;
+        }
     }
 }

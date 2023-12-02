@@ -1,6 +1,8 @@
 package pro.sky.telegramBot.sender;
 
 
+import com.pengrad.telegrambot.model.request.InputFile;
+import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +15,18 @@ import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
+import pro.sky.telegramBot.utils.mediaUtils.MediaLoader;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
 import javax.transaction.Transactional;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 
@@ -34,6 +45,7 @@ public class MessageSender {
     private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
     private final UserService userService;
+    private final MediaLoader mediaLoader;
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -255,5 +267,62 @@ public class MessageSender {
 
     public void sendInfoForProbationUserMessage(Long chatId) {
 
+    }
+
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он нажал на кнопку "отправить отчет"
+     */
+// Проверяется текущее время, и в интервале с 18 до 21 пользователю предлагается заполнить отчет в боте
+// или скачать документ для заполнения. В другое время доступна только функция скачивания документа.
+    public void sendReportPhotoMessage(Long chatId) {
+        log.info("Sending report message to {}", chatId);
+        LocalDateTime currentTime = LocalDateTime.now();
+        SendPhoto sendPhoto;
+        try {
+            if(currentTime.toLocalTime().isAfter(LocalTime.of(18, 0))
+               && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))){
+                // объявляется переменная SendPhoto для конкретного сообщения
+                sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
+                sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
+            } else {
+                sendPhoto = specificMediaMessageCreator.createReportSendOneOptionPhotoMessage(chatId);
+                sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportNotActiveMessageKeyboard());
+            }
+            // выполняется отправление сообщения с фото
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send welcome message to {}", chatId, e);
+        }
+    }
+
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он выбирает команду "/report", если пользователь взял питомца
+     */
+    // пользователь получает документ в формате xlsx для заполнения отчета
+    // у пользователя должен быть статус PROBATION
+    public void sendReportToUserDocumentMessage(Long chatId) {
+        log.info("Sending report document message to {}", chatId);
+        SendDocument sendDocument = null;
+        try {
+            sendDocument = specificMediaMessageCreator.createReportSendDocumentMessage(chatId);
+        } catch (Exception e) {
+            log.error("Failed to send report document message to {}", chatId, e);
+        }
+
+        messageExecutor.executeDocument(sendDocument);
+    }
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он выбирает команду "/report", не имея на то полномочий
+     */
+    // выполняется отправление сообщения в HTML формате о невозможности выполнить команду
+    // так как у пользователя нет доступа
+    public void sendNotSupportedMessage(Long chatId) {
+        log.info("Sending not supported message to {}", chatId);
+        SendMessage message = new SendMessage(String.valueOf(chatId),
+                String.format(config.getMSG_NOT_SUPPORTED())).parseMode(HTML);
+        messageExecutor.executeHTMLMessage(message);
     }
 }

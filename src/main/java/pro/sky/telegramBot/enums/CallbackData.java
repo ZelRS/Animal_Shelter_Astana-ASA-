@@ -16,7 +16,9 @@ public enum CallbackData {
     BUT_GET_FULL_INFO("get_full_button_info_but"),
     BUT_TAKING_PET("taking_pet_but"),
     BUT_CARE_PET_REC("care_pet_rec_but"),
-    BUT_START_REGISTRATION("start_registration_but");
+    BUT_START_REGISTRATION("start_registration_but"),
+    BUT_FILL_OUT_REPORT_ON("but_fill_out_report_on"),
+    BUT_FILL_OUT_REPORT_OFF("but_fill_out_report_off");
 
 
     private final String callbackData;

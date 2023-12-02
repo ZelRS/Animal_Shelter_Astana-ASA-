@@ -50,7 +50,7 @@ public class MessageExecutor {
     /**
      * отправка пользователю документа
      */
-    public void executeDocument(Long chatId, SendDocument sendDoc) {
+    public void executeDocument(SendDocument sendDoc) {
         log.info("Sending document message to user");
         telegramBot.execute(sendDoc);
     }

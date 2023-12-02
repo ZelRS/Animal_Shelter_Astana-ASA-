@@ -58,12 +58,14 @@ public class ButtonActionHandler implements ActionHandler {
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА ЮРИЯ ПЕТУХОВА
         buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed SEND_REPORT button");
-
-            // внизу заглушка! там должен быть метод, который будет высылать ответ при нажатии кнопки "отправить отчет"
-            // на кнопки пока не нажимайте. прилложение завалится. этот метод закомментирован и не подходит под реализуцию,
-            // пожалуйста не вводите его из комментов. реализуйте сюда свой send по вашему заданию
-
-//            messageSender.sendShelterFunctionalPhotoMessage(chatId);
+            messageSender.sendReportPhotoMessage(chatId);
+        });
+        buttonMap.put(BUT_FILL_OUT_REPORT_ON.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed FILL_OUT_REPORT button");
+//            messageSender.sendReportFillOutMessage(chatId);
+        });
+        buttonMap.put(BUT_FILL_OUT_REPORT_OFF.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed FILL_OUT_REPORT button");
         });
 
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА АЛЕКСЕЯ

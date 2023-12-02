@@ -37,6 +37,6 @@ public class MediaMessageCreator {
      * закрепление загруженного документа за сообщением
      */
     public SendDocument createDocumentMessage(MediaMessageParams params) throws IOException {
-        return mediaLoader.documentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
+        return mediaLoader.XLSXDocumentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
     }
 }
