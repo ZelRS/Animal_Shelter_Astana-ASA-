@@ -14,7 +14,9 @@ import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.service.VolunteerService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
@@ -22,6 +24,7 @@ import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
@@ -42,6 +45,7 @@ public class MessageSender {
     private final BotConfig config;
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
+    private final VolunteerService volunteerService;
 //    private final MediaLoader mediaLoader;
 
     /**
@@ -432,6 +436,7 @@ public class MessageSender {
 
     }
 
+
     //    .........отправка сообщений пользователю на любые другие случаи........
 
 
@@ -446,5 +451,20 @@ public class MessageSender {
     public void sendInfoForProbationUserMessage(Long chatId) {
 
 
+    }
+
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он нажал на кнопку "Позвать Волонтёра"
+     */
+    public void sendCallVolunteerPhotoMessage(Long chatId) {
+        log.info("Sending a message to the user \"call a volunteer\" {}", chatId );
+        try {
+            SendPhoto sendPhoto;
+            sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.info("Failed to send \"call a volunteer\" message to {}", chatId, e);
+        }
     }
 }

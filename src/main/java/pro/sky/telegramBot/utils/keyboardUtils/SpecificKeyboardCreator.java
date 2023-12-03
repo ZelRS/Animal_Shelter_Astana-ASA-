@@ -111,6 +111,31 @@ public class SpecificKeyboardCreator {
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
+    /**
+     * клавиатура для сообщения, где пользователя просят внести свои контактные данные
+     */
+    public Keyboard startRegistrationMessageKeyBoard() {
+        log.info("Creating keyboard markup for set personal data of user");
+
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_SET_DATA_FROM_USER(), BUT_SET_DATA_FROM_USER.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+
+// я ещё не понял как и куда прикрутить этот метод
+//
+//    /**
+//     * клавиатура для сообщения "позвать волонтёра"
+//     */
+//    public Keyboard pressTheButtonToCallVolunteer() {
+//        log.info("Creating a keyboard call a volunteer");
+//        List<Button> buttons = new ArrayList<>(List.of(
+//           new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
+//        ));
+//        return keyboardCreator.createInlineKeyboard(buttons);
+//    }
+
 //    ...... клавиатуры для других типов сообщений.....
 
 }

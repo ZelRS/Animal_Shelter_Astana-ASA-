@@ -215,6 +215,16 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createInfoTableXLSXDocumentMessage(params);
     }
 
+    /**
+     * сборка компонентов для отправки документа,<br>
+     * когда пользователь нажал на кнопку "позвать волонтёра"
+     */
+    public SendPhoto createCallVolunteerPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(String.format(config.getBUT_CALL_VOLUNTEER()));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
 
 //    .......  медиа-сообщения для других целей......
 
