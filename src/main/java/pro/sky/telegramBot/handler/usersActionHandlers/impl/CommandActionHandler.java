@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
@@ -90,11 +89,60 @@ public class CommandActionHandler implements ActionHandler {
         commandMap.put(REPORT.getName(), (firstName, lastName, chatId) -> {
             log.info("Received REPORT command");
             User user = userService.findUserByChatId(chatId);
-            if (user.getState().equals(PROBATION)) {
+            if (user != null && user.getState().equals(PROBATION)) {
                 messageSender.sendReportToUserDocumentMessage(chatId);
             } else {
                 messageSender.sendNotSupportedMessage(chatId);
             }
+        });
+
+        //Меню для дополнительной информации по приюту
+        //Узнать дополнительную информацию о приюте
+        commandMap.put("/details", (firstName, lastName, chatId) -> {
+            log.info("Received /details command");
+            messageSender.sendShelterDetailsMessage(chatId);
+        });
+
+        // Получить одрес приюта
+        commandMap.put("/address", (firstName, lastName, chatId) -> {
+            log.info("Received /address command");
+            messageSender.sendShelterAddressMessage(chatId);
+        });
+
+        // Получить график работы приюта
+        commandMap.put("/schedule", (firstName, lastName, chatId) -> {
+            log.info("Received /schedule command");
+            messageSender.sendShelterScheduleMessage(chatId);
+        });
+
+        // Посмотреть схему проезда к приюту
+        commandMap.put("/schema", (firstName, lastName, chatId) -> {
+            log.info("Received /schema command");
+            messageSender.sendShelterSchemaMessage(chatId);
+        });
+
+        // Узнать номер телефона охраны для оформления пропуска
+        commandMap.put("/sec_phone", (firstName, lastName, chatId) -> {
+            log.info("Received /sec_phone command");
+            messageSender.sendShelterSecurityPhoneMessage(chatId);
+        });
+
+        // Прочитать правила техники безопасности приюта
+        commandMap.put("/safety", (firstName, lastName, chatId) -> {
+            log.info("Received /safety command");
+            messageSender.sendShelterSafetyRuleMessage(chatId);
+        });
+
+        // Оставить заявку на обратный звонок
+        commandMap.put("/callMe", (firstName, lastName, chatId) -> {
+            log.info("Received /callMe command");
+            messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
+        });
+
+        // Связаться с волонтером
+        commandMap.put("/volunteer", (firstName, lastName, chatId) -> {
+            log.info("Received /volunteer command");
+            messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
         });
 
         int refRecDocCount = 9; // число равно максимальному количеству(n) документов в /{n}rec в application.properties

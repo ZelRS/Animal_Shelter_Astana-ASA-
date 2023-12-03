@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.entity.MediaMessageParams;
+import pro.sky.telegramBot.loader.MediaLoader;
 
 import java.io.IOException;
 
