@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface VolunteerService {
 
+    Volunteer get(Long id);
+
     Volunteer create(Volunteer volunteer);
 
     Volunteer update(Volunteer volunteer);
