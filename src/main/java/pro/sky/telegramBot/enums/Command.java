@@ -8,7 +8,8 @@ import lombok.Getter;
 @Getter
 public enum Command {
     START("/start"),
-    REPORT("/report");
+    REPORT("/report"),
+    INFO_TABLE("/info_table");
 
     private final String name;
 
