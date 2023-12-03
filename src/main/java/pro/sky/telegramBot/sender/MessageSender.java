@@ -13,6 +13,7 @@ import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
+import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.service.UserService;
@@ -47,6 +48,7 @@ public class MessageSender {
     private final MediaMessageCreator mediaMessageCreator;
     private final VolunteerService volunteerService;
 //    private final MediaLoader mediaLoader;
+    private final MediaLoader mediaLoader;
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -435,7 +437,6 @@ public class MessageSender {
         }
 
     }
-
 
     //    .........отправка сообщений пользователю на любые другие случаи........
 
