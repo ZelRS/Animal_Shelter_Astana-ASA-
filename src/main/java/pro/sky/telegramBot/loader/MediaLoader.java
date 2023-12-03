@@ -114,20 +114,20 @@ public class MediaLoader {
     /**
      * метод для масштабирования картинки
      */
-    public byte[] resizeImage(MultipartFile file, Integer imageNewWidth) throws Exception {
-        try (InputStream inputStream = file.getInputStream();
-             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
-             ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream()) {
-            BufferedImage image = ImageIO.read(bufferedInputStream);
-
-            int height = image.getHeight() / (image.getWidth() / imageNewWidth);
-            BufferedImage resizedImage = new BufferedImage(imageNewWidth, height, image.getType());
-            Graphics2D graphics = resizedImage.createGraphics();
-            graphics.drawImage(image, 0, 0, imageNewWidth, height, null);
-            graphics.dispose();
-
-            ImageIO.write(resizedImage, "jpg", arrayOutputStream);
-            return arrayOutputStream.toByteArray();
-        }
-    }
+//    public byte[] resizeImage(MultipartFile file, Integer imageNewWidth) throws Exception {
+//        try (InputStream inputStream = file.getInputStream();
+//             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
+//             ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream()) {
+//            BufferedImage image = ImageIO.read(bufferedInputStream);
+//
+//            int height = image.getHeight() / (image.getWidth() / imageNewWidth);
+//            BufferedImage resizedImage = new BufferedImage(imageNewWidth, height, image.getType());
+//            Graphics2D graphics = resizedImage.createGraphics();
+//            graphics.drawImage(image, 0, 0, imageNewWidth, height, null);
+//            graphics.dispose();
+//
+//            ImageIO.write(resizedImage, "jpg", arrayOutputStream);
+//            return arrayOutputStream.toByteArray();
+//        }
+//    }
 }
