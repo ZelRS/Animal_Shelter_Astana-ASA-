@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
 import pro.sky.telegramBot.handler.usersActionHandlers.DocumentHandler;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.sender.DocumentMessageSender;
+import pro.sky.telegramBot.sender.specificSenders.DocumentMessageSender;
 import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.UserService;
 
@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
+
 /**
  * класс для обработки сообщения, которое должно быть выслано пользователю<br>
  * при отправке им какого-либо документа
@@ -40,6 +41,7 @@ public class DocumentActionHandler implements DocumentHandler {
     }
 
     private final Map<String, DocumentProcessor> documentMap = new HashMap<>();
+
     /**
      * при запуске приложения происходит наполнение {@link #documentMap} документами,<br>
      * при получении которых должен высылаться конкретный ответ: подтверждение получения, <br>
@@ -63,7 +65,17 @@ public class DocumentActionHandler implements DocumentHandler {
                 messageSender.sendNotSupportedMessage(chatId);
             }
         });
+
+        documentMap.put("info_table.xlsx", (document, chatId) -> {
+            log.info("Processing info_table.xlsx document");
+            try {
+                documentMessageSender.sendInfoTableResponseMessage(document, chatId);
+            } catch (IOException e) {
+                throw new UserNotFoundException("Пользователь не найден");
+            }
+        });
     }
+
     @Override
     public void handle(Document document, Long chatId) {
         String fileName = document.fileName();

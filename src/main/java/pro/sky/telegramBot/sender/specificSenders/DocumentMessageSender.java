@@ -1,16 +1,16 @@
-package pro.sky.telegramBot.sender;
+package pro.sky.telegramBot.sender.specificSenders;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Document;
-import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.executor.MessageExecutor;
+import pro.sky.telegramBot.reader.ExcelFileReader;
+import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
-import pro.sky.telegramBot.reader.ExcelFileReader;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificDocumentMessageCreator;
 
 import java.io.IOException;
@@ -39,6 +39,19 @@ public class DocumentMessageSender {
         log.info("Was invoked method sendReportResponseMessage");
         try {
             SendPhoto sendPhoto = specificDocumentMessageCreator.createReportResponseMessage(chatId, document);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send response message to {}", chatId, e);
+        }
+    }
+
+    /**
+     * Метод формирует и отправляет сообщение после отправки им документа
+     */
+    public void sendInfoTableResponseMessage(Document document, Long chatId) throws IOException {
+        log.info("Was invoked method sendInfoTableResponseMessage");
+        try {
+            SendPhoto sendPhoto = specificDocumentMessageCreator.createInfoTableResponseMessage(chatId, document);
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send response message to {}", chatId, e);

@@ -20,7 +20,8 @@ public enum MessageImage {
     ONE_OPTION_SEND_REPORT_MSG_IMG("/photos/one_option.jpg"),
     SHELTER_INFORMATION_MSG_IMG("/photos/shelter_information.jpg"),
     REPORT_ACCEPTED_MSG_IMG("/photos/report_accepted.jpg"),
-    REPORT_NOT_ACCEPTED_MSG_IMG("/photos/report_not_accepted.jpg");
+    REPORT_NOT_ACCEPTED_MSG_IMG("/photos/report_not_accepted.jpg"),
+    SAVING_USER_INFO_SUCCESS_MSG_IMG("/photos/saving_user_info_success_msg.jpg");
 
     private final String path;
 

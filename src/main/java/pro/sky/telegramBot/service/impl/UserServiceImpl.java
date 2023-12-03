@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
 import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.repository.UserInfoRepository;
 import pro.sky.telegramBot.repository.UserRepository;
 import pro.sky.telegramBot.service.UserService;
@@ -52,5 +53,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User update(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserInfo create(UserInfo userInfo) {
+        return userInfoRepository.save(userInfo);
     }
 }

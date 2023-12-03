@@ -33,7 +33,7 @@ public class User {
     @Column(name = "user_name")
     private String userName;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "info_id")
     private UserInfo userInfo;
 
