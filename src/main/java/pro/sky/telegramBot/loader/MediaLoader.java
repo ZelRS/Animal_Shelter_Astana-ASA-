@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.utils.mediaUtils;
+package pro.sky.telegramBot.loader;
 
 import com.pengrad.telegrambot.model.request.InputFile;
 import com.pengrad.telegrambot.request.SendDocument;
