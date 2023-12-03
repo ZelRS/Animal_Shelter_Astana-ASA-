@@ -52,7 +52,7 @@ public class DocumentActionHandler implements DocumentHandler {
             log.info("Processing report.xlsx document");
             // Проверяем, есть ли пользователь и может ли он присылать отчеты
             User user = userService.findUserByChatId(chatId);
-            if (user.getState().equals(PROBATION)) {
+            if (user != null && user.getState().equals(PROBATION)) {
                 try {
                     documentMessageSender.sendReportResponseMessage(document, chatId);
                 } catch (IOException e) {

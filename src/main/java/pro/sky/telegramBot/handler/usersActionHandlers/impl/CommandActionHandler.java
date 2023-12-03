@@ -89,7 +89,7 @@ public class CommandActionHandler implements ActionHandler {
         commandMap.put(REPORT.getName(), (firstName, lastName, chatId) -> {
             log.info("Received REPORT command");
             User user = userService.findUserByChatId(chatId);
-            if (user.getState().equals(PROBATION)) {
+            if (user != null && user.getState().equals(PROBATION)) {
                 messageSender.sendReportToUserDocumentMessage(chatId);
             } else {
                 messageSender.sendNotSupportedMessage(chatId);
