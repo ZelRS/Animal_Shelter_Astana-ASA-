@@ -60,6 +60,8 @@ public class BotConfig {
     private String MSG_REPORT_ACCEPTED;
     @Value("${MSG_REPORT_NOT_ACCEPTED}")
     private String MSG_REPORT_NOT_ACCEPTED;
+    @Value("${MSG_START_REGISTRATION}")
+    private String MSG_START_REGISTRATION;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
@@ -88,6 +90,8 @@ public class BotConfig {
     private String BUT_GO_TO_MAIN;
     @Value("${BUT_GO_TO_SHELTER_SELECT}")
     private String BUT_GO_TO_SHELTER_SELECT;
+    @Value("${BUT_SET_DATA_FROM_USER}")
+    private String BUT_SET_DATA_FROM_USER;
 
     @Bean
     public TelegramBot telegramBot() {

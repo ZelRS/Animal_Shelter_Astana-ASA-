@@ -110,6 +110,20 @@ public class SpecificKeyboardCreator {
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
+
+    /**
+     * клавиатура для сообщения, где пользователя просят внести свои контактные данные
+     */
+    public Keyboard startRegistrationMessageKeyBoard() {
+        log.info("Creating keyboard markup for set personal data of user");
+
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_SET_DATA_FROM_USER(), BUT_SET_DATA_FROM_USER.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+
+    }
+
 //    ...... клавиатуры для других типов сообщений.....
 
 }

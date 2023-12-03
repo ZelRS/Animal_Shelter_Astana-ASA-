@@ -18,8 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static pro.sky.telegramBot.enums.Command.REPORT;
-import static pro.sky.telegramBot.enums.Command.START;
+import static pro.sky.telegramBot.enums.Command.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
@@ -94,6 +93,11 @@ public class CommandActionHandler implements ActionHandler {
             } else {
                 messageSender.sendNotSupportedMessage(chatId);
             }
+        });
+
+        commandMap.put(INFO_TABLE.getName(), (firstName, lastName, chatId) -> {
+            log.info("Received INFO_TABLE command");
+            messageSender.sendInfoTableToUserDocumentMessage(chatId);
         });
 
         //Меню для дополнительной информации по приюту
