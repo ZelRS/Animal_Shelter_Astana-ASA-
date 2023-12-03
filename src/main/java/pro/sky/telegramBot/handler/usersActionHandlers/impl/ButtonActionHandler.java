@@ -11,7 +11,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pro.sky.telegramBot.enums.CallbackData.*;
+import static pro.sky.telegramBot.entity.Button.CallbackData.*;
 
 /**
  * класс для обработки сообщения, которое должно быть выслано пользователю<br>

@@ -10,7 +10,7 @@ import pro.sky.telegramBot.entity.Button;
 import java.util.ArrayList;
 import java.util.List;
 
-import static pro.sky.telegramBot.enums.CallbackData.*;
+import static pro.sky.telegramBot.entity.Button.CallbackData.*;
 
 /**
  * методы класса получают логику создания конкретной однострочной<br>
