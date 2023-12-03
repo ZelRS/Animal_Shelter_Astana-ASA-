@@ -19,6 +19,7 @@ public enum CallbackData {
     BUT_START_REGISTRATION("start_registration_but"),
     BUT_FILL_OUT_REPORT_ON("but_fill_out_report_on"),
     BUT_FILL_OUT_REPORT_OFF("but_fill_out_report_off"),
+    BUT_SET_DATA_FROM_USER("but_set_data_from_user"),
 
     // навигационные кнопки для модуля информации о приюте
     BUT_MORE_INFORMATION("but_more_information"),

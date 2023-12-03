@@ -52,7 +52,7 @@ public class ButtonActionHandler implements ActionHandler {
 // Роман
         buttonMap.put(BUT_START_REGISTRATION.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed BUT_START_REGISTRATION button");
-            messageSender.sendStartRegistrationMessage(chatId, firstName);
+            messageSender.sendStartRegistrationMessage(chatId);
         });
 
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА ЮРИЯ ПЕТУХОВА

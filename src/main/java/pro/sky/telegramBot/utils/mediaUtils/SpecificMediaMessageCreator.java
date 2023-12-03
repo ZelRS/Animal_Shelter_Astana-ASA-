@@ -203,6 +203,18 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createTXTDocumentMessage(params);
     }
 
+    /**
+     * сборка компонентов для отправки документа,<br>
+     * когда пользователь выбрал команду /info_table
+     */
+    public SendDocument createInfoTableDocumentMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath("/documents/info_table.xlsx");
+        params.setFileName("info_table");
+        return mediaMessageCreator.createInfoTableXLSXDocumentMessage(params);
+    }
+
 
 //    .......  медиа-сообщения для других целей......
 

@@ -115,6 +115,29 @@ public class MediaLoader {
     }
 
     /**
+     * загрузка документа в формате txt для образца таблицы заполнения контактных данных пользователя
+     */
+    public SendDocument infoTableXLSXDocumentLoader(long chatId, String filePath, String fileName) {
+        log.info("Creating send xlsx document object");
+        try (InputStream fileStream = getClass().getResourceAsStream(filePath)) {
+            if (fileStream != null) {
+                File tempFile = File.createTempFile("info_table", ".xlsx");
+                Files.copy(fileStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                InputFile report = new InputFile(tempFile, fileName, "application/xlsx");
+                return new SendDocument(chatId, report.getFile());
+            } else {
+                log.error("Creating send xlsx document object failed");
+                return null;
+            }
+        } catch (IOException e) {
+            log.error("Creating send xlsx document object failed");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
      * метод для масштабирования картинки
      */
 //    public byte[] resizeImage(MultipartFile file, Integer imageNewWidth) throws Exception {
