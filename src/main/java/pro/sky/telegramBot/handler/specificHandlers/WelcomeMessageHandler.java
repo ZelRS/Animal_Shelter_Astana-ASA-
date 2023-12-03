@@ -1,6 +1,5 @@
 package pro.sky.telegramBot.handler.specificHandlers;
 
-import com.pengrad.telegrambot.request.SendDocument;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -54,7 +53,8 @@ public class WelcomeMessageHandler {
 //                messageSender.sendChooseShelterMessage(chatId);
 //                break;
             case POTENTIAL:
-                messageSender.sendInfoForPotentialUserMessage(chatId);
+                messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
+//                messageSender.sendInfoForPotentialUserMessage(chatId);
                 break;
 //            case PROBATION:
 //                messageSender.sendInfoForProbationUserMessage(chatId);

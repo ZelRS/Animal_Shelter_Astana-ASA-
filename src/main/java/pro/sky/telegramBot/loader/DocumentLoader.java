@@ -42,4 +42,23 @@ public class DocumentLoader {
         }
         return excelFileReader.getValues(fileInputStream);
     }
+
+    public List<String> readInfoTable(Document document) {
+        // Получаем параметры документа
+        String fileId = document.fileId();
+
+        // Преобразуем файл в InputStream
+        GetFile getFileRequest = new GetFile(fileId);
+        GetFileResponse getFileResponse = bot.execute(getFileRequest);
+
+        byte[] fileInputStream = null;
+        if (getFileResponse.isOk()) {
+            try {
+                fileInputStream = bot.getFileContent(getFileResponse.file());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return excelFileReader.getInfoTableValues(fileInputStream);
+    }
 }

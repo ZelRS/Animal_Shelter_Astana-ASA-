@@ -69,9 +69,55 @@ public class ExcelFileReader {
         }
 
     /**
+     * Метод для извлечения значений из файла с личными данными пользователя
+     */
+    public List<String> getInfoTableValues(byte[] inputStream) {
+        List<String> values = new ArrayList<>();
+        try {
+            // Получаем рабочую книгу из inputStream
+            Workbook workbook = new XSSFWorkbook(new ByteArrayInputStream(inputStream));
+
+            // Получаем первый лист документа
+            Sheet sheet = workbook.getSheetAt(0);
+
+            // Получаем значения из нужных ячеек
+            String valueB1 = getCellValue(sheet, "B1");
+            log.info("Get value B1: {}", valueB1);
+
+            String valueB2 = getCellValue(sheet, "B2");
+            log.info("Get value B2: {}", valueB2);
+
+            String valueB3 = getCellValue(sheet, "B3");
+            log.info("Get value B3: {}", valueB3);
+
+            String valueB4 = getCellValue(sheet, "B4");
+            log.info("Get value B4: {}", valueB4);
+
+            String valueB5 = getCellValue(sheet, "B5");
+            log.info("Get value B5: {}", valueB5);
+
+            String dateB6 = getCellValue(sheet, "B6");
+            log.info("Get value B6: {}", dateB6);
+
+            // Складываем в список полученные значения
+            values.add(valueB1);
+            values.add(valueB2);
+            values.add(valueB3);
+            values.add(valueB4);
+            values.add(valueB5);
+            values.add(dateB6);
+
+            // Закрываем рабочую книгу
+            workbook.close();
+        } catch (IOException e) {
+            log.error("Error reading Excel file", e);
+        }
+        return values;
+    }
+
+    /**
      * Метод для извлечения значений из конкретных ячеек документа
      */
-
     // Метод получения параметров из выбранных ячеек в виде строковых переменных
     private static String getCellValue(Sheet sheet, String cellReference) {
         log.info("Trying to get cell value for cell reference: {}", cellReference);

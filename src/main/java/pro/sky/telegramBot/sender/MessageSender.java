@@ -340,7 +340,6 @@ public class MessageSender {
     public void sendStartRegistrationMessage(Long chatId) {
         log.info("Sending info_table sample document to {}", chatId);
         SendMessage message = new SendMessage(chatId, config.getMSG_START_REGISTRATION()).parseMode(HTML);
-        message.replyMarkup(specificKeyboardCreator.startRegistrationMessageKeyBoard());
         messageExecutor.executeHTMLMessage(message);
     }
 

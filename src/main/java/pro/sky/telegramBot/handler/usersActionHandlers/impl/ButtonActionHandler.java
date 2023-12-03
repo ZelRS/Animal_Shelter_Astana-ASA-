@@ -37,19 +37,17 @@ public class ButtonActionHandler implements ActionHandler {
      */
     @PostConstruct
     public void init() {
-
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА РОМАНА
         buttonMap.put(BUT_TAKING_PET.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed BUT_TAKING_PET button");
             messageSender.sendTakingPetPhotoMessage(chatId, firstName);
         });
-// Роман
+
         buttonMap.put(BUT_CARE_PET_REC.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed BUT_CARE_PET_RECOMMENDATIONS button");
             messageSender.sendCarePetRecMessage(chatId);
         });
 
-// Роман
         buttonMap.put(BUT_START_REGISTRATION.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed BUT_START_REGISTRATION button");
             messageSender.sendStartRegistrationMessage(chatId);
