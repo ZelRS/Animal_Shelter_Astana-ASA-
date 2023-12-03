@@ -13,6 +13,7 @@ import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
+import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
@@ -42,7 +43,7 @@ public class MessageSender {
     private final BotConfig config;
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
-//    private final MediaLoader mediaLoader;
+    private final MediaLoader mediaLoader;
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -337,14 +338,10 @@ public class MessageSender {
      * когда он нажал на кнопку "Начать оформление"
      */
 //    после внесению данных о себе, пользователю будет присвоен статус POTENTIAL
-    public void sendStartRegistrationMessage(Long chatId, String firstName) {
-//        log.info("Sending \"Start Registration\" message to {}", chatId);
-        try {
-//ФУНКЦИОНАЛ НАХОДИТСЯ В РАЗРАБОТКЕ. Roman
-            sendDefaultHTMLMessage(chatId);
-        } catch (Exception e) {
-            log.error("Failed to send \"Start Registration\" message to {}", chatId, e);
-        }
+    public void sendStartRegistrationMessage(Long chatId) {
+        log.info("Sending info_table sample document to {}", chatId);
+        SendMessage message = new SendMessage(chatId, config.getMSG_START_REGISTRATION()).parseMode(HTML);
+        messageExecutor.executeHTMLMessage(message);
     }
 
     /**
@@ -417,6 +414,23 @@ public class MessageSender {
         } catch (Exception e) {
             log.error("Failed to send recommendation document to {}", chatId, e);
         }
+    }
+
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он выбирает команду "/info_table", если пользователь взял питомца
+     */
+    // пользователь получает документ в формате xlsx для введения контактных данных
+    public void sendInfoTableToUserDocumentMessage(Long chatId) {
+        log.info("Sending info_table document message to {}", chatId);
+        try {
+            SendDocument document;
+            document = specificMediaMessageCreator.createInfoTableDocumentMessage(chatId);
+            messageExecutor.executeDocument(document);
+        } catch (Exception e) {
+            log.error("Failed to send info_table document message to {}", chatId, e);
+        }
+
     }
 
     //    .........отправка сообщений пользователю на любые другие случаи........

@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.utils.mediaUtils;
+package pro.sky.telegramBot.loader;
 
 import com.pengrad.telegrambot.model.request.InputFile;
 import com.pengrad.telegrambot.request.SendDocument;
@@ -91,7 +91,10 @@ public class MediaLoader {
         }
     }
 
-    public SendDocument TXTDocumentLoader(Long chatId, String filePath, String fileName) {
+    /**
+     * загрузка документа в формате txt
+     */
+    public SendDocument TXTDocumentLoader(Long chatId, String filePath, String fileName){
         log.info("Creating send txt document object");
         try (InputStream fileStream = getClass().getResourceAsStream(filePath)) {
             if (fileStream != null) {
@@ -106,6 +109,29 @@ public class MediaLoader {
             }
         } catch (IOException e) {
             log.error("Creating send txt document object failed");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * загрузка документа в формате txt для образца таблицы заполнения контактных данных пользователя
+     */
+    public SendDocument infoTableXLSXDocumentLoader(long chatId, String filePath, String fileName) {
+        log.info("Creating send xlsx document object");
+        try (InputStream fileStream = getClass().getResourceAsStream(filePath)) {
+            if (fileStream != null) {
+                File tempFile = File.createTempFile("info_table", ".xlsx");
+                Files.copy(fileStream, tempFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                InputFile report = new InputFile(tempFile, fileName, "application/xlsx");
+                return new SendDocument(chatId, report.getFile());
+            } else {
+                log.error("Creating send xlsx document object failed");
+                return null;
+            }
+        } catch (IOException e) {
+            log.error("Creating send xlsx document object failed");
             e.printStackTrace();
             return null;
         }

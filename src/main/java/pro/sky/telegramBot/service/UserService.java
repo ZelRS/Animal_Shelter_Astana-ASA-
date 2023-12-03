@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.service;
 
 import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.model.users.UserInfo;
 
 
 /**
@@ -27,4 +28,10 @@ public interface UserService {
      * изменить пользователя в БД
      */
     User update(User user);
+
+    /**
+     * создать и сохранить информацию о пользователе пользователя в БД
+     */
+    UserInfo create(UserInfo userInfo);
+
 }
