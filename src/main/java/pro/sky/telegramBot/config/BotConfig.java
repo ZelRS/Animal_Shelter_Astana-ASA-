@@ -56,6 +56,10 @@ public class BotConfig {
     private String MSG_SEND_REPORT_TWO_OPTIONS;
     @Value("${MSG_SEND_REPORT_ONE_OPTION}")
     private String MSG_SEND_REPORT_ONE_OPTION;
+    @Value("${MSG_REPORT_ACCEPTED}")
+    private String MSG_REPORT_ACCEPTED;
+    @Value("${MSG_REPORT_NOT_ACCEPTED}")
+    private String MSG_REPORT_NOT_ACCEPTED;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
