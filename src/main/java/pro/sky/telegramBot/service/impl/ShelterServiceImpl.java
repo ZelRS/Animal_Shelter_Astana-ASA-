@@ -10,7 +10,7 @@ import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.repository.ShelterRepository;
 import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.utils.StringListCreator;
-import pro.sky.telegramBot.utils.mediaUtils.MediaLoader;
+//import pro.sky.telegramBot.utils.mediaUtils.MediaLoader;
 
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository shelterRepository;
-    private final MediaLoader mediaLoader;
+//    private final MediaLoader mediaLoader;
 
     /**
      * создать и сохранить приют в БД
@@ -98,7 +98,7 @@ public class ShelterServiceImpl implements ShelterService {
     public boolean uploadSchema(Long id, MultipartFile schema, Integer imageNewWidth) throws Exception {
         Optional<Shelter> shelter = shelterRepository.findById(id);
         if (shelter.isPresent()) {
-            shelter.get().setSchema(mediaLoader.resizeImage(schema, imageNewWidth));
+//            shelter.get().setSchema(mediaLoader.resizeImage(schema, imageNewWidth));
         } else {
             return false;
         }
