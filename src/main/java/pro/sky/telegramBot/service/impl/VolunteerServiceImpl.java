@@ -29,7 +29,7 @@ public class VolunteerServiceImpl implements VolunteerService {
     }
 
     @Override
-    public List<Volunteer> findVolunteerByChayId(Long chatId) {
-        return volunteerRepository.findByChatId(chatId);
+    public List<Volunteer> findAllVolunteerByChatId(Long chatId) {
+        return volunteerRepository.findAllByChatId(chatId);
     }
 }

@@ -10,5 +10,5 @@ public interface VolunteerService {
 
     Volunteer update(Volunteer volunteer);
 
-    List<Volunteer> findVolunteerByChayId(Long chatId);
+    List<Volunteer> findAllVolunteerByChatId(Long chatId);
 }
