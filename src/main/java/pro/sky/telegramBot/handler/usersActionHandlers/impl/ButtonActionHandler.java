@@ -79,11 +79,10 @@ public class ButtonActionHandler implements ActionHandler {
             // messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
 
-// ОТСЮДА НАЧИНАЕТСЯ РАБОТА ЮРИЯ ЯЦЕНКО
+//точка входа в информационное меню приюта
         buttonMap.put(BUT_GET_FULL_INFO.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed GET_FULL_INFO button");
             messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
-
         });
         buttonMap.put(BUT_WANT_DOG.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed WANT_DOG button");
@@ -92,6 +91,24 @@ public class ButtonActionHandler implements ActionHandler {
         buttonMap.put(BUT_WANT_CAT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed WANT_CAT button");
             messageSender.sendCatSheltersListPhotoMessage(chatId);
+        });
+
+//возврат с навигационного меню в меню информации о приюте
+        buttonMap.put(BUT_MORE_INFORMATION.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed BUT_MORE_INFORMATION button");
+            messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
+        });
+
+//Возврат в главное меню с навигационных кнопок
+        buttonMap.put(BUT_GO_TO_MAIN.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed BUT_GO_TO_MAIN button");
+            messageSender.sendShelterFunctionalPhotoMessage(chatId);
+        });
+
+//возврат к выбору приюта c навигационных кнопок
+        buttonMap.put(BUT_GO_TO_SHELTER_SELECT.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed BUT_GO_TO_SHELTER_SELECT button");
+            messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId);
         });
     }
 

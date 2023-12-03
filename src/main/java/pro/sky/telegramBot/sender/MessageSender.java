@@ -6,14 +6,17 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
+import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
+import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
 import javax.transaction.Transactional;
@@ -21,6 +24,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
+import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
 
 /**
  * методы класса группируют компоненты и формируют сообщения ответа,<br>
@@ -37,6 +41,7 @@ public class MessageSender {
     private final SpecificKeyboardCreator specificKeyboardCreator;
     private final BotConfig config;
     private final UserService userService;
+    private final MediaMessageCreator mediaMessageCreator;
 //    private final MediaLoader mediaLoader;
 
     /**
@@ -166,16 +171,118 @@ public class MessageSender {
     }
 
     /////////////////////////    ЮРА ЯЦЕНКО, ТВОЙ МЕТОД ТУТ)))))))
+
     /**
      * метод формирует и отправляет сообщение пользователю<br>
      * для предоставления подробной информации о приюте
      */
     public void sendShelterFullInfoHTMLMessage(String firstName, String lastName, Long chatId) {
-        log.debug("Sending hello message to user {} with ChatID {}", firstName + " " + lastName, chatId);
         User user = userService.findUserByChatId(chatId);
-        messageExecutor.executeHTMLMessage(new SendMessage(chatId, "Здравствуйте, " + firstName + " " + lastName + ".\n\n" +
-                "Мы рады вас приветствовать в приюте \"" + user.getShelter().getName() + "\n\n" + "Описание приюта:\n" +
-                user.getShelter().getDescription()));
+        log.debug("Sending Shelter full information to user {} with ChatID {}", firstName + " " + lastName, chatId);
+        StringBuilder caption = new StringBuilder();
+        caption.append("Здравствуйте, <b>").append(firstName).append(" ").append(lastName).append("</b>.\n\n")
+                .append("Мы рады вас приветствовать в приюте \"").append(user.getShelter().getName()).append("\"\n\n")
+                .append(getMenuBuilder());
+        try {
+            MediaMessageParams params = new MediaMessageParams();
+            params.setChatId(chatId);
+            params.setFilePath(SHELTER_INFORMATION_MSG_IMG.getPath());
+            params.setCaption(caption.toString());
+            messageExecutor.executePhotoMessage(mediaMessageCreator.createPhotoMessage(params)
+                    .replyMarkup(specificKeyboardCreator.shelterInformationMainKeyboard()));
+        } catch (Exception e) {
+            log.error("Failed to send info message to {}", chatId, e);
+        }
+    }
+
+    /**
+     * метод формирует строку для отображения информационного меню
+     */
+    @NotNull
+    private static StringBuilder getMenuBuilder() {
+        StringBuilder menuMessage = new StringBuilder();
+        menuMessage.append("<b>Выберите один из пунктов:</b>\n");
+        menuMessage.append("/details - Прочитать детальную информацию о приюте\n");
+        menuMessage.append("/address - Узнать где находится приют\n");
+        menuMessage.append("/schedule - График работы приюта, и часы приема\n");
+        menuMessage.append("/schema - Посмотреть схему проезда\n");
+        menuMessage.append("/sec_phone - Контакты для оформления пропуска\n");
+        menuMessage.append("/safety - Правила техники безопасности\n");
+        menuMessage.append("/callMe - Оставить контакты для обратной связи\n");
+        return menuMessage;
+    }
+
+//    Мне очень не нравится одинаковый код в методах ниже. Я потом сделаю рефактор чтоб было красиво.
+//    Юра, не надо подсказывать!!! Я хочу сам придумать :-)
+
+    /**
+     * Метод отображает дополнительную информацию о приюте
+     */
+    public void sendShelterDetailsMessage(Long chatId) {
+        User user = userService.findUserByChatId(chatId);
+        SendMessage message = new SendMessage(chatId, user.getShelter().getDescription());
+        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        messageExecutor.executeHTMLMessage(message);
+    }
+
+    /**
+     * Метод отображает адрес приюта
+     */
+    public void sendShelterAddressMessage(Long chatId) {
+        User user = userService.findUserByChatId(chatId);
+        SendMessage message = new SendMessage(chatId, user.getShelter().getAddress());
+        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        messageExecutor.executeHTMLMessage(message);
+    }
+
+    /**
+     * Метод отображает график работы приюта
+     */
+    public void sendShelterScheduleMessage(Long chatId) {
+        User user = userService.findUserByChatId(chatId);
+        SendMessage message = new SendMessage(chatId, user.getShelter().getSchedule());
+        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        messageExecutor.executeHTMLMessage(message);
+    }
+
+    /**
+     * Метод отображает схему проезда к приюту
+     */
+    public void sendShelterSchemaMessage(Long chatId) {
+        User user = userService.findUserByChatId(chatId);
+        SendPhoto sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
+        sendPhoto.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        messageExecutor.executePhotoMessage(sendPhoto);
+    }
+
+    /**
+     * Метод отображает номер телефона охраны для оформления пропуска
+     */
+    public void sendShelterSecurityPhoneMessage(Long chatId) {
+        User user = userService.findUserByChatId(chatId);
+        SendMessage message = new SendMessage(chatId, user.getShelter().getSecurityPhone());
+        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        messageExecutor.executeHTMLMessage(message);
+    }
+
+    /**
+     * Метод отображает правила техники безоасности для даного приюта
+     */
+    public void sendShelterSafetyRuleMessage(Long chatId) {
+        User user = userService.findUserByChatId(chatId);
+        SendMessage message = new SendMessage(chatId, user.getShelter().getSafetyRules());
+        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        messageExecutor.executeHTMLMessage(message);
+    }
+
+    /**
+     * Метод создает реквест волонтеру для обратного звонка пользователю
+     */
+    public void callMeBackRequest(Long chatId) {
+        User user = userService.findUserByChatId(chatId);
+        SendMessage message = new SendMessage(chatId, user.getShelter().getSafetyRules());
+        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        messageExecutor.executeHTMLMessage(message);
     }
 
     /**
@@ -251,8 +358,8 @@ public class MessageSender {
         LocalDateTime currentTime = LocalDateTime.now();
         SendPhoto sendPhoto;
         try {
-            if(currentTime.toLocalTime().isAfter(LocalTime.of(18, 0))
-               && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))){
+            if (currentTime.toLocalTime().isAfter(LocalTime.of(18, 0))
+                    && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))) {
                 // объявляется переменная SendPhoto для конкретного сообщения
                 sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
                 sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());

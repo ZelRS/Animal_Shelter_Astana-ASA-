@@ -18,8 +18,7 @@ public enum MessageImage {
     CARE_CAT_REC_MSG_IMG("/photos/care_cat_rec_msg.jpg"),
     TWO_OPTIONS_SEND_REPORT_MSG_IMG("/photos/two_options.jpg"),
     ONE_OPTION_SEND_REPORT_MSG_IMG("/photos/one_option.jpg"),
-    REPORT_ACCEPTED_MSG_IMG("/photos/report_accepted.jpg"),
-    REPORT_NOT_ACCEPTED_MSG_IMG("/photos/report_not_accepted.jpg");
+    SHELTER_INFORMATION_MSG_IMG("/photos/shelter_information.jpg");
 
     private final String path;
 

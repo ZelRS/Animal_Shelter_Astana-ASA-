@@ -61,6 +61,7 @@ public class SpecificKeyboardCreator {
         buttons.add(new Button(config.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
+
     /**
      * метод формирует для сообщения активную кнопку ,<br>
      * загрузки отчета
@@ -71,6 +72,7 @@ public class SpecificKeyboardCreator {
         buttons.add(new Button(config.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_ON.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
+
     /**
      * метод формирует для сообщения неактивную кнопку ,<br>
      * загрузки отчета
@@ -82,6 +84,32 @@ public class SpecificKeyboardCreator {
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
+    /**
+     * функциональная клавиатура для информационного раздела приюта
+     */
+    public Keyboard shelterInformationFunctionalKeyboard() {
+        log.info("Creating keyboard markup for shelters information windows");
+
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_MORE_INFORMATION(), BUT_MORE_INFORMATION.getCallbackData()),
+                new Button(config.getBUT_GO_TO_MAIN(), BUT_GO_TO_MAIN.getCallbackData()),
+                new Button(config.getBUT_GO_TO_SHELTER_SELECT(), BUT_GO_TO_SHELTER_SELECT.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+
+    /**
+     * клавиатура главного окна для информационного раздела приюта
+     */
+    public Keyboard shelterInformationMainKeyboard() {
+        log.info("Creating keyboard markup for shelters information windows");
+
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_GO_TO_MAIN(), BUT_GO_TO_MAIN.getCallbackData()),
+                new Button(config.getBUT_GO_TO_SHELTER_SELECT(), BUT_GO_TO_SHELTER_SELECT.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
 //    ...... клавиатуры для других типов сообщений.....
 
 }
