@@ -56,6 +56,10 @@ public class BotConfig {
     private String MSG_SEND_REPORT_TWO_OPTIONS;
     @Value("${MSG_SEND_REPORT_ONE_OPTION}")
     private String MSG_SEND_REPORT_ONE_OPTION;
+    @Value("${MSG_REPORT_ACCEPTED}")
+    private String MSG_REPORT_ACCEPTED;
+    @Value("${MSG_REPORT_NOT_ACCEPTED}")
+    private String MSG_REPORT_NOT_ACCEPTED;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
@@ -78,6 +82,12 @@ public class BotConfig {
     private String BUT_FILL_OUT_REPORT_ON;
     @Value("${BUT_FILL_OUT_REPORT_OFF}")
     private String BUT_FILL_OUT_REPORT_OFF;
+    @Value("${BUT_MORE_INFORMATION}")
+    private String BUT_MORE_INFORMATION;
+    @Value("${BUT_GO_TO_MAIN}")
+    private String BUT_GO_TO_MAIN;
+    @Value("${BUT_GO_TO_SHELTER_SELECT}")
+    private String BUT_GO_TO_SHELTER_SELECT;
 
     @Bean
     public TelegramBot telegramBot() {

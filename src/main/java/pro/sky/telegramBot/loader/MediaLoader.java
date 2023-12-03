@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.utils.mediaUtils;
+package pro.sky.telegramBot.loader;
 
 import com.pengrad.telegrambot.model.request.InputFile;
 import com.pengrad.telegrambot.request.SendDocument;
@@ -6,10 +6,12 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import com.pengrad.telegrambot.request.SendVideo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
@@ -65,10 +67,11 @@ public class MediaLoader {
         InputFile SoftGPT = new InputFile(tempFile, fileName, "application/pdf");
         return new SendDocument(chatId, SoftGPT.getFile());
     }
+
     /**
      * загрузка документа в формате xlsx
      */
-    public SendDocument XLSXDocumentLoader(Long chatId, String filePath, String fileName){
+    public SendDocument XLSXDocumentLoader(Long chatId, String filePath, String fileName) {
         log.info("Creating send xlsx document object");
         try (InputStream fileStream = getClass().getResourceAsStream(filePath)) {
             if (fileStream != null) {
@@ -110,4 +113,24 @@ public class MediaLoader {
             return null;
         }
     }
+
+    /**
+     * метод для масштабирования картинки
+     */
+//    public byte[] resizeImage(MultipartFile file, Integer imageNewWidth) throws Exception {
+//        try (InputStream inputStream = file.getInputStream();
+//             BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
+//             ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream()) {
+//            BufferedImage image = ImageIO.read(bufferedInputStream);
+//
+//            int height = image.getHeight() / (image.getWidth() / imageNewWidth);
+//            BufferedImage resizedImage = new BufferedImage(imageNewWidth, height, image.getType());
+//            Graphics2D graphics = resizedImage.createGraphics();
+//            graphics.drawImage(image, 0, 0, imageNewWidth, height, null);
+//            graphics.dispose();
+//
+//            ImageIO.write(resizedImage, "jpg", arrayOutputStream);
+//            return arrayOutputStream.toByteArray();
+//        }
+//    }
 }
