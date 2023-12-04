@@ -71,9 +71,9 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void fillOutReport(Long chatId, String callbackData) {
         String[] parts = callbackData.split("_");
-        Long reportId = Long.parseLong(parts[2]);
-        int questionIdentifier = Integer.parseInt(parts[1]);
         int buttonIdentifier = Integer.parseInt(parts[0]);
+        int questionIdentifier = Integer.parseInt(parts[1]);
+        Long reportId = Long.parseLong(parts[2]);
         Report report = reportRepository.findById(reportId).orElseThrow();
 
         if (buttonIdentifier == 11) {
