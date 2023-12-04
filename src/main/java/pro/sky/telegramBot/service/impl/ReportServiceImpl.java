@@ -65,6 +65,8 @@ public class ReportServiceImpl implements ReportService {
 
         return saveReport(newReport);
     }
+
+    List<QuestionsForReport> questions = new ArrayList<>(Arrays.asList(QuestionsForReport.values()));
 //Метод инициирует вопросы пользователю и сохраняет ответы в отчете
     @Override
     public void fillOutReport(Long chatId, String callbackData) {
@@ -73,7 +75,7 @@ public class ReportServiceImpl implements ReportService {
         int questionIdentifier = Integer.parseInt(parts[1]);
         int buttonIdentifier = Integer.parseInt(parts[0]);
         Report report = reportRepository.findById(reportId).orElseThrow();
-        List<QuestionsForReport> questions = new ArrayList<>(Arrays.asList(QuestionsForReport.values()));
+
         if (buttonIdentifier == 11) {
             log.info("Was invoked method of sending question number {} by ReportService", questionIdentifier);
             messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(0).getQuestion(), questionIdentifier, reportId);
@@ -81,23 +83,15 @@ public class ReportServiceImpl implements ReportService {
             switch (questionIdentifier) {
                 case 0:
                     report.setDietAppetite(buttonIdentifier);
-                    reportRepository.save(report);
-                    messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(1).getQuestion(), 1, reportId);
                     break;
                 case 1:
                     report.setDietPreferences(buttonIdentifier);
-                    reportRepository.save(report);
-                    messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(2).getQuestion(), 2, reportId);
                     break;
                 case 2:
                     report.setDietAllergies(buttonIdentifier);
-                    reportRepository.save(report);
-                    messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(3).getQuestion(), 3, reportId);
                     break;
                 case 3:
                     report.setHealthStatus(buttonIdentifier);
-                    reportRepository.save(report);
-                    messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(4).getQuestion(), 4, reportId);
                     break;
                 case 4:
                     report.setBehaviorChange(buttonIdentifier);
@@ -107,6 +101,12 @@ public class ReportServiceImpl implements ReportService {
                     userService.update(user);
                     messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(1).getQuestion(), 5, reportId);
                     break;
+            }
+            reportRepository.save(report);
+
+            int nextQuestionIdentifier = questionIdentifier + 1;
+            if (nextQuestionIdentifier < questions.size()) {
+                messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(nextQuestionIdentifier).getQuestion(), nextQuestionIdentifier, reportId);
             }
         }
     }
