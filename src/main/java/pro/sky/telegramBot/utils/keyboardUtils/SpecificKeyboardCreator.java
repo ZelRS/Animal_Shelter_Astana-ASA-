@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.Button;
+import pro.sky.telegramBot.enums.QuestionsForReport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +110,15 @@ public class SpecificKeyboardCreator {
                 new Button(config.getBUT_GO_TO_SHELTER_SELECT(), BUT_GO_TO_SHELTER_SELECT.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
+    }
+//Метод создает клавиатуру для ответа пользователя на вопросы в отчете
+    public Keyboard questionForReportMessageKeyboard(int questionIdentifier, Long reportId) {
+        List<Button> buttons = new ArrayList<>();
+        for(int i = 0; i <= 10; i++) {
+            Button button = new Button(Integer.toString(i), i + "_" + questionIdentifier + "_" + reportId);
+            buttons.add(button);
+        }
+        return keyboardCreator.createInlineKeyboardTwoRow(buttons);
     }
 
 //    ...... клавиатуры для других типов сообщений.....

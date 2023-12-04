@@ -1,7 +1,10 @@
 package pro.sky.telegramBot.service;
 
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.users.UserInfo;
+
+import java.util.Optional;
 
 
 /**
@@ -33,5 +36,7 @@ public interface UserService {
      * создать и сохранить информацию о пользователе пользователя в БД
      */
     UserInfo create(UserInfo userInfo);
+
+    Optional<User> findById(Long id);
 
 }

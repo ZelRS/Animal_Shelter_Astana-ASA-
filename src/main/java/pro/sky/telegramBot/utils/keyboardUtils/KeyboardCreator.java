@@ -38,6 +38,30 @@ public class KeyboardCreator {
 
         return inlineKeyboardMarkup;
     }
+    //Метод создает два ряда по 5 кнопок
+    public InlineKeyboardMarkup createInlineKeyboardTwoRow(List<Button> buttonNames) {
+        List<InlineKeyboardButton> buttonsRow1 = new ArrayList<>();
+        List<InlineKeyboardButton> buttonsRow2 = new ArrayList<>();
+
+        for (int i = 0; i < buttonNames.size(); i++) {
+            Button button = buttonNames.get(i);
+            String callbackData = button.getCallbackData();
+            String buttonName = button.getName();
+            InlineKeyboardButton inlineButton = new InlineKeyboardButton(buttonName).callbackData(callbackData);
+
+            if (i < buttonNames.size() / 2) {
+                buttonsRow1.add(inlineButton);
+            } else {
+                buttonsRow2.add(inlineButton);
+            }
+        }
+
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.addRow(buttonsRow1.toArray(new InlineKeyboardButton[0]));
+        inlineKeyboardMarkup.addRow(buttonsRow2.toArray(new InlineKeyboardButton[0]));
+
+        return inlineKeyboardMarkup;
+    }
     public InlineKeyboardMarkup sendWithInlineKeyboardLine(List<String> buttonsNames) {
 
 
