@@ -7,10 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
+import pro.sky.telegramBot.enums.QuestionsForReport;
 import pro.sky.telegramBot.service.ShelterService;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static pro.sky.telegramBot.enums.MessageImage.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
@@ -213,6 +216,22 @@ public class SpecificMediaMessageCreator {
         params.setFilePath("/documents/info_table.xlsx");
         params.setFileName("info_table");
         return mediaMessageCreator.createInfoTableXLSXDocumentMessage(params);
+    }
+//Метод предоставляет данные для вопроса отчета
+    public SendPhoto createQuestionForReportMessage(Long chatId, String question) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(QUESTION_FOR_REPORT_IMG.getPath());
+        params.setCaption(question);
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+//Метод предоставляет данные для сообщения пользователю. что его отчет принят
+    public SendPhoto createReportAcceptedPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(REPORT_ACCEPTED_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_REPORT_ACCEPTED());
+        return mediaMessageCreator.createPhotoMessage(params);
     }
 
 

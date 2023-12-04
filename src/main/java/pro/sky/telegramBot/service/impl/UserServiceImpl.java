@@ -2,6 +2,7 @@ package pro.sky.telegramBot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.users.UserInfo;
@@ -10,6 +11,7 @@ import pro.sky.telegramBot.repository.UserRepository;
 import pro.sky.telegramBot.service.UserService;
 
 import javax.transaction.Transactional;
+import java.util.Optional;
 
 /**
  * сервис для обработки запросов к БД пользователей и информации о пользователях
@@ -59,4 +61,11 @@ public class UserServiceImpl implements UserService {
     public UserInfo create(UserInfo userInfo) {
         return userInfoRepository.save(userInfo);
     }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+
 }

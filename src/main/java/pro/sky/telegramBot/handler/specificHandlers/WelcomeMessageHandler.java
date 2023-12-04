@@ -56,9 +56,9 @@ public class WelcomeMessageHandler {
                 messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
 //                messageSender.sendInfoForPotentialUserMessage(chatId);
                 break;
-//            case PROBATION:
-//                messageSender.sendInfoForProbationUserMessage(chatId);
-//                break;
+            case PROBATION:
+                messageSender.sendReportPhotoMessage(chatId);
+                break;
             case UNTRUSTED:
                 messageSender.sendSorryWelcomePhotoMessage(user.getUserName(), chatId);
                 break;
