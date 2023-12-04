@@ -10,6 +10,7 @@ public enum UserState {
     FREE("свободный"),
     POTENTIAL("потенциальный усыновитель"),
     PROBATION("на испытательном сроке"),
+    PROBATION_REPORT("заполнение отчета"),
     TRUSTED("проверенный"),
     UNTRUSTED("не надежный"),
     BLOCKED("в черном списке");

@@ -11,13 +11,12 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.PetType;
+import pro.sky.telegramBot.enums.QuestionsForReport;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.service.UserService;
-import pro.sky.telegramBot.service.VolunteerService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
@@ -25,10 +24,15 @@ import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
+import static pro.sky.telegramBot.enums.UserState.PROBATION;
+import static pro.sky.telegramBot.enums.UserState.PROBATION_REPORT;
 
 /**
  * методы класса группируют компоненты и формируют сообщения ответа,<br>
@@ -46,8 +50,6 @@ public class MessageSender {
     private final BotConfig config;
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
-    private final VolunteerService volunteerService;
-//    private final MediaLoader mediaLoader;
     private final MediaLoader mediaLoader;
 
     /**
@@ -163,7 +165,7 @@ public class MessageSender {
             // если у приюта нет превью, будет высылать дефолтное превью
             if (user.getShelter().getPreview() != null && !user.getShelter().getPreview().equals("")) {
                 sendPhoto.caption("\"" + user.getShelter().getName() +
-                        "\"\n------------\n" + user.getShelter().getPreview());
+                                  "\"\n------------\n" + user.getShelter().getPreview());
             } else {
                 sendPhoto.caption(config.getMSG_SHELTER_DEFAULT_PREVIEW());
             }
@@ -361,10 +363,10 @@ public class MessageSender {
         SendPhoto sendPhoto;
         try {
             if (currentTime.toLocalTime().isAfter(LocalTime.of(18, 0))
-                    && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))) {
-                // объявляется переменная SendPhoto для конкретного сообщения
-                sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
-                sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
+                && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))) {
+            // объявляется переменная SendPhoto для конкретного сообщения
+            sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
+            sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
             } else {
                 sendPhoto = specificMediaMessageCreator.createReportSendOneOptionPhotoMessage(chatId);
                 sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportNotActiveMessageKeyboard());
@@ -453,19 +455,25 @@ public class MessageSender {
 
 
     }
-
     /**
-     * метод формирует и отправляет сообщение пользователю,<br>
-     * когда он нажал на кнопку "Позвать Волонтёра"
+     * Метод формирует и отправляет сообщение пользователю,<br>
+     * когда он заполняет отчет онлайн в боте
      */
-    public void sendCallVolunteerPhotoMessage(Long chatId) {
-        log.info("Sending a message to the user \"call a volunteer\" {}", chatId );
+    public void sendQuestionForReportPhotoMessage(Long chatId, String question, int questionIdentifier, Long reportId) {
+        log.info("Sending question photo message to {}", chatId);
         try {
-            SendPhoto sendPhoto;
-            sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
+            User user = userService.findUserByChatId(chatId);
+            if (user != null && user.getState().equals(PROBATION_REPORT)) {
+                SendPhoto sendPhoto = specificMediaMessageCreator.createQuestionForReportMessage(chatId, question);
+                sendPhoto.replyMarkup(specificKeyboardCreator.questionForReportMessageKeyboard(questionIdentifier, reportId));
+                messageExecutor.executePhotoMessage(sendPhoto);
+            } else {
+                SendPhoto sendPhoto = specificMediaMessageCreator.createReportAcceptedPhotoMessage(chatId);
+                messageExecutor.executePhotoMessage(sendPhoto);
+            }
         } catch (Exception e) {
-            log.info("Failed to send \"call a volunteer\" message to {}", chatId, e);
+            log.error("Failed to send question photo message to {}", chatId, e);
         }
     }
+
 }

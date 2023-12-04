@@ -4,14 +4,23 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.entity.Button;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
+import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.service.ReportService;
+import pro.sky.telegramBot.service.UserService;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static pro.sky.telegramBot.enums.CallbackData.*;
+import static pro.sky.telegramBot.entity.Button.CallbackData.*;
+import static pro.sky.telegramBot.enums.UserState.PROBATION;
+import static pro.sky.telegramBot.enums.UserState.PROBATION_REPORT;
 
 /**
  * класс для обработки сообщения, которое должно быть выслано пользователю<br>
@@ -23,6 +32,8 @@ import static pro.sky.telegramBot.enums.CallbackData.*;
 @Slf4j  // SLF4J logging
 public class ButtonActionHandler implements ActionHandler {
     private final MessageSender messageSender;
+    private final ReportService reportService;
+    private final UserService userService;
 
     @FunctionalInterface
     interface Button {
@@ -54,14 +65,37 @@ public class ButtonActionHandler implements ActionHandler {
         });
 
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА ЮРИЯ ПЕТУХОВА
+        //Обработчик кнопки "Отправить отчет", проверяется статус пользователя
         buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed SEND_REPORT button");
-            messageSender.sendReportPhotoMessage(chatId);
+            User user = userService.findUserByChatId(chatId);
+            if (user != null) {
+                UserState state = user.getState();
+                if (state != null && state.equals(PROBATION)) {
+                    messageSender.sendReportPhotoMessage(chatId);
+                } else {
+                    messageSender.sendDefaultHTMLMessage(chatId);
+                }
+            }
         });
+        //Если кнопка "Отправить отчет" доступна, то меняется статус пользователя и инициируется заполнение отчета
         buttonMap.put(BUT_FILL_OUT_REPORT_ON.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed FILL_OUT_REPORT button");
-//            messageSender.sendReportFillOutMessage(chatId);
+            User user = userService.findUserByChatId(chatId);
+            if (user != null) {
+                UserState state = user.getState();
+                if (state != null && state.equals(PROBATION)) {
+                    log.info("Change of user state to PROBATION_REPORT");
+                    user.setState(PROBATION_REPORT);
+                    userService.update(user);
+                    log.info("Was invoked method to fill out the report");
+                    reportService.createReportOnline(chatId);
+                } else {
+                    messageSender.sendDefaultHTMLMessage(chatId);
+                }
+            }
         });
+        //Кнопка сделана без ответа, так как отключена в нерабочее время
         buttonMap.put(BUT_FILL_OUT_REPORT_OFF.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed FILL_OUT_REPORT button");
         });
@@ -103,6 +137,7 @@ public class ButtonActionHandler implements ActionHandler {
             log.info("Pressed BUT_GO_TO_SHELTER_SELECT button");
             messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId);
         });
+
     }
 
     /**
@@ -112,13 +147,20 @@ public class ButtonActionHandler implements ActionHandler {
      */
     @Override
     public void handle(String callbackData, String firstName, String lastName, Long chatId) {
-        Button commandToRun = buttonMap.get(callbackData.toLowerCase());
-        if (commandToRun != null) {
-            commandToRun.run(firstName, lastName, chatId);
+        User user = userService.findUserByChatId(chatId);
+        // Все нажатия кнопок пользователя с данным статусом проскакивают без обработки в класс заполнения отчета
+        if (user != null && user.getState().equals(PROBATION_REPORT)) {
+            log.info("Was invoked method of sending question by callbackData {} in handler", callbackData);
+            reportService.fillOutReport(chatId, callbackData);
         } else {
-            log.warn("No handler found for button: {}", callbackData);
-            // отправка дефолтного сообщения
-            messageSender.sendDefaultHTMLMessage(chatId);
+            Button commandToRun = buttonMap.get(callbackData.toLowerCase());
+            if (commandToRun != null) {
+                commandToRun.run(firstName, lastName, chatId);
+            } else {
+                log.warn("No handler found for button: {}", callbackData);
+                // отправка дефолтного сообщения
+                messageSender.sendDefaultHTMLMessage(chatId);
+            }
         }
     }
 }
