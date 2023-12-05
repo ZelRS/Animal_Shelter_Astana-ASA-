@@ -121,6 +121,29 @@ public class SpecificKeyboardCreator {
         return keyboardCreator.createInlineKeyboardTwoRow(buttons);
     }
 
+    public Keyboard volunteerMenuMessageKeyboard() {
+        log.info("Creating keyboard markup for volunteer");
+
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_STATISTIC_NEW_USER(), BUT_STATISTIC_NEW_USER.getCallbackData()),
+                new Button(config.getBUT_STATISTIC_SHELTER(), BUT_STATISTIC_SHELTER.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+
+    /**
+     * клавиатура под сообщением, когда пользователь приглашается в приют
+     */
+    public Keyboard afterRegistrationFinalKeyboard() {
+        log.info("Creating after registration final keyboard markup for user");
+
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()),
+                new Button(config.getBUT_GET_FULL_INFO(), BUT_GET_FULL_INFO.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+
     /**
      * клавиатура для сообщения, где пользователя просят внести свои контактные данные
      */

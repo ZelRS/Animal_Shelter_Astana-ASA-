@@ -64,6 +64,12 @@ public class BotConfig {
     private String MSG_START_REGISTRATION;
     @Value("${MSG_SAVING_USER_INFO_SUCCESS}")
     private String MSG_SAVING_USER_INFO_SUCCESS;
+    @Value(("${MSG_SAVING_USER_PERSONAL_DOCS_SCREENS_SUCCESS}"))
+    private String MSG_SAVING_USER_PERSONAL_DOCS_SCREENS_SUCCESS;
+    @Value("${MSG_HELLO_VOLUNTEER}")
+    private String MSG_HELLO_VOLUNTEER;
+    @Value("${MSG_CHOOSE_SHELTER}")
+    private String MSG_CHOOSE_SHELTER;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
@@ -92,6 +98,10 @@ public class BotConfig {
     private String BUT_GO_TO_MAIN;
     @Value("${BUT_GO_TO_SHELTER_SELECT}")
     private String BUT_GO_TO_SHELTER_SELECT;
+    @Value("${BUT_STATISTIC_NEW_USER}")
+    private String BUT_STATISTIC_NEW_USER;
+    @Value("${BUT_STATISTIC_SHELTER}")
+    private String BUT_STATISTIC_SHELTER;
 
     @Bean
     public TelegramBot telegramBot() {

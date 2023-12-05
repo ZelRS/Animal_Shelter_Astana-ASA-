@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.handler.specificHandlers;
+package pro.sky.telegramBot.handler.specificHandlers.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,24 +49,21 @@ public class WelcomeMessageHandler {
             case FREE:
                 messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
                 break;
-//            case TRUSTED:
-//                messageSender.sendChooseShelterMessage(chatId);
-//                break;
             case POTENTIAL:
+                messageSender.sendChooseShelterMessage(chatId);
+                break;
+            case INVITED:
                 messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
-//                messageSender.sendInfoForPotentialUserMessage(chatId);
                 break;
             case PROBATION:
                 messageSender.sendReportPhotoMessage(chatId);
                 break;
-            case UNTRUSTED:
-                messageSender.sendSorryWelcomePhotoMessage(user.getUserName(), chatId);
-                break;
-            case BLOCKED:
-                messageSender.sendBlockedWelcomePhotoMessage(user.getUserName(), chatId);
+            case VOLUNTEER:
+                messageSender.sendVolunteerWelcomePhotoMessage(user.getUserName(), chatId);
                 break;
             default:
                 log.warn("Unknown user state: {}", user.getState());
+                messageSender.sendDefaultHTMLMessage(chatId);
                 break;
         }
     }
