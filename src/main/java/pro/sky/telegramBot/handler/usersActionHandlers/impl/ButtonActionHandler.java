@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.entity.Button;
 import pro.sky.telegramBot.enums.UserState;
+import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.sender.MessageSender;
@@ -19,8 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static pro.sky.telegramBot.entity.Button.CallbackData.*;
-import static pro.sky.telegramBot.enums.UserState.PROBATION;
-import static pro.sky.telegramBot.enums.UserState.PROBATION_REPORT;
+import static pro.sky.telegramBot.enums.UserState.*;
 
 /**
  * класс для обработки сообщения, которое должно быть выслано пользователю<br>
@@ -34,6 +34,7 @@ public class ButtonActionHandler implements ActionHandler {
     private final MessageSender messageSender;
     private final ReportService reportService;
     private final UserService userService;
+    private final BlockedUserHandler blockedUserHandler;
 
     @FunctionalInterface
     interface Button {
@@ -157,15 +158,16 @@ public class ButtonActionHandler implements ActionHandler {
         if (user != null && user.getState().equals(PROBATION_REPORT)) {
             log.info("Was invoked method of sending question by callbackData {} in handler", callbackData);
             reportService.fillOutReport(chatId, callbackData);
+        } else if (user != null && user.getState().equals(BLOCKED)) {
+            blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
+        }
+        Button commandToRun = buttonMap.get(callbackData.toLowerCase());
+        if (commandToRun != null) {
+            commandToRun.run(firstName, lastName, chatId);
         } else {
-            Button commandToRun = buttonMap.get(callbackData.toLowerCase());
-            if (commandToRun != null) {
-                commandToRun.run(firstName, lastName, chatId);
-            } else {
-                log.warn("No handler found for button: {}", callbackData);
-                // отправка дефолтного сообщения
-                messageSender.sendDefaultHTMLMessage(chatId);
-            }
+            log.warn("No handler found for button: {}", callbackData);
+            // отправка дефолтного сообщения
+            messageSender.sendDefaultHTMLMessage(chatId);
         }
     }
 }

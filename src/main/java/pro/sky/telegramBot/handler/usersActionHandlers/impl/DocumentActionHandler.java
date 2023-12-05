@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
+import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.DocumentHandler;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.sender.specificSenders.DocumentMessageSender;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static pro.sky.telegramBot.enums.UserState.BLOCKED;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
 
 /**
@@ -34,6 +36,7 @@ public class DocumentActionHandler implements DocumentHandler {
     private final DocumentMessageSender documentMessageSender;
     private final UserService userService;
     private final MessageSender messageSender;
+    private final BlockedUserHandler blockedUserHandler;
 
     @FunctionalInterface
     interface DocumentProcessor {
@@ -66,6 +69,8 @@ public class DocumentActionHandler implements DocumentHandler {
             }
         });
 
+
+         // ключ принимает от пользователя заполненную таблицу с контактными данными
         documentMap.put("info_table.xlsx", (document, chatId) -> {
             log.info("Processing info_table.xlsx document");
             try {
@@ -74,10 +79,24 @@ public class DocumentActionHandler implements DocumentHandler {
                 throw new UserNotFoundException("Пользователь не найден");
             }
         });
+
+        // ключ принимает от пользователя PDF документ со кринами персональных документов
+        documentMap.put("doc.pdf", (document, chatId) -> {
+            log.info("Processing doc.pdf document");
+            try {
+                documentMessageSender.sendScreenPersonalDocumentsResponseMessage(document, chatId);
+            } catch (IOException e) {
+                throw new UserNotFoundException("Пользователь не найден");
+            }
+        });
     }
 
     @Override
     public void handle(Document document, Long chatId) {
+        User user = userService.findUserByChatId(chatId);
+        if (user != null && user.getState().equals(BLOCKED)) {
+            blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
+        }
         String fileName = document.fileName();
         DocumentProcessor documentProcessor = documentMap.get(fileName);
         if (documentProcessor != null) {

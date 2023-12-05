@@ -7,13 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
-import pro.sky.telegramBot.enums.QuestionsForReport;
 import pro.sky.telegramBot.service.ShelterService;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static pro.sky.telegramBot.enums.MessageImage.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
@@ -71,11 +68,11 @@ public class SpecificMediaMessageCreator {
      * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
      * имеющего статус BLOCKED("в черном списке")
      */
-    public SendPhoto createBlockedWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
+    public SendPhoto createBlockedWelcomePhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(BLOCKED_WELCOME_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_BLOCKED_WELCOME(), firstName));
+        params.setCaption(String.format(config.getMSG_BLOCKED_WELCOME()));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -243,6 +240,22 @@ public class SpecificMediaMessageCreator {
         params.setChatId(chatId);
         params.setFilePath(REPORT_ACCEPTED_MSG_IMG.getPath());
         params.setCaption(config.getMSG_REPORT_ACCEPTED());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createVolunteerWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(HELLO_VOLUNTEER_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_HELLO_VOLUNTEER(), firstName));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createChooseShelterPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(CHOOSE_SHELTER_IMG.getPath());
+        params.setCaption(config.getMSG_CHOOSE_SHELTER());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 

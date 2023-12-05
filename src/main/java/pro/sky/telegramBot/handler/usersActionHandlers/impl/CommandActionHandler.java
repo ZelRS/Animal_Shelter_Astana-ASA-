@@ -4,7 +4,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
+import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
+import pro.sky.telegramBot.handler.specificHandlers.impl.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.model.users.User;
@@ -13,7 +14,6 @@ import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +21,7 @@ import java.util.Map;
 import static pro.sky.telegramBot.enums.Command.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
+import static pro.sky.telegramBot.enums.UserState.BLOCKED;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
 
 /**
@@ -28,7 +29,7 @@ import static pro.sky.telegramBot.enums.UserState.PROBATION;
  * при отправке им какой-либо определенной команды
  */
 @Service
-@Transactional
+//@Transactional
 @RequiredArgsConstructor
 @Getter
 @Slf4j  // SLF4J logging
@@ -37,6 +38,7 @@ public class CommandActionHandler implements ActionHandler {
     private final WelcomeMessageHandler welcomeMessageHandler;
     private final ShelterService shelterService;
     private final UserService userService;
+    private final BlockedUserHandler blockedUserHandler;
 
     @FunctionalInterface
     interface Command {
@@ -168,6 +170,11 @@ public class CommandActionHandler implements ActionHandler {
      */
     @Override
     public void handle(String command, String firstName, String lastName, Long chatId) {
+        User user = userService.findUserByChatId(chatId);
+        if (user != null && user.getState().equals(BLOCKED)) {
+            blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
+            return;
+        }
         Command commandToRun = commandMap.get(command.toLowerCase());
         if (commandToRun != null) {
             commandToRun.run(firstName, lastName, chatId);

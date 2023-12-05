@@ -64,21 +64,40 @@ public class SpecificDocumentMessageCreator {
 
         UserInfo userInfo = new UserInfo();
 
-            userInfo.setFirstName(values.get(0));
-            userInfo.setLastName(values.get(1));
-            userInfo.setAddress(values.get(2));
-            userInfo.setPassport(values.get(3));
-            userInfo.setPhone(values.get(4));
-            userInfo.setEmail(values.get(5));
-            userService.create(userInfo);
-            user.setUserInfo(userInfo);
-            user.setState(UserState.POTENTIAL);
+        userInfo.setFirstName(values.get(0));
+        userInfo.setLastName(values.get(1));
+        userInfo.setAddress(values.get(2));
+        userInfo.setPassport(values.get(3));
+        userInfo.setPhone(values.get(4));
+        userInfo.setEmail(values.get(5));
+        userService.create(userInfo);
+        user.setUserInfo(userInfo);
+        user.setState(UserState.POTENTIAL);
 
 
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(SAVING_USER_INFO_SUCCESS_MSG_IMG.getPath());
         params.setCaption(botConfig.getMSG_SAVING_USER_INFO_SUCCESS());
+
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    /**
+     * метод принимает от пользователя PDF файл со скринами личных документов, c помощью documentLoader читает и
+     * отправляет его всем волонтерам,
+     * а затем отправляет пользователю сообщение о том, что все необходимые условия оформления выполнены
+     * и он приглашается с личной явкой в приют, для выбора животного
+     */
+    public SendPhoto createScreenPersonalDocumentsResponseMessage(Long chatId, Document document) throws IOException {
+        documentLoader.readAndSendScreenPersonalDocumentsToVoluteers(document, chatId);
+
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(SAVING_USER_PERSONAL_DOCS_SCREENS_MSG_IMG.getPath());
+
+        User user = userService.findUserByChatId(chatId);
+        user.setState(UserState.INVITED);
 
         return mediaMessageCreator.createPhotoMessage(params);
     }
