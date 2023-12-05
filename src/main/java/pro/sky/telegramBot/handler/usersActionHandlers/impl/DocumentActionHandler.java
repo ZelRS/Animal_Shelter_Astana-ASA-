@@ -69,10 +69,22 @@ public class DocumentActionHandler implements DocumentHandler {
             }
         });
 
+
+         // ключ принимает от пользователя заполненную таблицу с контактными данными
         documentMap.put("info_table.xlsx", (document, chatId) -> {
             log.info("Processing info_table.xlsx document");
             try {
                 documentMessageSender.sendInfoTableResponseMessage(document, chatId);
+            } catch (IOException e) {
+                throw new UserNotFoundException("Пользователь не найден");
+            }
+        });
+
+        // ключ принимает от пользователя PDF документ со кринами персональных документов
+        documentMap.put("doc.pdf", (document, chatId) -> {
+            log.info("Processing doc.pdf document");
+            try {
+                documentMessageSender.sendScreenPersonalDocumentsResponseMessage(document, chatId);
             } catch (IOException e) {
                 throw new UserNotFoundException("Пользователь не найден");
             }

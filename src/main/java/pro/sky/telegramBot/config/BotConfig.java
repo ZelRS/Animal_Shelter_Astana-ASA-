@@ -64,6 +64,8 @@ public class BotConfig {
     private String MSG_START_REGISTRATION;
     @Value("${MSG_SAVING_USER_INFO_SUCCESS}")
     private String MSG_SAVING_USER_INFO_SUCCESS;
+    @Value(("${MSG_SAVING_USER_PERSONAL_DOCS_SCREENS_SUCCESS}"))
+    private String MSG_SAVING_USER_PERSONAL_DOCS_SCREENS_SUCCESS;
     @Value("${MSG_HELLO_VOLUNTEER}")
     private String MSG_HELLO_VOLUNTEER;
     @Value("${MSG_CHOOSE_SHELTER}")

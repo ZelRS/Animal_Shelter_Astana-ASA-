@@ -26,6 +26,7 @@ import java.time.LocalTime;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
+import static pro.sky.telegramBot.enums.UserState.INVITED;
 import static pro.sky.telegramBot.enums.UserState.PROBATION_REPORT;
 
 /**
@@ -172,8 +173,12 @@ public class MessageSender implements BlockedUserHandler {
             params.setChatId(chatId);
             params.setFilePath(SHELTER_INFORMATION_MSG_IMG.getPath());
             params.setCaption(caption.toString());
-            messageExecutor.executePhotoMessage(mediaMessageCreator.createPhotoMessage(params)
-                    .replyMarkup(specificKeyboardCreator.shelterInformationMainKeyboard()));
+            SendPhoto sendPhoto = mediaMessageCreator.createPhotoMessage(params);
+            //Внес изменения Роман. Мне этот метод пригодился в конце своей логики, но там не нужны кнопки
+            if (user.getState() != INVITED) {
+                sendPhoto.replyMarkup(specificKeyboardCreator.shelterInformationMainKeyboard());
+            }
+            messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send info message to {}", chatId, e);
         }
@@ -403,15 +408,13 @@ public class MessageSender implements BlockedUserHandler {
         try {
             SendDocument document;
             document = specificMediaMessageCreator.createInfoTableDocumentMessage(chatId);
+            document.fileName("info_table.xlsx");
             messageExecutor.executeDocument(document);
         } catch (Exception e) {
             log.error("Failed to send info_table document message to {}", chatId, e);
         }
 
     }
-
-    //    .........отправка сообщений пользователю на любые другие случаи........
-
 
     public void sendChooseShelterMessage(Long chatId) {
         log.info("Sending first time welcome message to {}", chatId);
@@ -473,4 +476,5 @@ public class MessageSender implements BlockedUserHandler {
             log.error("Failed to send welcome message to {}: {}", firstName, chatId, e);
         }
     }
+    //    .........отправка сообщений пользователю на любые другие случаи........
 }

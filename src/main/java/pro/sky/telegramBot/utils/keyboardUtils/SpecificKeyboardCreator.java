@@ -131,6 +131,19 @@ public class SpecificKeyboardCreator {
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
+    /**
+     * клавиатура под сообщением, когда пользователь приглашается в приют
+     */
+    public Keyboard afterRegistrationFinalKeyboard() {
+        log.info("Creating after registration final keyboard markup for user");
+
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()),
+                new Button(config.getBUT_GET_FULL_INFO(), BUT_GET_FULL_INFO.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+
 //    ...... клавиатуры для других типов сообщений.....
 
 }
