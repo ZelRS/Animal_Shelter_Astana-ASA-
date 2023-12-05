@@ -121,6 +121,16 @@ public class SpecificKeyboardCreator {
         return keyboardCreator.createInlineKeyboardTwoRow(buttons);
     }
 
+    public Keyboard volunteerMenuMessageKeyboard() {
+        log.info("Creating keyboard markup for volunteer");
+
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_STATISTIC_NEW_USER(), BUT_STATISTIC_NEW_USER.getCallbackData()),
+                new Button(config.getBUT_STATISTIC_SHELTER(), BUT_STATISTIC_SHELTER.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+
 //    ...... клавиатуры для других типов сообщений.....
 
 }
