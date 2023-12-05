@@ -147,14 +147,14 @@ public class SpecificKeyboardCreator {
     /**
      * клавиатура для сообщения, где пользователя просят внести свои контактные данные
      */
-    public Keyboard startRegistrationMessageKeyBoard() {
-        log.info("Creating keyboard markup for set personal data of user");
-
-        List<Button> buttons = new ArrayList<>(List.of(
-                new Button(config.getBUT_SET_DATA_FROM_USER(), BUT_SET_DATA_FROM_USER.getCallbackData())
-        ));
-        return keyboardCreator.createInlineKeyboard(buttons);
-    }
+//    public Keyboard startRegistrationMessageKeyBoard() {
+//        log.info("Creating keyboard markup for set personal data of user");
+//
+//        List<Button> buttons = new ArrayList<>(List.of(
+//                new Button(config.getBUT_SET_DATA_FROM_USER(), BUT_SET_DATA_FROM_USER.getCallbackData())
+//        ));
+//        return keyboardCreator.createInlineKeyboard(buttons);
+//    }
 
 // я ещё не понял как и куда прикрутить этот метод
 //

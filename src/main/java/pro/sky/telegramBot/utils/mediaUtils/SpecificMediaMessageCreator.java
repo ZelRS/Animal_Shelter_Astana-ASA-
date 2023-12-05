@@ -226,7 +226,8 @@ public class SpecificMediaMessageCreator {
         params.setFileName("info_table");
         return mediaMessageCreator.createInfoTableXLSXDocumentMessage(params);
     }
-//Метод предоставляет данные для вопроса отчета
+
+    //Метод предоставляет данные для вопроса отчета
     public SendPhoto createQuestionForReportMessage(Long chatId, String question) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -234,7 +235,8 @@ public class SpecificMediaMessageCreator {
         params.setCaption(question);
         return mediaMessageCreator.createPhotoMessage(params);
     }
-//Метод предоставляет данные для сообщения пользователю. что его отчет принят
+
+    //Метод предоставляет данные для сообщения пользователю. что его отчет принят
     public SendPhoto createReportAcceptedPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
