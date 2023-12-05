@@ -20,9 +20,12 @@ import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.*;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
@@ -46,6 +49,64 @@ public class MessageSender implements BlockedUserHandler {
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
     private final MediaLoader mediaLoader;
+
+    @FunctionalInterface
+    interface Command {
+        void run(Long chatId, User user);
+    }
+
+    private final Map<String, Command> infoCommands = new HashMap<>();
+    private SendMessage message;
+    private SendPhoto sendPhoto;
+
+    @PostConstruct
+    public void fillMap() {
+        infoCommands.put("/details", (chatId, user) -> {
+            if (user.getShelter().getDescription() != null) {
+                message = new SendMessage(chatId, user.getShelter().getDescription());
+            } else {
+                message = null;
+            }
+        });
+        infoCommands.put("/address", (chatId, user) -> {
+            if (user.getShelter().getAddress() != null) {
+                message = new SendMessage(chatId, user.getShelter().getAddress());
+            } else {
+                message = null;
+            }
+        });
+        infoCommands.put("/schedule", (chatId, user) -> {
+            if (user.getShelter().getSchedule() != null) {
+                message = new SendMessage(chatId, user.getShelter().getSchedule());
+            } else {
+                message = null;
+            }
+        });
+        infoCommands.put("/schema", (chatId, user) -> {
+            if (user.getShelter().getSchema() != null) {
+                sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
+            } else {
+                sendPhoto = null;
+            }
+        });
+        infoCommands.put("/sec_phone", (chatId, user) -> {
+            if (user.getShelter().getSecurityPhone() != null) {
+                message = new SendMessage(chatId, user.getShelter().getSecurityPhone());
+            } else {
+                message = null;
+            }
+        });
+        infoCommands.put("/safety", (chatId, user) -> {
+            if (user.getShelter().getSafetyRules() != null) {
+                message = new SendMessage(chatId, user.getShelter().getSafetyRules());
+            } else {
+                message = null;
+            }
+        });
+        infoCommands.put("/callMe", (chatId, user) -> {
+            message = new SendMessage(chatId, "Пока тут заглушка. Скоро будет реализовано");
+        });
+    }
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -155,8 +216,6 @@ public class MessageSender implements BlockedUserHandler {
         }
     }
 
-    /////////////////////////    ЮРА ЯЦЕНКО, ТВОЙ МЕТОД ТУТ)))))))
-
     /**
      * метод формирует и отправляет сообщение пользователю<br>
      * для предоставления подробной информации о приюте
@@ -201,77 +260,40 @@ public class MessageSender implements BlockedUserHandler {
         return menuMessage;
     }
 
-//    Мне очень не нравится одинаковый код в методах ниже. Я потом сделаю рефактор чтоб было красиво.
-//    Юра, не надо подсказывать!!! Я хочу сам придумать :-)
-
     /**
-     * Метод отображает дополнительную информацию о приюте
+     * Обработчик команд из информационного меню
      */
-    public void sendShelterDetailsMessage(Long chatId) {
+    public void menuInformationHandler(Long chatId, String command) {
         User user = userService.findUserByChatId(chatId);
-        SendMessage message = new SendMessage(chatId, user.getShelter().getDescription());
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        messageExecutor.executeHTMLMessage(message);
+        Command function = infoCommands.get(command);
+        function.run(chatId, user);
+
+        if (message != null) {
+            log.info("Sending text message for {} command", command);
+            message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+            messageExecutor.executeHTMLMessage(message);
+            message = null;
+        } else if (sendPhoto != null) {
+            log.info("Sending media message for {} command", command);
+            sendPhoto.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+            messageExecutor.executePhotoMessage(sendPhoto);
+            sendPhoto = null;
+        } else {
+            sendInformationNotFoundMessage(chatId);
+        }
     }
 
     /**
-     * Метод отображает адрес приюта
+     * Метод отправляет пользователю сообщение об ошибке, если информация не найдена в базе
      */
-    public void sendShelterAddressMessage(Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        SendMessage message = new SendMessage(chatId, user.getShelter().getAddress());
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        messageExecutor.executeHTMLMessage(message);
-    }
-
-    /**
-     * Метод отображает график работы приюта
-     */
-    public void sendShelterScheduleMessage(Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        SendMessage message = new SendMessage(chatId, user.getShelter().getSchedule());
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        messageExecutor.executeHTMLMessage(message);
-    }
-
-    /**
-     * Метод отображает схему проезда к приюту
-     */
-    public void sendShelterSchemaMessage(Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        SendPhoto sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
-        sendPhoto.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        messageExecutor.executePhotoMessage(sendPhoto);
-    }
-
-    /**
-     * Метод отображает номер телефона охраны для оформления пропуска
-     */
-    public void sendShelterSecurityPhoneMessage(Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        SendMessage message = new SendMessage(chatId, user.getShelter().getSecurityPhone());
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        messageExecutor.executeHTMLMessage(message);
-    }
-
-    /**
-     * Метод отображает правила техники безоасности для даного приюта
-     */
-    public void sendShelterSafetyRuleMessage(Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        SendMessage message = new SendMessage(chatId, user.getShelter().getSafetyRules());
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        messageExecutor.executeHTMLMessage(message);
-    }
-
-    /**
-     * Метод создает реквест волонтеру для обратного звонка пользователю
-     */
-    public void callMeBackRequest(Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        SendMessage message = new SendMessage(chatId, user.getShelter().getSafetyRules());
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        messageExecutor.executeHTMLMessage(message);
+    private void sendInformationNotFoundMessage(Long chatId) {
+        try {
+            log.error("DB data is is null");
+            SendPhoto error = specificMediaMessageCreator.createInformationNotFoundMessage(chatId);
+            messageExecutor.executePhotoMessage(error);
+        } catch (IOException e) {
+            log.error("Critical error in method informationNotFoundMessage. Message has not been sent to user");
+        }
     }
 
     /**
@@ -439,6 +461,7 @@ public class MessageSender implements BlockedUserHandler {
 
 
     }
+
     /**
      * Метод формирует и отправляет сообщение пользователю,<br>
      * когда он заполняет отчет онлайн в боте
