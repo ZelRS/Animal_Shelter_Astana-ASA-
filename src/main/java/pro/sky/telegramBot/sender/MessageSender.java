@@ -283,6 +283,9 @@ public class MessageSender implements BlockedUserHandler {
         }
     }
 
+    /**
+     * Метод отправляет пользователю сообщение об ошибке, если информация не найдена в базе
+     */
     private void sendInformationNotFoundMessage(Long chatId) {
         try {
             log.error("DB data is is null");
@@ -292,76 +295,6 @@ public class MessageSender implements BlockedUserHandler {
             log.error("Critical error in method informationNotFoundMessage. Message has not been sent to user");
         }
     }
-
-    /**
-     * Метод отображает дополнительную информацию о приюте
-     */
-//    public void sendShelterDetailsMessage(Long chatId) {
-//        User user = userService.findUserByChatId(chatId);
-//        SendMessage message = new SendMessage(chatId, user.getShelter().getDescription());
-//        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-//        messageExecutor.executeHTMLMessage(message);
-//    }
-
-    /**
-     * Метод отображает адрес приюта
-     */
-//    public void sendShelterAddressMessage(Long chatId) {
-//        User user = userService.findUserByChatId(chatId);
-//        SendMessage message = new SendMessage(chatId, user.getShelter().getAddress());
-//        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-//        messageExecutor.executeHTMLMessage(message);
-//    }
-
-    /**
-     * Метод отображает график работы приюта
-     */
-//    public void sendShelterScheduleMessage(Long chatId) {
-//        User user = userService.findUserByChatId(chatId);
-//        SendMessage message = new SendMessage(chatId, user.getShelter().getSchedule());
-//        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-//        messageExecutor.executeHTMLMessage(message);
-//    }
-
-    /**
-     * Метод отображает схему проезда к приюту
-     */
-//    public void sendShelterSchemaMessage(Long chatId) {
-//        User user = userService.findUserByChatId(chatId);
-//        SendPhoto sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
-//        sendPhoto.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-//        messageExecutor.executePhotoMessage(sendPhoto);
-//    }
-
-    /**
-     * Метод отображает номер телефона охраны для оформления пропуска
-     */
-//    public void sendShelterSecurityPhoneMessage(Long chatId) {
-//        User user = userService.findUserByChatId(chatId);
-//        SendMessage message = new SendMessage(chatId, user.getShelter().getSecurityPhone());
-//        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-//        messageExecutor.executeHTMLMessage(message);
-//    }
-
-    /**
-     * Метод отображает правила техники безоасности для даного приюта
-     */
-//    public void sendShelterSafetyRuleMessage(Long chatId) {
-//        User user = userService.findUserByChatId(chatId);
-//        SendMessage message = new SendMessage(chatId, user.getShelter().getSafetyRules());
-//        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-//        messageExecutor.executeHTMLMessage(message);
-//    }
-
-    /**
-     * Метод создает реквест волонтеру для обратного звонка пользователю
-     */
-//    public void callMeBackRequest(Long chatId) {
-//        User user = userService.findUserByChatId(chatId);
-//        SendMessage message = new SendMessage(chatId, user.getShelter().getSafetyRules());
-//        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-//        messageExecutor.executeHTMLMessage(message);
-//    }
 
     /**
      * метод формирует и отправляет сообщение пользователю,<br>
