@@ -49,24 +49,18 @@ public class WelcomeMessageHandler {
             case FREE:
                 messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
                 break;
-//            case TRUSTED:
-//                messageSender.sendChooseShelterMessage(chatId);
-//                break;
             case POTENTIAL:
-                messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
-//                messageSender.sendInfoForPotentialUserMessage(chatId);
+                messageSender.sendChooseShelterMessage(chatId);
                 break;
             case PROBATION:
                 messageSender.sendReportPhotoMessage(chatId);
                 break;
-            case UNTRUSTED:
-                messageSender.sendSorryWelcomePhotoMessage(user.getUserName(), chatId);
-                break;
-            case BLOCKED:
-                messageSender.sendBlockedWelcomePhotoMessage(user.getUserName(), chatId);
+            case VOLUNTEER:
+                messageSender.sendVolunteerWelcomePhotoMessage(user.getUserName(), chatId);
                 break;
             default:
                 log.warn("Unknown user state: {}", user.getState());
+                messageSender.sendDefaultHTMLMessage(chatId);
                 break;
         }
     }

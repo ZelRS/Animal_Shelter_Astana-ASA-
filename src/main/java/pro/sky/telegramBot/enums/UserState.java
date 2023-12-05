@@ -8,12 +8,11 @@ import lombok.Getter;
 @Getter
 public enum UserState {
     FREE("свободный"),
-    POTENTIAL("потенциальный усыновитель"),
+    POTENTIAL("потенциальный"),
     PROBATION("на испытательном сроке"),
     PROBATION_REPORT("заполнение отчета"),
-    TRUSTED("проверенный"),
-    UNTRUSTED("не надежный"),
-    BLOCKED("в черном списке");
+    BLOCKED("в черном списке"),
+    VOLUNTEER("волонтер");
 
     private final String state;
 

@@ -41,7 +41,11 @@ public class Button {
         // навигационные кнопки для модуля информации о приюте
         BUT_MORE_INFORMATION("but_more_information"),
         BUT_GO_TO_MAIN("but_go_to_main"),
-        BUT_GO_TO_SHELTER_SELECT("but_go_to_shelter_select");
+        BUT_GO_TO_SHELTER_SELECT("but_go_to_shelter_select"),
+
+        //навигационные кнопки для волонтера
+        BUT_STATISTIC_NEW_USER("but_statistic_new_user"),
+        BUT_STATISTIC_SHELTER("but_statistic_shelter");
 
         private final String callbackData;
 
