@@ -12,6 +12,7 @@ import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.executor.MessageExecutor;
+import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
@@ -36,7 +37,7 @@ import static pro.sky.telegramBot.enums.UserState.PROBATION_REPORT;
 @Service
 @Transactional
 @Slf4j  // SLF4J logging
-public class MessageSender {
+public class MessageSender implements BlockedUserHandler {
     private final SpecificMediaMessageCreator specificMediaMessageCreator;
     private final MessageExecutor messageExecutor;
     private final SpecificKeyboardCreator specificKeyboardCreator;
