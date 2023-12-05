@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
+//@Transactional
 public class VolunteerServiceImpl implements VolunteerService {
 
     private final VolunteerRepository volunteerRepository;

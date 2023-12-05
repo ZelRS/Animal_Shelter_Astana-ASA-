@@ -102,6 +102,7 @@ public class ButtonActionHandler implements ActionHandler {
         });
 
 // ОТСЮДА НАЧИНАЕТСЯ РАБОТА АЛЕКСЕЯ
+// точка входа "позвать волонтёра"
         buttonMap.put(BUT_CALL_VOLUNTEER.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed CALL_VOLUNTEER button");
             messageSender.sendCallVolunteerPhotoMessage(chatId);

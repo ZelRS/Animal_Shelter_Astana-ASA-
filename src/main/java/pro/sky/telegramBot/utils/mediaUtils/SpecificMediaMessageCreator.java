@@ -268,7 +268,8 @@ public class SpecificMediaMessageCreator {
     public SendPhoto createCallVolunteerPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
-        params.setFilePath(String.format(config.getBUT_CALL_VOLUNTEER()));
+        params.setFilePath(CALL_VOLUNTEER_MSG_IMG.getPath());
+        params.setCaption(config.getBUT_CALL_VOLUNTEER());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
