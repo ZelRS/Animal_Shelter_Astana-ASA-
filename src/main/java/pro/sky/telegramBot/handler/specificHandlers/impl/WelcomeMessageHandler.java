@@ -52,6 +52,9 @@ public class WelcomeMessageHandler {
             case POTENTIAL:
                 messageSender.sendChooseShelterMessage(chatId);
                 break;
+            case INVITED:
+                messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
+                break;
             case PROBATION:
                 messageSender.sendReportPhotoMessage(chatId);
                 break;

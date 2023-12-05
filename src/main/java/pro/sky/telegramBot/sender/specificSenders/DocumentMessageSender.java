@@ -6,11 +6,14 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.executor.MessageExecutor;
+import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.reader.ExcelFileReader;
 import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificDocumentMessageCreator;
 
 import java.io.IOException;
@@ -31,6 +34,8 @@ public class DocumentMessageSender {
     private final TelegramBot bot;
     private final SpecificDocumentMessageCreator specificDocumentMessageCreator;
     private final MessageExecutor messageExecutor;
+    private final BotConfig botConfig;
+    private final SpecificKeyboardCreator specificKeyboardCreator;
 
     /**
      * Метод формирует и отправляет сообщение пользователю о статусе полученного документа
@@ -46,12 +51,32 @@ public class DocumentMessageSender {
     }
 
     /**
-     * Метод формирует и отправляет сообщение после отправки им документа
+     * Метод формирует и отправляет сообщение после отправки им Exel документа c контактными данными
      */
     public void sendInfoTableResponseMessage(Document document, Long chatId) throws IOException {
         log.info("Was invoked method sendInfoTableResponseMessage");
         try {
             SendPhoto sendPhoto = specificDocumentMessageCreator.createInfoTableResponseMessage(chatId, document);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send response message to {}", chatId, e);
+        }
+    }
+
+    /**
+     * Метод формирует и отправляет сообщение после отправки им PDF файла со скринами его персональных документов
+     */
+    public void sendScreenPersonalDocumentsResponseMessage(Document document, Long chatId) throws IOException {
+        log.info("Was invoked method sendScreenPersonalDocumentsResponseMessage");
+        try {
+            User user = userService.findUserByChatId(chatId);
+
+            SendPhoto sendPhoto;
+            sendPhoto = specificDocumentMessageCreator.createScreenPersonalDocumentsResponseMessage(chatId, document);
+            String caption = String.format(botConfig.getMSG_SAVING_USER_PERSONAL_DOCS_SCREENS_SUCCESS(),
+                    user.getShelter().getName());
+            sendPhoto.caption(caption);
+            sendPhoto.replyMarkup(specificKeyboardCreator.afterRegistrationFinalKeyboard());
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send response message to {}", chatId, e);

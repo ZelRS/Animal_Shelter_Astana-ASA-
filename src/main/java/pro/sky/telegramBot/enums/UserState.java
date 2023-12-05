@@ -12,7 +12,8 @@ public enum UserState {
     PROBATION("на испытательном сроке"),
     PROBATION_REPORT("заполнение отчета"),
     BLOCKED("в черном списке"),
-    VOLUNTEER("волонтер");
+    VOLUNTEER("волонтер"),
+    INVITED("приглашен в приют");
 
     private final String state;
 
