@@ -158,16 +158,16 @@ public class SpecificKeyboardCreator {
 
 // я ещё не понял как и куда прикрутить этот метод
 //
-//    /**
-//     * клавиатура для сообщения "позвать волонтёра"
-//     */
-//    public Keyboard pressTheButtonToCallVolunteer() {
-//        log.info("Creating a keyboard call a volunteer");
-//        List<Button> buttons = new ArrayList<>(List.of(
-//           new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
-//        ));
-//        return keyboardCreator.createInlineKeyboard(buttons);
-//    }
+    /**
+     * клавиатура для сообщения "позвать волонтёра"
+     */
+    public Keyboard pressTheButtonToCallVolunteer() {
+        log.info("Creating a keyboard call a volunteer");
+        List<Button> buttons = new ArrayList<>(List.of(
+           new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
 
 //    ...... клавиатуры для других типов сообщений.....
 
