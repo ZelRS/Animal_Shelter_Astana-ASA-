@@ -104,43 +104,43 @@ public class CommandActionHandler implements ActionHandler {
         //Узнать дополнительную информацию о приюте
         commandMap.put("/details", (firstName, lastName, chatId) -> {
             log.info("Received /details command");
-            messageSender.sendShelterDetailsMessage(chatId);
+            messageSender.menuInformationHandler(chatId, "/details");
         });
 
         // Получить одрес приюта
         commandMap.put("/address", (firstName, lastName, chatId) -> {
             log.info("Received /address command");
-            messageSender.sendShelterAddressMessage(chatId);
+            messageSender.menuInformationHandler(chatId, "/address");
         });
 
         // Получить график работы приюта
         commandMap.put("/schedule", (firstName, lastName, chatId) -> {
             log.info("Received /schedule command");
-            messageSender.sendShelterScheduleMessage(chatId);
+            messageSender.menuInformationHandler(chatId, "/schedule");
         });
 
         // Посмотреть схему проезда к приюту
         commandMap.put("/schema", (firstName, lastName, chatId) -> {
             log.info("Received /schema command");
-            messageSender.sendShelterSchemaMessage(chatId);
+            messageSender.menuInformationHandler(chatId, "/schema");
         });
 
         // Узнать номер телефона охраны для оформления пропуска
         commandMap.put("/sec_phone", (firstName, lastName, chatId) -> {
             log.info("Received /sec_phone command");
-            messageSender.sendShelterSecurityPhoneMessage(chatId);
+            messageSender.menuInformationHandler(chatId, "/sec_phone");
         });
 
         // Прочитать правила техники безопасности приюта
         commandMap.put("/safety", (firstName, lastName, chatId) -> {
             log.info("Received /safety command");
-            messageSender.sendShelterSafetyRuleMessage(chatId);
+            messageSender.menuInformationHandler(chatId, "/safety");
         });
 
         // Оставить заявку на обратный звонок
         commandMap.put("/callMe", (firstName, lastName, chatId) -> {
             log.info("Received /callMe command");
-            messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
+            messageSender.menuInformationHandler(chatId, "/callMe");
         });
 
         // Связаться с волонтером

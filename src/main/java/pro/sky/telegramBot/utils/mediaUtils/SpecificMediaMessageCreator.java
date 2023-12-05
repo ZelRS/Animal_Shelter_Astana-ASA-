@@ -57,6 +57,18 @@ public class SpecificMediaMessageCreator {
 
     /**
      * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
+     * имеющего статус UNTRUSTED("не надежный")
+     */
+    public SendPhoto createInformationNotFoundMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(SORRY_WELCOME_MSG_IMG.getPath());
+        params.setCaption("Упс! Простите. Информация не найдена в базе.");
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    /**
+     * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
      * имеющего статус BLOCKED("в черном списке")
      */
     public SendPhoto createBlockedWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
