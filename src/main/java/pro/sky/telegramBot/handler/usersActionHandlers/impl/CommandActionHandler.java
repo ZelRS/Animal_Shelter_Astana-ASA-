@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
-import pro.sky.telegramBot.handler.specificHandlers.WelcomeMessageHandler;
+import pro.sky.telegramBot.handler.specificHandlers.impl.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.model.users.User;
@@ -14,7 +14,6 @@ import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

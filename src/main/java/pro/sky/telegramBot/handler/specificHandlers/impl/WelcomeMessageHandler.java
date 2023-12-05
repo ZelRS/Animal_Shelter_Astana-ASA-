@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.handler.specificHandlers;
+package pro.sky.telegramBot.handler.specificHandlers.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
