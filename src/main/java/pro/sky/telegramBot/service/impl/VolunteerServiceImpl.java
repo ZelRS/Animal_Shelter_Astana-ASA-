@@ -39,4 +39,8 @@ public class VolunteerServiceImpl implements VolunteerService {
     public List<Volunteer> findAllVolunteerByChatId(Long chatId) {
         return volunteerRepository.findAllByChatId(chatId);
     }
+
+    public List<Volunteer> findAllVolunteers() {
+        return volunteerRepository.findAll();
+    }
 }

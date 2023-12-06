@@ -41,4 +41,10 @@ public class UserInfo {
     @Lob
     @Column(name = "photo")
     private byte[] data;
+
+    public UserInfo(String firstName, String lastName, String phone) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+    }
 }

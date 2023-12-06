@@ -6,6 +6,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.LifecycleState;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
@@ -15,7 +16,10 @@ import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.model.users.UserInfo;
+import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.service.VolunteerService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
@@ -25,8 +29,8 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
@@ -50,6 +54,7 @@ public class MessageSender implements BlockedUserHandler {
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
     private final MediaLoader mediaLoader;
+    private final VolunteerService volunteerService;
 
     @FunctionalInterface
     interface Command {
@@ -105,8 +110,26 @@ public class MessageSender implements BlockedUserHandler {
             }
         });
         infoCommands.put("/callMe", (chatId, user) -> {
-            message = new SendMessage(chatId, "Пока тут заглушка. Скоро будет реализовано");
+            Optional<String> phoneFromDatabase = userService.getUserPhone(user.getId());
+            phoneFromDatabase.ifPresentOrElse(phone -> {
+                message = new SendMessage(getRandomVolunteerId(), "Здравствуйте. Пользователь <b>" + user.getUserName() +
+                        "</b> запросил обратный звонок.\nПерезвоните по номеру телефона " + phone);
+            }, () -> {
+                message = new SendMessage(chatId, "К сожалению вы не предоставили свой номер телефона." +
+                        " Добавьте номер телефона в таком формате:\n/phone ##(###)###-##-##");
+            });
         });
+    }
+
+    /**
+     * метод возвращает chatID случайного волонтера
+     */
+    private Long getRandomVolunteerId() {
+        Random random = new Random();
+        List<Long> volunteersList = volunteerService.findAllVolunteers().stream()
+                .map(Volunteer::getChatId)
+                .collect(Collectors.toList());
+        return volunteersList.get(random.nextInt(volunteersList.size()));
     }
 
     /**
@@ -271,7 +294,8 @@ public class MessageSender implements BlockedUserHandler {
 
         if (message != null) {
             log.info("Sending text message for {} command", command);
-            message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+            if (!command.equals("/callMe"))
+                message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
             messageExecutor.executeHTMLMessage(message);
             message = null;
         } else if (sendPhoto != null) {
@@ -282,6 +306,16 @@ public class MessageSender implements BlockedUserHandler {
         } else {
             sendInformationNotFoundMessage(chatId);
         }
+    }
+
+    public void addPhoneNumberToPersonInfo(String firstName, String lastName, Long chatId, String phone) {
+        User user = userService.findUserByChatId(chatId);
+        UserInfo userInfo = userService.setUserPhone(new UserInfo(firstName, lastName, phone));
+        user.setUserInfo(userInfo);
+        userService.update(user);
+        message = new SendMessage(chatId, "Ваш номер телефона успешно добавлен");
+        messageExecutor.executeHTMLMessage(message);
+        message = null;
     }
 
     /**
