@@ -82,6 +82,9 @@ public class MessageSender implements BlockedUserHandler {
                 message = null;
             }
         });
+
+
+
         infoCommands.put("/schema", (chatId, user) -> {
             if (user.getShelter().getSchema() != null) {
                 sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
