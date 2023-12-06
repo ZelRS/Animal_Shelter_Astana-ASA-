@@ -62,6 +62,14 @@ public class UserServiceImpl implements UserService {
         return userInfoRepository.save(userInfo);
     }
 
+    public Optional<String> getUserPhone(Long id) {
+        return userRepository.findPhoneById(id);
+    }
+
+    public UserInfo setUserPhone(UserInfo userInfo) {
+        return userInfoRepository.save(userInfo);
+    }
+
     @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);

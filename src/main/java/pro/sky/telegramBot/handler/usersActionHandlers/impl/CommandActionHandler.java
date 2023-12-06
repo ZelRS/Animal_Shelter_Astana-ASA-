@@ -140,7 +140,7 @@ public class CommandActionHandler implements ActionHandler {
         });
 
         // Оставить заявку на обратный звонок
-        commandMap.put("/callMe", (firstName, lastName, chatId) -> {
+        commandMap.put("/callme", (firstName, lastName, chatId) -> {
             log.info("Received /callMe command");
             messageSender.menuInformationHandler(chatId, "/callMe");
         });
@@ -173,6 +173,11 @@ public class CommandActionHandler implements ActionHandler {
         User user = userService.findUserByChatId(chatId);
         if (user != null && user.getState().equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
+            return;
+        }
+        if (command.startsWith("/phone")) {
+            String phone = command.split(" ")[1];
+            messageSender.addPhoneNumberToPersonInfo(firstName, lastName, chatId, phone);
             return;
         }
         Command commandToRun = commandMap.get(command.toLowerCase());

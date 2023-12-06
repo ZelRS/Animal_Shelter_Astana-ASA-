@@ -15,6 +15,7 @@ import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
@@ -83,9 +84,6 @@ public class MessageSender implements BlockedUserHandler {
                 message = null;
             }
         });
-
-
-
         infoCommands.put("/schema", (chatId, user) -> {
             if (user.getShelter().getSchema() != null) {
                 sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
@@ -108,7 +106,11 @@ public class MessageSender implements BlockedUserHandler {
             }
         });
         infoCommands.put("/callMe", (chatId, user) -> {
-            message = new SendMessage(chatId, "Пока тут заглушка. Скоро будет реализовано");
+            String phone = userService.getUserPhone(user.getId()).orElseGet(() -> {
+                return "К сожалению вы не предоставили свой номер телефона. Добавьте номер телефона в таком формате:\n/phone ##(###)###-##-##";
+            });
+
+            message = new SendMessage(chatId, phone);
         });
     }
 
@@ -285,6 +287,15 @@ public class MessageSender implements BlockedUserHandler {
         } else {
             sendInformationNotFoundMessage(chatId);
         }
+    }
+
+    public void addPhoneNumberToPersonInfo(String firstName, String lastName, Long chatId, String phone) {
+        User user = userService.findUserByChatId(chatId);
+        UserInfo userInfo = userService.setUserPhone(new UserInfo(firstName, lastName, phone));
+        user.setUserInfo(userInfo);
+        userService.update(user);
+        message = new SendMessage(chatId, "Ваш номер телефона успешно добавлен");
+        messageExecutor.executeHTMLMessage(message);
     }
 
     /**

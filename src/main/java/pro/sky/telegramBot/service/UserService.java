@@ -39,4 +39,7 @@ public interface UserService {
 
     Optional<User> findById(Long id);
 
+    Optional<String> getUserPhone(Long id);
+
+    UserInfo setUserPhone(UserInfo userInfo);
 }
