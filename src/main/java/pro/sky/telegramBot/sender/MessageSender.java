@@ -25,7 +25,8 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
@@ -206,7 +207,7 @@ public class MessageSender implements BlockedUserHandler {
             // если у приюта нет превью, будет высылать дефолтное превью
             if (user.getShelter().getPreview() != null && !user.getShelter().getPreview().equals("")) {
                 sendPhoto.caption("\"" + user.getShelter().getName() +
-                                  "\"\n------------\n" + user.getShelter().getPreview());
+                        "\"\n------------\n" + user.getShelter().getPreview());
             } else {
                 sendPhoto.caption(config.getMSG_SHELTER_DEFAULT_PREVIEW());
             }
@@ -309,8 +310,8 @@ public class MessageSender implements BlockedUserHandler {
             SendPhoto sendPhoto;
             User user = userService.findUserByChatId(chatId);
             // происходит проверка статуса пользователя на UNTRUSTED и BLOCKED
-                sendPhoto = specificMediaMessageCreator.createTakingPetPhotoMessage(chatId, firstName);
-                sendPhoto.replyMarkup(specificKeyboardCreator.takingPetMessageKeyboard());
+            sendPhoto = specificMediaMessageCreator.createTakingPetPhotoMessage(chatId, firstName);
+            sendPhoto.replyMarkup(specificKeyboardCreator.takingPetMessageKeyboard());
             // выполняется отправление сообщения с фото
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
@@ -363,10 +364,10 @@ public class MessageSender implements BlockedUserHandler {
         SendPhoto sendPhoto;
         try {
             if (currentTime.toLocalTime().isAfter(LocalTime.of(18, 0))
-                && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))) {
+                    && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))) {
 //             объявляется переменная SendPhoto для конкретного сообщения
-            sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
-            sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
+                sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
+                sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
             } else {
                 sendPhoto = specificMediaMessageCreator.createReportSendOneOptionPhotoMessage(chatId);
                 sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportNotActiveMessageKeyboard());
@@ -485,6 +486,7 @@ public class MessageSender implements BlockedUserHandler {
             log.error("Failed to send question photo message to {}", chatId, e);
         }
     }
+
     /**
      * Метод формирует и отправляет приветственное фото-сообщение волонтеру,<br>
      */
@@ -502,5 +504,21 @@ public class MessageSender implements BlockedUserHandler {
             log.error("Failed to send welcome message to {}: {}", firstName, chatId, e);
         }
     }
-    //    .........отправка сообщений пользователю на любые другие случаи........
+
+
+    /**
+     * метод формирует и отправляет сообщение пользователю,<br>
+     * когда он нажал на кнопку "Позвать Волонтёра"
+     */
+    public void sendCallVolunteerPhotoMessage(Long chatId) {
+        log.info("Sending a message to the user \"call a volunteer\" {}", chatId);
+        try {
+            SendPhoto sendPhoto;
+            sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.info("Failed to send \"call a volunteer\" message to {}", chatId, e);
+        }
+        //    .........отправка сообщений пользователю на любые другие случаи........
+    }
 }

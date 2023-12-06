@@ -21,6 +21,7 @@ public enum MessageImage {
     SHELTER_INFORMATION_MSG_IMG("/photos/shelter_information.jpg"),
     REPORT_ACCEPTED_MSG_IMG("/photos/report_accepted.jpg"),
     REPORT_NOT_ACCEPTED_MSG_IMG("/photos/report_not_accepted.jpg"),
+    CALL_VOLUNTEER_MSG_IMG("/photos/volunteer.jpg"),
     SAVING_USER_INFO_SUCCESS_MSG_IMG("/photos/saving_user_info_success_msg.jpg"),
     QUESTION_FOR_REPORT_IMG("/photos/question_ror_report.jpg"),
     HELLO_VOLUNTEER_IMG("/photos/hello_volunteer.jpg"),
