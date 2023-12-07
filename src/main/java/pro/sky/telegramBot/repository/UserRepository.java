@@ -2,7 +2,6 @@ package pro.sky.telegramBot.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.users.User;
 
@@ -19,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<String> findPhoneById(Long userId);
 
     List<User> findAllByAdoptionRecordIsNullAndState(UserState state);
+
+    List<User> findAllByState(UserState state);
 }

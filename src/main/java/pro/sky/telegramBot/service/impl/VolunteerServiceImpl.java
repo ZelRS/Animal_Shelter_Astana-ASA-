@@ -10,6 +10,7 @@ import pro.sky.telegramBot.repository.VolunteerRepository;
 import pro.sky.telegramBot.service.VolunteerService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,5 +49,13 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Override
     public List<Volunteer> findAllByState(VolunteerState volunteerState) {
         return volunteerRepository.findAllByState(volunteerState);
+    }
+
+    /**
+     * найти волонтера по chatId
+     */
+    @Override
+    public Optional<Volunteer> findByChatId(Long chatId) {
+        return volunteerRepository.findByChatId(chatId);
     }
 }

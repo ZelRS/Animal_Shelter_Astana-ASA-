@@ -97,7 +97,9 @@ public class SpecificDocumentMessageCreator {
         params.setFilePath(SAVING_USER_PERSONAL_DOCS_SCREENS_MSG_IMG.getPath());
 
         User user = userService.findUserByChatId(chatId);
-        user.setState(UserState.INVITED);
+        if (!user.getState().equals(UserState.VOLUNTEER)) {
+            user.setState(UserState.INVITED);
+        }
 
         return mediaMessageCreator.createPhotoMessage(params);
     }

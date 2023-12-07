@@ -5,6 +5,7 @@ import com.pengrad.telegrambot.model.Document;
 import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.request.SendDocument;
+import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import pro.sky.telegramBot.reader.ExcelFileReader;
 import pro.sky.telegramBot.service.VolunteerService;
 
 import javax.transaction.Transactional;
-import java.io.*;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -77,12 +78,17 @@ public class DocumentLoader {
         byte[] fileContent = bot.getFileContent(receivedFile);
 
         List<Volunteer> volunteers = volunteerService.findAll();
-
-        for (Volunteer volunteer : volunteers) {
-        SendDocument sendDocument = new SendDocument(volunteer.getChatId(), fileContent);
-        sendDocument.fileName(chatId + "UserPersonalDocsScreens.pdf");
-        sendDocument.contentType("pdf");
-        bot.execute(sendDocument);
+        if (!volunteers.isEmpty()) {
+            for (Volunteer volunteer : volunteers) {
+                SendDocument sendDocument = new SendDocument(volunteer.getChatId(), fileContent);
+                sendDocument.fileName(chatId + "UserPersonalDocsScreens.pdf");
+                sendDocument.contentType("pdf");
+                bot.execute(sendDocument);
+            }
+        } else {
+            SendMessage sendMessage = new SendMessage(chatId, "Извините, волонтеров нет...\nПопробуйте снова позже," +
+                    " либо возьмите эти документы с собой в приют!");
+            bot.execute(sendMessage);
         }
     }
 }

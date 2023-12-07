@@ -81,5 +81,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllByAdoptionRecordIsNullAndState(state);
     }
 
+    @Override
+    public List<User> findAllByState(UserState userState) {
+        return userRepository.findAllByState(userState);
+    }
+
 
 }
