@@ -28,7 +28,8 @@ public enum MessageImage {
     CHOOSE_SHELTER_IMG("/photos/choose_shelter.jpg"),
     SAVING_USER_PERSONAL_DOCS_SCREENS_MSG_IMG("/photos/saving_user_personal_docs_screens_msg.jpg"),
     NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG("/photos/saving_user_personal_docs_screens_msg.jpg"),
-    REMINDER_FOR_ADOPTER_ABOUT_REPORTING_IMG("/photos/reminder_for_adopter_about_reporting.jpg");
+    REMINDER_FOR_ADOPTER_ABOUT_REPORTING_IMG("/photos/reminder_for_adopter_about_reporting.jpg"),
+    MISSING_PET_IMG("/photos/missing_pet.jpg");
 
 
 

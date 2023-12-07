@@ -65,7 +65,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
                 adoptionRecord.setPet(pet);
                 List<Volunteer> volunteers = volunteerService.findAll();
                 for(Volunteer volunteer : volunteers) {
-                    messageSender.sendMissingPetMessageToVolunteer(user, volunteer.getChatId());
+                    volunteerService.sendMissingPetMessageToVolunteer(user, volunteer.getChatId());
                 }
             }
             adoptionRecordRepository.save(adoptionRecord);
@@ -92,6 +92,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         if(!newAdopters.isEmpty()){
             for(User user : newAdopters){
                 user.setAdoptionRecord(new AdoptionRecord());
+                setAdoptionRecordForUser(user);
                 userService.update(user);
                 messageSender.sendNotificationToAdopterAboutDailyReportPhotoMessage(user.getChatId());
             }

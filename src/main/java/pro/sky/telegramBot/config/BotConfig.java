@@ -76,11 +76,8 @@ public class BotConfig {
     private String MSG_NOTIFICATION_ABOUT_START_REPORTING;
     @Value("${MSG_NOTIFICATION_ABOUT_END_REPORTING}")
     private String MSG_NOTIFICATION_ABOUT_END_REPORTING;
-
-
-
-
-
+    @Value("${MSG_MISSING_PET}")
+    private String MSG_MISSING_PET;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")

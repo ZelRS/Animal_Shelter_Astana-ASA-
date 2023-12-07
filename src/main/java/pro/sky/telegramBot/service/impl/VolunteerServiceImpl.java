@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.VolunteerState;
 import pro.sky.telegramBot.exception.notFound.VolunteerNotFoundException;
+import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.repository.VolunteerRepository;
+import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.VolunteerService;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class VolunteerServiceImpl implements VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
+    private final MessageSender messageSender;
 
     @Override
     public Volunteer get(Long id) {
@@ -57,5 +60,15 @@ public class VolunteerServiceImpl implements VolunteerService {
     @Override
     public Optional<Volunteer> findByChatId(Long chatId) {
         return volunteerRepository.findByChatId(chatId);
+    }
+
+    @Override
+    public void sendMissingPetMessageToVolunteer(User user, Long chatId) {
+        List<Volunteer> volunteers = volunteerRepository.findAll();
+        if(!volunteers.isEmpty()) {
+            for(Volunteer volunteer : volunteers){
+                messageSender.sendMissingPetMessageToVolunteerPhotoMessage(user.getId(), volunteer.getChatId());
+            }
+        }
     }
 }

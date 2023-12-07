@@ -303,6 +303,14 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    public SendPhoto createMissingPetMessageToVolunteerPhotoMessage(Long volunteerChatId, Long userId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(volunteerChatId);
+        params.setFilePath(MISSING_PET_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_MISSING_PET(), userId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 //    .......  медиа-сообщения для других целей......
 
 
