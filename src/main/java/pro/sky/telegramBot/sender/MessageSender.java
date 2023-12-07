@@ -55,7 +55,6 @@ public class MessageSender implements BlockedUserHandler {
     private final MediaLoader mediaLoader;
     private final VolunteerService volunteerService;
 
-
     @FunctionalInterface
     interface Command {
         void run(Long chatId, User user);
@@ -563,6 +562,28 @@ public class MessageSender implements BlockedUserHandler {
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.info("Failed to send a message to the user than he daily should fill out a report {}", chatId, e);
+        }
+    }
+
+    public void sendNotificationToAdopterAboutStartReportPhotoMessage(Long chatId) {
+        log.info("Sending a message to {} about starting to fill out the report online", chatId);
+        try {
+            SendPhoto sendPhoto;
+            sendPhoto = specificMediaMessageCreator.createNotificationToAdopterAboutStartReportPhotoMessage(chatId);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.info("Failed to send a message to {} about starting to fill out the report online", chatId, e);
+        }
+    }
+
+    public void sendNotificationToAdopterAboutEndReportPhotoMessage(Long chatId) {
+        log.info("Sending a message to {} about finishing to fill out the report online", chatId);
+        try {
+            SendPhoto sendPhoto;
+            sendPhoto = specificMediaMessageCreator.createNotificationToAdopterAboutEndReportPhotoMessage(chatId);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.info("Failed to send a message to {} about finishing to fill out the report online", chatId, e);
         }
     }
 

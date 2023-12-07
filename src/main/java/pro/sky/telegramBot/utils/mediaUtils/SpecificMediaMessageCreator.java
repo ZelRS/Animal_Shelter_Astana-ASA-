@@ -281,6 +281,22 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    public SendPhoto createNotificationToAdopterAboutStartReportPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ABOUT_START_REPORTING());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAboutEndReportPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ABOUT_END_REPORTING());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 //    .......  медиа-сообщения для других целей......
 
 

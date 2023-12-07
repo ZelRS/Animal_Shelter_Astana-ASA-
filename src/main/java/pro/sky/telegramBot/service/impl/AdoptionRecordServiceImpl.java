@@ -91,12 +91,23 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
 
     @Override
     public void informAdopterAboutStartReporting() {
+        List<User> adopters = userService.findAllByState(PROBATION);
+        if(!adopters.isEmpty()){
+            for(User user : adopters){
+                messageSender.sendNotificationToAdopterAboutStartReportPhotoMessage(user.getChatId());
+            }
+        }
 
     }
 
     @Override
     public void informAdopterAboutEndReporting() {
-
+        List<User> adopters = userService.findAllByState(PROBATION);
+        if(!adopters.isEmpty()){
+            for(User user : adopters){
+                messageSender.sendNotificationToAdopterAboutEndReportPhotoMessage(user.getChatId());
+            }
+        }
     }
 
 }
