@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.QuestionsForReport;
-import pro.sky.telegramBot.model.adoption.Report;
+import pro.sky.telegramBot.model.Adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.ReportRepository;
 import pro.sky.telegramBot.sender.MessageSender;

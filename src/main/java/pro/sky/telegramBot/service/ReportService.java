@@ -1,6 +1,6 @@
 package pro.sky.telegramBot.service;
 
-import pro.sky.telegramBot.model.adoption.Report;
+import pro.sky.telegramBot.model.Adoption.Report;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.model.adoption;
+package pro.sky.telegramBot.model.Adoption;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
