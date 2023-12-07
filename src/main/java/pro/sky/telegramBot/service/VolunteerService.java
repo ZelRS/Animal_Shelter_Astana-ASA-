@@ -1,8 +1,10 @@
 package pro.sky.telegramBot.service;
 
+import pro.sky.telegramBot.enums.VolunteerState;
 import pro.sky.telegramBot.model.volunteer.Volunteer;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface VolunteerService {
 
@@ -12,9 +14,18 @@ public interface VolunteerService {
 
     Volunteer update(Volunteer volunteer);
 
-    List<Volunteer> findAllVolunteerByChatId(Long chatId);
-
-    List<Volunteer> findAllVolunteers();
-
+    /**
+     * найти всех волонтеров
+     */
     List<Volunteer> findAll();
+
+    /**
+     * найти всех волонтеров с конкретным статусом
+     */
+    List<Volunteer> findAllByState(VolunteerState volunteerState);
+
+    /**
+     * найти волонтера по chatId
+     */
+    Optional<Volunteer> findByChatId(Long chatId);
 }

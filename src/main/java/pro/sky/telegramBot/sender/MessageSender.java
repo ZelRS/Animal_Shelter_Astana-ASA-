@@ -6,7 +6,6 @@ import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.LifecycleState;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
@@ -127,7 +126,7 @@ public class MessageSender implements BlockedUserHandler {
      */
     private Long getRandomVolunteerId() {
         Random random = new Random();
-        List<Long> volunteersList = volunteerService.findAllVolunteers().stream()
+        List<Long> volunteersList = volunteerService.findAll().stream()
                 .map(Volunteer::getChatId)
                 .collect(Collectors.toList());
         return volunteersList.get(random.nextInt(volunteersList.size()));

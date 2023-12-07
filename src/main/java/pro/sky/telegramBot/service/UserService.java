@@ -45,4 +45,6 @@ public interface UserService {
     UserInfo setUserPhone(UserInfo userInfo);
 
     List<User> findAllByAdoptionRecordIsNullAndState(UserState state);
+
+    List<User> findAllByState(UserState userState);
 }

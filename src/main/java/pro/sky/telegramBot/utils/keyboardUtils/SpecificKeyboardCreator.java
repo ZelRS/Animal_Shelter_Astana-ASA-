@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.Button;
-import pro.sky.telegramBot.enums.QuestionsForReport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,10 +110,11 @@ public class SpecificKeyboardCreator {
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
-//Метод создает клавиатуру для ответа пользователя на вопросы в отчете
+
+    //Метод создает клавиатуру для ответа пользователя на вопросы в отчете
     public Keyboard questionForReportMessageKeyboard(int questionIdentifier, Long reportId) {
         List<Button> buttons = new ArrayList<>();
-        for(int i = 0; i <= 10; i++) {
+        for (int i = 0; i <= 10; i++) {
             Button button = new Button(Integer.toString(i), i + "_" + questionIdentifier + "_" + reportId);
             buttons.add(button);
         }
@@ -144,27 +144,16 @@ public class SpecificKeyboardCreator {
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
-    /**
-     * клавиатура для сообщения, где пользователя просят внести свои контактные данные
-     */
-//    public Keyboard startRegistrationMessageKeyBoard() {
-//        log.info("Creating keyboard markup for set personal data of user");
-//
-//        List<Button> buttons = new ArrayList<>(List.of(
-//                new Button(config.getBUT_SET_DATA_FROM_USER(), BUT_SET_DATA_FROM_USER.getCallbackData())
-//        ));
-//        return keyboardCreator.createInlineKeyboard(buttons);
-//    }
-
 // я ещё не понял как и куда прикрутить этот метод
 //
+
     /**
      * клавиатура для сообщения "позвать волонтёра"
      */
     public Keyboard pressTheButtonToCallVolunteer() {
         log.info("Creating a keyboard call a volunteer");
         List<Button> buttons = new ArrayList<>(List.of(
-           new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
+                new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }

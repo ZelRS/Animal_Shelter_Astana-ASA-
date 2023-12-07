@@ -3,6 +3,7 @@ package pro.sky.telegramBot.model.volunteer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import pro.sky.telegramBot.enums.VolunteerState;
 
 import javax.persistence.*;
 
@@ -21,4 +22,8 @@ public class Volunteer {
 
     @Column(name = "volunteer_name")
     private String name;
+
+    @Column(name = "state")
+    @Enumerated(EnumType.STRING)
+    private VolunteerState state;
 }
