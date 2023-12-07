@@ -52,7 +52,6 @@ public class MessageSender implements BlockedUserHandler {
     private final BotConfig config;
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
-    private final MediaLoader mediaLoader;
     private final VolunteerService volunteerService;
 
     @FunctionalInterface
