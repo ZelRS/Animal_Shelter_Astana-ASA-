@@ -90,7 +90,7 @@ public class SpecificDocumentMessageCreator {
      * и он приглашается с личной явкой в приют, для выбора животного
      */
     public SendPhoto createScreenPersonalDocumentsResponseMessage(Long chatId, Document document) throws IOException {
-        documentLoader.readAndSendScreenPersonalDocumentsToVoluteers(document, chatId);
+        documentLoader.readAndSendScreenPersonalDocumentsToVolunteers(document, chatId);
 
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);

@@ -9,8 +9,9 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.reader.ExcelFileReader;
-import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.service.VolunteerService;
 
 import javax.transaction.Transactional;
 import java.io.*;
@@ -24,11 +25,10 @@ import java.util.List;
 @Transactional
 @Slf4j  // SLF4J logging
 public class DocumentLoader {
-
     private final TelegramBot bot;
     private final ExcelFileReader excelFileReader;
+    private final VolunteerService volunteerService;
 
-    private final UserService userService;
     public List<String> readAdopterReport(Document document) {
         // Получаем параметры документа
         String fileId = document.fileId();
@@ -68,7 +68,7 @@ public class DocumentLoader {
     }
 
     // метод не реализован до конца. ожидается создание таблицы волонтеров
-    public void readAndSendScreenPersonalDocumentsToVoluteers(Document document, Long chatId) throws IOException {
+    public void readAndSendScreenPersonalDocumentsToVolunteers(Document document, Long chatId) throws IOException {
         String fileId = document.fileId();
         GetFile getFileRequest = new GetFile(fileId);
         GetFileResponse getFileResponse = bot.execute(getFileRequest);
@@ -76,14 +76,13 @@ public class DocumentLoader {
 
         byte[] fileContent = bot.getFileContent(receivedFile);
 
-//        List<User> volunteer = userService.findAllUsersByState(UserState.VOLUNTEER);
+        List<Volunteer> volunteers = volunteerService.findAll();
 
-//        for (User user : volunteer) {
-            SendDocument sendDocument = new SendDocument(/*user.getChatId()*/ chatId, fileContent);
+        for (Volunteer volunteer : volunteers) {
+        SendDocument sendDocument = new SendDocument(volunteer.getChatId(), fileContent);
         sendDocument.fileName(chatId + "UserPersonalDocsScreens.pdf");
         sendDocument.contentType("pdf");
         bot.execute(sendDocument);
-
-//        }
+        }
     }
 }
