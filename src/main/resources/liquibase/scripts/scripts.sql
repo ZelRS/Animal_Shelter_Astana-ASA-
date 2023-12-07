@@ -159,3 +159,17 @@ ALTER TABLE person
         FOREIGN KEY (info_id)
             REFERENCES person_info (id)
             ON DELETE SET NULL;
+
+-- changeset YuriPet:4
+ALTER TABLE pet
+    DROP CONSTRAINT FK_person_constraint;
+-- changeset YuriPet:5
+ALTER TABLE person
+    ADD COLUMN pet_id BIGINT;
+
+-- changeset YuriPet:6
+ALTER TABLE person
+    ADD CONSTRAINT fk_pet_id
+        FOREIGN KEY (pet_id)
+            REFERENCES pet (id)
+            ON DELETE SET NULL;

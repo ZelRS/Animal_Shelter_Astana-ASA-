@@ -11,6 +11,7 @@ import pro.sky.telegramBot.repository.UserRepository;
 import pro.sky.telegramBot.service.UserService;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -73,6 +74,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public List<User> findAllByAdoptionRecordIsNullAndState(UserState state) {
+        return userRepository.findAllByAdoptionRecordIsNullAndState(state);
     }
 
 

@@ -48,10 +48,9 @@ public class Pet {
     @JsonIgnore
     private byte[] data;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
-    @JsonIgnore
-    private User user;
+    @OneToOne
+    @JoinColumn(name = "owner_id", unique = true)
+    private User owner;
 
     @ManyToOne
     @JoinColumn(name = "shelter_id")
