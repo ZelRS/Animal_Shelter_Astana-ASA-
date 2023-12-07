@@ -58,9 +58,9 @@ public class WelcomeMessageHandler {
             case PROBATION:
                 messageSender.sendReportPhotoMessage(chatId);
                 break;
-            case VOLUNTEER:
-                messageSender.sendVolunteerWelcomePhotoMessage(user.getUserName(), chatId);
-                break;
+//            case VOLUNTEER:
+//                messageSender.sendVolunteerWelcomePhotoMessage(user.getUserName(), chatId);
+//                break;
             default:
                 log.warn("Unknown user state: {}", user.getState());
                 messageSender.sendDefaultHTMLMessage(chatId);
