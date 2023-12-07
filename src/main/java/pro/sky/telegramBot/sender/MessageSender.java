@@ -56,6 +56,7 @@ public class MessageSender implements BlockedUserHandler {
     private final MediaLoader mediaLoader;
     private final VolunteerService volunteerService;
 
+
     @FunctionalInterface
     interface Command {
         void run(Long chatId, User user);
@@ -551,5 +552,7 @@ public class MessageSender implements BlockedUserHandler {
             log.info("Failed to send \"call a volunteer\" message to {}", chatId, e);
         }
         //    .........отправка сообщений пользователю на любые другие случаи........
+    }
+    public void sendMissingPetMessageToVolunteer(User user, Long chatId) {
     }
 }

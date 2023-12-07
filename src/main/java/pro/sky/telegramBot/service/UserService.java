@@ -4,6 +4,7 @@ import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.users.UserInfo;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -42,4 +43,6 @@ public interface UserService {
     Optional<String> getUserPhone(Long id);
 
     UserInfo setUserPhone(UserInfo userInfo);
+
+    List<User> findAllByAdoptionRecordIsNullAndState(UserState state);
 }

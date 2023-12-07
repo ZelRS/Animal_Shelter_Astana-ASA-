@@ -43,4 +43,9 @@ public class VolunteerServiceImpl implements VolunteerService {
     public List<Volunteer> findAllVolunteers() {
         return volunteerRepository.findAll();
     }
+
+    @Override
+    public List<Volunteer> findAll() {
+        return volunteerRepository.findAll();
+    }
 }

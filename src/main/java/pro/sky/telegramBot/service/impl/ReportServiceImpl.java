@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.QuestionsForReport;
-import pro.sky.telegramBot.model.Adoption.Report;
+import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.ReportRepository;
 import pro.sky.telegramBot.sender.MessageSender;
@@ -12,11 +12,11 @@ import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.ReportDataConverter;
+import pro.sky.telegramBot.utils.ReportSumCalculator;
 
 import java.time.LocalDate;
 import java.util.*;
 
-import static pro.sky.telegramBot.entity.Button.CallbackData.BUT_FILL_OUT_REPORT_ON;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
 
 
@@ -32,6 +32,7 @@ public class ReportServiceImpl implements ReportService {
     private final UserService userService;
     private final AdoptionRecordService adoptionRecordService;
     private final MessageSender messageSender;
+    private final ReportSumCalculator reportSumCalculator;
 
     @Override
     public boolean saveReport(Report newReport) {
@@ -49,19 +50,28 @@ public class ReportServiceImpl implements ReportService {
         newReport.setReportDateTime(reportDataConverter.convertToData(dateString));
 
         String valueA6 = values.get(4);
-        newReport.setBehaviorChange(reportDataConverter.convertToInteger(valueA6));
+        int a6Int = reportDataConverter.convertToInteger(valueA6);
+        newReport.setBehaviorChange(a6Int);
 
         String valueA8 = values.get(2);
-        newReport.setDietAllergies(reportDataConverter.convertToInteger(valueA8));
+        int a8Int = reportDataConverter.convertToInteger(valueA8);
+        newReport.setDietAllergies(a8Int);
 
         String valueA10 = values.get(1);
-        newReport.setDietPreferences(reportDataConverter.convertToInteger(valueA10));
+        int a10Int = reportDataConverter.convertToInteger(valueA10);
+        newReport.setDietPreferences(a10Int);
 
         String valueA12 = values.get(0);
-        newReport.setDietAppetite(reportDataConverter.convertToInteger(valueA12));
+        int a12Int = reportDataConverter.convertToInteger(valueA12);
+        newReport.setDietAppetite(a12Int);
 
         String valueA14 = values.get(3);
-        newReport.setHealthStatus(reportDataConverter.convertToInteger(valueA14));
+        int a14Int = reportDataConverter.convertToInteger(valueA14);
+        newReport.setHealthStatus(a14Int);
+
+        int reportResult = reportSumCalculator.calculateReportSum(new int[]{a6Int, a8Int, a10Int, a12Int, a14Int});
+
+        adoptionRecordService.addNewReportToAdoptionRecord(newReport, reportResult, chatId);
 
         return saveReport(newReport);
     }

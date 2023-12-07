@@ -8,7 +8,8 @@ import lombok.Getter;
 @Getter
 public enum PetType {
     DOG("собака", "собак"),
-    CAT("кошка", "кошек");
+    CAT("кошка", "кошек"),
+    NOPET("нет животного", "нет животных");
 
     private final String type;
     private final String accusative;

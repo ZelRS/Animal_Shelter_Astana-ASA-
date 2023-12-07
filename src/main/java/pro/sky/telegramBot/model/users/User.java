@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import pro.sky.telegramBot.enums.UserState;
+import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.shelter.Shelter;
 
@@ -37,10 +38,14 @@ public class User {
     @JoinColumn(name = "info_id")
     private UserInfo userInfo;
 
-    @OneToMany(mappedBy = "user")
-    private Collection<Pet> pets;
+    @OneToOne
+    @JoinColumn(name = "pet_id")
+    private Pet pet;
 
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @JoinColumn(name = "shelter_id")
     private Shelter shelter;
+
+    @OneToOne
+    private AdoptionRecord adoptionRecord;
 }
