@@ -551,7 +551,19 @@ public class MessageSender implements BlockedUserHandler {
         }
         //    .........отправка сообщений пользователю на любые другие случаи........
     }
-    public void sendMissingPetMessageToVolunteer(User user, Long chatId) {
+
+    /**
+     * Метод формирует и отправляет сообщение об отсутствии животного в базе в нового усыновителя
+     */
+    public void sendMissingPetMessageToVolunteerPhotoMessage(Long userId, Long volunteerChatId) {
+        log.info("Sending a message to the volunteer {} than no pet was detected by the adopter {}", volunteerChatId, userId);
+        try {
+            SendPhoto sendPhoto;
+            sendPhoto = specificMediaMessageCreator.createMissingPetMessageToVolunteerPhotoMessage(volunteerChatId, userId);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.info("Failed to send a message to the volunteer {} than no pet was detected by the adopter {}", volunteerChatId, userId, e);
+        }
     }
     /**
      * Метод формирует и отправляет сообщение о возможности заполнять отчет онлайн

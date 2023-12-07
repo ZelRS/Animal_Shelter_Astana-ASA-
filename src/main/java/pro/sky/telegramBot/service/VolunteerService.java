@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.service;
 
 import pro.sky.telegramBot.enums.VolunteerState;
+import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.volunteer.Volunteer;
 
 import java.util.List;
@@ -28,4 +29,6 @@ public interface VolunteerService {
      * найти волонтера по chatId
      */
     Optional<Volunteer> findByChatId(Long chatId);
+
+    void sendMissingPetMessageToVolunteer(User user, Long chatId);
 }
