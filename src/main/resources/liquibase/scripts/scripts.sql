@@ -177,3 +177,6 @@ ALTER TABLE person
 -- changeset RomanZelenin:7
 ALTER TABLE  volunteer
 ADD COLUMN state VARCHAR(255) NOT NULL DEFAULT 'FREE';
+
+-- changeset YuriPet:7
+DROP TABLE IF EXISTS volunteer;

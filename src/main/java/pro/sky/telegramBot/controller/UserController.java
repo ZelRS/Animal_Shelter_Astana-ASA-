@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.service.UserService;
 
 /**

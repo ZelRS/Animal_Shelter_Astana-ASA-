@@ -13,12 +13,9 @@ import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
-import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.users.UserInfo;
-import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.service.UserService;
-import pro.sky.telegramBot.service.VolunteerService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
@@ -33,8 +30,7 @@ import java.util.stream.Collectors;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
-import static pro.sky.telegramBot.enums.UserState.INVITED;
-import static pro.sky.telegramBot.enums.UserState.PROBATION_REPORT;
+import static pro.sky.telegramBot.enums.UserState.*;
 
 /**
  * методы класса группируют компоненты и формируют сообщения ответа,<br>
@@ -52,7 +48,6 @@ public class MessageSender implements BlockedUserHandler {
     private final BotConfig config;
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
-    private final VolunteerService volunteerService;
 
     @FunctionalInterface
     interface Command {
@@ -124,8 +119,8 @@ public class MessageSender implements BlockedUserHandler {
      */
     private Long getRandomVolunteerId() {
         Random random = new Random();
-        List<Long> volunteersList = volunteerService.findAll().stream()
-                .map(Volunteer::getChatId)
+        List<Long> volunteersList = userService.findAllByState(VOLUNTEER).stream()
+                .map(User::getChatId)
                 .collect(Collectors.toList());
         return volunteersList.get(random.nextInt(volunteersList.size()));
     }
