@@ -46,6 +46,9 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         }
         return new Report();
     }
+    /**
+     * Метод заполняет запись об усыновлении
+     */
     private void setAdoptionRecordForUser(User user) {
         if (user != null && user.getAdoptionRecord() != null) {
             LocalDate date = LocalDate.now();
@@ -68,6 +71,9 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             adoptionRecordRepository.save(adoptionRecord);
         }
     }
+    /**
+     * Метод добавляет новый отчет к записи усыновления
+     */
     @Override
     public void addNewReportToAdoptionRecord(Report newReport, int reportResult, Long chatId) {
         User user = userService.findUserByChatId(chatId);
@@ -76,7 +82,10 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             adoptionRecord.setRatingTotal(adoptionRecord.getRatingTotal() + reportResult);
         }
     }
-
+    /**
+     * Метод находит новых усыновителей, создает запись об усыновлении и отправляет сообщение
+     * о возможности онлайн заполнения отчета
+     */
     @Override
     public void checkNewAdopter() {
         List<User> newAdopters = userService.findAllByAdoptionRecordIsNullAndState(PROBATION);
@@ -88,7 +97,9 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             }
         }
     }
-
+    /**
+     * Метод находит усыновителей и запускает отправку сообщения о начале процедуры онлайн заполнения отчета
+     */
     @Override
     public void informAdopterAboutStartReporting() {
         List<User> adopters = userService.findAllByState(PROBATION);
@@ -99,7 +110,9 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         }
 
     }
-
+    /**
+     * Метод находит усыновителей и запускает отправку сообщения о завершении процедуры онлайн заполнения отчета
+     */
     @Override
     public void informAdopterAboutEndReporting() {
         List<User> adopters = userService.findAllByState(PROBATION);

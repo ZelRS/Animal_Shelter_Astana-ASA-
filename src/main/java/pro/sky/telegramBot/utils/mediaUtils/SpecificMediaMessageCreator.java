@@ -272,7 +272,9 @@ public class SpecificMediaMessageCreator {
         params.setCaption(config.getBUT_CALL_VOLUNTEER());
         return mediaMessageCreator.createPhotoMessage(params);
     }
-
+    /**
+     * Метод передает параметры для сообщения о возможности онлайн заполнения отчета
+     */
     public SendPhoto createNotificationToAdopterAboutDailyReportPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -280,7 +282,9 @@ public class SpecificMediaMessageCreator {
         params.setCaption(config.getMSG_NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT());
         return mediaMessageCreator.createPhotoMessage(params);
     }
-
+    /**
+     * Метод передает параметры для сообщения о начале процедуры онлайн заполнения отчета
+     */
     public SendPhoto createNotificationToAdopterAboutStartReportPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -288,7 +292,9 @@ public class SpecificMediaMessageCreator {
         params.setCaption(config.getMSG_NOTIFICATION_ABOUT_START_REPORTING());
         return mediaMessageCreator.createPhotoMessage(params);
     }
-
+    /**
+     * Метод передает параметры для сообщения о завершении процедуры онлайн заполнения отчета
+     */
     public SendPhoto createNotificationToAdopterAboutEndReportPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);

@@ -553,7 +553,9 @@ public class MessageSender implements BlockedUserHandler {
     }
     public void sendMissingPetMessageToVolunteer(User user, Long chatId) {
     }
-
+    /**
+     * Метод формирует и отправляет сообщение о возможности заполнять отчет онлайн
+     */
     public void sendNotificationToAdopterAboutDailyReportPhotoMessage(Long chatId) {
         log.info("Sending a message to the user than he daily should fill out a report {}", chatId);
         try {
@@ -564,7 +566,9 @@ public class MessageSender implements BlockedUserHandler {
             log.info("Failed to send a message to the user than he daily should fill out a report {}", chatId, e);
         }
     }
-
+    /**
+     * Метод формирует и отправляет сообщение о начале процедуры онлайн заполнения отчета
+     */
     public void sendNotificationToAdopterAboutStartReportPhotoMessage(Long chatId) {
         log.info("Sending a message to {} about starting to fill out the report online", chatId);
         try {
@@ -575,7 +579,9 @@ public class MessageSender implements BlockedUserHandler {
             log.info("Failed to send a message to {} about starting to fill out the report online", chatId, e);
         }
     }
-
+    /**
+     * Метод формирует и отправляет сообщение о завершении процедуры онлайн заполнения отчета
+     */
     public void sendNotificationToAdopterAboutEndReportPhotoMessage(Long chatId) {
         log.info("Sending a message to {} about finishing to fill out the report online", chatId);
         try {
