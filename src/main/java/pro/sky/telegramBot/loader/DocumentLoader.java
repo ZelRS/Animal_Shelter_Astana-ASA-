@@ -10,9 +10,10 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.model.volunteer.Volunteer;
+import pro.sky.telegramBot.enums.UserState;
+import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.reader.ExcelFileReader;
-import pro.sky.telegramBot.service.VolunteerService;
+import pro.sky.telegramBot.service.UserService;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.util.List;
 public class DocumentLoader {
     private final TelegramBot bot;
     private final ExcelFileReader excelFileReader;
-    private final VolunteerService volunteerService;
+    private final UserService userService;
 
     public List<String> readAdopterReport(Document document) {
         // Получаем параметры документа
@@ -77,10 +78,10 @@ public class DocumentLoader {
 
         byte[] fileContent = bot.getFileContent(receivedFile);
 
-        List<Volunteer> volunteers = volunteerService.findAll();
-        if (!volunteers.isEmpty()) {
-            for (Volunteer volunteer : volunteers) {
-                SendDocument sendDocument = new SendDocument(volunteer.getChatId(), fileContent);
+        List<User> users = userService.findAllByState(UserState.VOLUNTEER);
+        if (!users.isEmpty()) {
+            for (User user : users) {
+                SendDocument sendDocument = new SendDocument(user.getChatId(), fileContent);
                 sendDocument.fileName(chatId + "UserPersonalDocsScreens.pdf");
                 sendDocument.contentType("pdf");
                 bot.execute(sendDocument);

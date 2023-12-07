@@ -7,14 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.reader.ExcelFileReader;
 import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
-import pro.sky.telegramBot.service.VolunteerService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificDocumentMessageCreator;
 
@@ -39,8 +38,6 @@ public class DocumentMessageSender {
     private final MessageExecutor messageExecutor;
     private final BotConfig botConfig;
     private final SpecificKeyboardCreator specificKeyboardCreator;
-
-    private final VolunteerService volunteerService;
 
     /**
      * Метод формирует и отправляет сообщение пользователю о статусе полученного документа
@@ -75,11 +72,11 @@ public class DocumentMessageSender {
         log.info("Was invoked method sendScreenPersonalDocumentsResponseMessage");
         try {
             User user = userService.findUserByChatId(chatId);
-            List<Volunteer> volunteers = volunteerService.findAll();
+            List<User> users = userService.findAllByState(UserState.VOLUNTEER);
 
             SendPhoto sendPhoto;
             sendPhoto = specificDocumentMessageCreator.createScreenPersonalDocumentsResponseMessage(chatId, document);
-            if (!volunteers.isEmpty()) {
+            if (!users.isEmpty()) {
                 String caption = String.format(botConfig.getMSG_SAVING_USER_PERSONAL_DOCS_SCREENS_SUCCESS(),
                         user.getShelter().getName());
                 sendPhoto.caption(caption);
