@@ -70,6 +70,17 @@ public class BotConfig {
     private String MSG_HELLO_VOLUNTEER;
     @Value("${MSG_CHOOSE_SHELTER}")
     private String MSG_CHOOSE_SHELTER;
+    @Value("${MSG_NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT}")
+    private String MSG_NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT;
+    @Value("${MSG_NOTIFICATION_ABOUT_START_REPORTING}")
+    private String MSG_NOTIFICATION_ABOUT_START_REPORTING;
+    @Value("${MSG_NOTIFICATION_ABOUT_END_REPORTING}")
+    private String MSG_NOTIFICATION_ABOUT_END_REPORTING;
+
+
+
+
+
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
