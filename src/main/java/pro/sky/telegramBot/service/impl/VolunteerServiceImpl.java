@@ -21,7 +21,6 @@ import java.util.Optional;
 public class VolunteerServiceImpl implements VolunteerService {
 
     private final VolunteerRepository volunteerRepository;
-    private final MessageSender messageSender;
 
     @Override
     public Volunteer get(Long id) {
@@ -64,11 +63,11 @@ public class VolunteerServiceImpl implements VolunteerService {
 
     @Override
     public void sendMissingPetMessageToVolunteer(User user, Long chatId) {
-        List<Volunteer> volunteers = volunteerRepository.findAll();
-        if(!volunteers.isEmpty()) {
-            for(Volunteer volunteer : volunteers){
-                messageSender.sendMissingPetMessageToVolunteerPhotoMessage(user.getId(), volunteer.getChatId());
-            }
-        }
+//        List<Volunteer> volunteers = volunteerRepository.findAll();
+//        if(!volunteers.isEmpty()) {
+//            for(Volunteer volunteer : volunteers){
+//                messageSender.sendMissingPetMessageToVolunteerPhotoMessage(user.getId(), volunteer.getChatId());
+//            }
+//        }
     }
 }
