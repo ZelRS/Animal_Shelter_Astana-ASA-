@@ -110,10 +110,11 @@ public class SpecificKeyboardCreator {
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
-//Метод создает клавиатуру для ответа пользователя на вопросы в отчете
+
+    //Метод создает клавиатуру для ответа пользователя на вопросы в отчете
     public Keyboard questionForReportMessageKeyboard(int questionIdentifier, Long reportId) {
         List<Button> buttons = new ArrayList<>();
-        for(int i = 0; i <= 10; i++) {
+        for (int i = 0; i <= 10; i++) {
             Button button = new Button(Integer.toString(i), i + "_" + questionIdentifier + "_" + reportId);
             buttons.add(button);
         }
@@ -145,13 +146,14 @@ public class SpecificKeyboardCreator {
 
 // я ещё не понял как и куда прикрутить этот метод
 //
+
     /**
      * клавиатура для сообщения "позвать волонтёра"
      */
     public Keyboard pressTheButtonToCallVolunteer() {
         log.info("Creating a keyboard call a volunteer");
         List<Button> buttons = new ArrayList<>(List.of(
-           new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
+                new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
