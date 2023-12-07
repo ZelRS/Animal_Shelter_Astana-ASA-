@@ -10,6 +10,7 @@ import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.volunteer.Volunteer;
 import pro.sky.telegramBot.repository.AdoptionRecordRepository;
+import pro.sky.telegramBot.repository.UserRepository;
 import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.UserService;
@@ -19,11 +20,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static pro.sky.telegramBot.enums.PetType.NOPET;
+import static pro.sky.telegramBot.enums.UserState.PROBATION;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AdoptionRecordServiceImpl implements AdoptionRecordService {
+    private final UserRepository userRepository;
     private final AdoptionRecordRepository adoptionRecordRepository;
     private final UserService userService;
     private final MessageSender messageSender;
@@ -72,6 +75,28 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             AdoptionRecord adoptionRecord = user.getAdoptionRecord();
             adoptionRecord.setRatingTotal(adoptionRecord.getRatingTotal() + reportResult);
         }
+    }
+
+    @Override
+    public void checkNewAdopter() {
+        List<User> newAdopters = userService.findAllByAdoptionRecordIsNullAndState(PROBATION);
+        if(!newAdopters.isEmpty()){
+            for(User user : newAdopters){
+                user.setAdoptionRecord(new AdoptionRecord());
+                userService.update(user);
+                messageSender.sendNotificationToAdopterAboutDailyReportPhotoMessage(user.getChatId());
+            }
+        }
+    }
+
+    @Override
+    public void informAdopterAboutStartReporting() {
+
+    }
+
+    @Override
+    public void informAdopterAboutEndReporting() {
+
     }
 
 }

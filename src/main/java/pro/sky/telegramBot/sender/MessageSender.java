@@ -554,4 +554,16 @@ public class MessageSender implements BlockedUserHandler {
     }
     public void sendMissingPetMessageToVolunteer(User user, Long chatId) {
     }
+
+    public void sendNotificationToAdopterAboutDailyReportPhotoMessage(Long chatId) {
+        log.info("Sending a message to the user than he daily should fill out a report {}", chatId);
+        try {
+            SendPhoto sendPhoto;
+            sendPhoto = specificMediaMessageCreator.createNotificationToAdopterAboutDailyReportPhotoMessage(chatId);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.info("Failed to send a message to the user than he daily should fill out a report {}", chatId, e);
+        }
+    }
+
 }
