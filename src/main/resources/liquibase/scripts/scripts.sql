@@ -173,3 +173,7 @@ ALTER TABLE person
         FOREIGN KEY (pet_id)
             REFERENCES pet (id)
             ON DELETE SET NULL;
+
+-- changeset RomanZelenin:7
+ALTER TABLE  volunteer
+ADD COLUMN state VARCHAR(255) NOT NULL DEFAULT 'FREE';
