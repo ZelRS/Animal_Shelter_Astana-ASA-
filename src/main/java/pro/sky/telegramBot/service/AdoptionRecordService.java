@@ -7,7 +7,7 @@ import java.time.LocalDate;
 public interface AdoptionRecordService {
     Report getCurrentReport(Long id, LocalDate date);
 
-    void addNewReportToAdoptionRecord(Report newReport, int reportResult, Long chatId);
+    void addNewReportToAdoptionRecord(Report newReport, Long chatId);
 
     void checkNewAdopter();
 
