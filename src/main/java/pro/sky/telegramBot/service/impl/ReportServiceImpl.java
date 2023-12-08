@@ -111,6 +111,8 @@ public class ReportServiceImpl implements ReportService {
                     user.setState(PROBATION);
                     userService.update(user);
                     messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(1).getQuestion(), 5, reportId);
+
+                    adoptionRecordService.addNewReportToAdoptionRecord(report, chatId);
                     break;
             }
             reportRepository.save(report);
