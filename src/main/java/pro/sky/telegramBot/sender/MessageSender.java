@@ -599,4 +599,14 @@ public class MessageSender implements BlockedUserHandler {
         }
     }
 
+    public void sendNoAdoptionRecordMessage(Long chatId) {
+        log.info("Sending a no adoption record message to {}", chatId);
+        try {
+            SendMessage sendMessage = new SendMessage(chatId, config.getMSG_NO_ADOPTION_RECORD());
+            messageExecutor.executeHTMLMessage(sendMessage);
+        } catch (Exception e) {
+            log.info("Failed to send a no adoption record message to {}", chatId, e);
+        }
+    }
+
 }

@@ -70,7 +70,7 @@ public class ButtonActionHandler implements ActionHandler {
         buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId) -> {
             log.info("Pressed SEND_REPORT button");
             User user = userService.findUserByChatId(chatId);
-            if (user != null) {
+            if (user != null && user.getAdoptionRecord() != null) {
                 UserState state = user.getState();
                 if (state != null && state.equals(PROBATION)) {
                     messageSender.sendReportPhotoMessage(chatId);
@@ -85,7 +85,7 @@ public class ButtonActionHandler implements ActionHandler {
             User user = userService.findUserByChatId(chatId);
             if (user != null) {
                 UserState state = user.getState();
-                if (state != null && state.equals(PROBATION)) {
+                if (state != null && state.equals(PROBATION) && user.getAdoptionRecord() != null) {
                     log.info("Change of user state to PROBATION_REPORT");
                     user.setState(PROBATION_REPORT);
                     userService.update(user);
