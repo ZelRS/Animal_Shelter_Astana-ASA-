@@ -12,14 +12,8 @@ import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.utils.StringListCreator;
 //import pro.sky.telegramBot.utils.mediaUtils.MediaLoader;
 
-import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,6 +27,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository shelterRepository;
+
 //    private final MediaLoader mediaLoader;
 
     /**
