@@ -80,6 +80,10 @@ public class BotConfig {
     private String MSG_MISSING_PET;
     @Value("${MSG_NO_ADOPTION_RECORD}")
     private String MSG_NO_ADOPTION_RECORD;
+    @Value("${MSG_PHOTO_ACCEPTED}")
+    private String MSG_PHOTO_ACCEPTED;
+    @Value("${MSG_PHOTO_NOT_ACCEPTED}")
+    private String MSG_PHOTO_NOT_ACCEPTED;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")

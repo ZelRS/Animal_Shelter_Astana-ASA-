@@ -394,7 +394,6 @@ public class MessageSender implements BlockedUserHandler {
                 sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
             } else {
                 sendPhoto = specificMediaMessageCreator.createReportSendOneOptionPhotoMessage(chatId);
-                sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportNotActiveMessageKeyboard());
             }
             // выполняется отправление сообщения с фото
             messageExecutor.executePhotoMessage(sendPhoto);

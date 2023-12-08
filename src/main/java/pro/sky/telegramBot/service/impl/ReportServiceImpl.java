@@ -1,9 +1,14 @@
 package pro.sky.telegramBot.service.impl;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.Document;
+import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.QuestionsForReport;
+import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.ReportRepository;
@@ -14,6 +19,7 @@ import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.ReportDataConverter;
 import pro.sky.telegramBot.utils.ReportSumCalculator;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -33,6 +39,8 @@ public class ReportServiceImpl implements ReportService {
     private final AdoptionRecordService adoptionRecordService;
     private final MessageSender messageSender;
     private final ReportSumCalculator reportSumCalculator;
+    private final TelegramBot bot;
+    private final MediaLoader mediaLoader;
 
     @Override
     public boolean saveReport(Report newReport) {
@@ -45,6 +53,7 @@ public class ReportServiceImpl implements ReportService {
     public boolean createReportFromExcel(Long chatId, List<String> values) {
 
         Report newReport = new Report();
+        newReport.setData(new byte[0]);
 
         String dateString = values.get(5);
         newReport.setReportDateTime(reportDataConverter.convertToData(dateString));
@@ -111,7 +120,6 @@ public class ReportServiceImpl implements ReportService {
                     user.setState(PROBATION);
                     userService.update(user);
                     messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(1).getQuestion(), 5, reportId);
-
                     adoptionRecordService.addNewReportToAdoptionRecord(report, chatId);
                     break;
             }
@@ -129,8 +137,43 @@ public class ReportServiceImpl implements ReportService {
         Report newReport = new Report();
         LocalDate date = LocalDate.now();
         newReport.setReportDateTime(date);
+        newReport.setData(new byte[0]);
         reportRepository.save(newReport);
         Long reportId = newReport.getId();
         fillOutReport(chatId, "11_0_" + reportId);
+    }
+    @Override
+    public void handlePetPhotoMessage(Long chatId, Document document, Long reportId) {
+        Report report = reportRepository.findById(reportId).orElseThrow();
+        String fileId = document.fileId();
+        GetFile getFileRequest = new GetFile(fileId);
+        GetFileResponse getFileResponse = bot.execute(getFileRequest);
+
+        if (getFileResponse.isOk()) {
+            try {
+                byte[] fileInputStream = bot.getFileContent(getFileResponse.file());
+                byte[] resizedImage = mediaLoader.resizeReportPhoto(fileInputStream, 100);
+                report.setData(resizedImage);
+                reportRepository.save(report);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while resizing image: " + e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public boolean attachPhotoToReport(Long chatId, Document document) {
+        LocalDate date = LocalDate.now();
+        User user = userService.findUserByChatId(chatId);
+        if (user != null && user.getAdoptionRecord() != null){
+            Report report = adoptionRecordService.getCurrentReport(chatId, date);
+            if(report != null){
+                handlePetPhotoMessage(chatId, document, report.getId());
+            }
+            return true;
+        }
+        return false;
     }
 }
