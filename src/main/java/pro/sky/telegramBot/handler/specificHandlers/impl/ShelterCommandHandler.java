@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.sender.MessageSender;
@@ -18,7 +17,6 @@ import java.util.Map;
 
 import static pro.sky.telegramBot.enums.PetType.CAT;
 import static pro.sky.telegramBot.enums.PetType.DOG;
-import static pro.sky.telegramBot.enums.UserState.BLOCKED;
 
 @Service
 //@Transactional
@@ -28,7 +26,6 @@ import static pro.sky.telegramBot.enums.UserState.BLOCKED;
 public class ShelterCommandHandler {
     private final MessageSender messageSender;
     private final ShelterService shelterService;
-    private final BlockedUserHandler blockedUserHandler;
     private final UserService userService;
 
     @FunctionalInterface
@@ -72,11 +69,6 @@ public class ShelterCommandHandler {
     }
 
     public void handle(String command, String firstName, String lastName, Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        if (user != null && user.getState().equals(BLOCKED)) {
-            blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
-            return;
-        }
         ShelterCommandHandler.Command commandToRun = commandMap.get(command.toLowerCase());
         if (commandToRun != null) {
             commandToRun.run(firstName, lastName, chatId);

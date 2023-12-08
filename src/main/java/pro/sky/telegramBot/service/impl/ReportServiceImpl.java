@@ -70,6 +70,7 @@ public class ReportServiceImpl implements ReportService {
         newReport.setHealthStatus(a14Int);
 
         int reportResult = reportSumCalculator.calculateReportSum(new int[]{a6Int, a8Int, a10Int, a12Int, a14Int});
+        newReport.setRatingTotal(reportResult);
 
         adoptionRecordService.addNewReportToAdoptionRecord(newReport, reportResult, chatId);
 
