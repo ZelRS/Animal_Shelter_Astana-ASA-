@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
+import pro.sky.telegramBot.handler.specificHandlers.impl.ShelterCommandHandler;
 import pro.sky.telegramBot.handler.specificHandlers.impl.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
@@ -39,6 +40,7 @@ public class CommandActionHandler implements ActionHandler {
     private final ShelterService shelterService;
     private final UserService userService;
     private final BlockedUserHandler blockedUserHandler;
+    private final ShelterCommandHandler shelterCommandHandler;
 
     @FunctionalInterface
     interface Command {
@@ -53,34 +55,6 @@ public class CommandActionHandler implements ActionHandler {
      */
     @PostConstruct
     public void init() {
-        List<Shelter> sheltersCat = shelterService.findAllShelterNamesByType(CAT);
-        List<Shelter> sheltersDog = shelterService.findAllShelterNamesByType(DOG);
-
-        int catShelterSize = sheltersCat.size();
-        for (int i = 0; i < catShelterSize; i++) {
-            int finalI = i;
-            String refCat = "/" + (i + 1) + "_cat";
-            commandMap.put(refCat, (firstName, lastName, chatId) -> {
-                log.info("Received /{} CAT command", finalI);
-                User user = userService.findUserByChatId(chatId);
-                user.setShelter(sheltersCat.get(finalI));
-                userService.update(user);
-                messageSender.sendShelterFunctionalPhotoMessage(chatId);
-            });
-        }
-
-        int dogShelterSize = sheltersDog.size();
-        for (int i = 0; i < dogShelterSize; i++) {
-            int finalI = i;
-            String refDog = "/" + (i + 1) + "_dog";
-            commandMap.put(refDog, (firstName, lastName, chatId) -> {
-                log.info("Received /{} DOG command", finalI);
-                User user = userService.findUserByChatId(chatId);
-                user.setShelter(sheltersDog.get(finalI));
-                userService.update(user);
-                messageSender.sendShelterFunctionalPhotoMessage(chatId);
-            });
-        }
 
         commandMap.put(START.getName(), (firstName, lastName, chatId) -> {
             log.info("Received START command");
@@ -180,6 +154,10 @@ public class CommandActionHandler implements ActionHandler {
             messageSender.addPhoneNumberToPersonInfo(firstName, lastName, chatId, phone);
             return;
         }
+        if (command.matches("^/\\d+_((DOG)|(CAT))$")) {
+            shelterCommandHandler.handle(command, firstName, lastName, chatId);
+            return;
+        }
         Command commandToRun = commandMap.get(command.toLowerCase());
         if (commandToRun != null) {
             commandToRun.run(firstName, lastName, chatId);
@@ -188,12 +166,6 @@ public class CommandActionHandler implements ActionHandler {
             // отправка дефолтного сообщения
             messageSender.sendDefaultHTMLMessage(chatId);
         }
-    }
-
-    public Shelter create(Shelter shelter) {
-        Shelter newShelter = shelterService.create(shelter);
-        init();
-        return newShelter;
     }
 
 }

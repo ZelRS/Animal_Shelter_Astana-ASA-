@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pro.sky.telegramBot.handler.usersActionHandlers.impl.CommandActionHandler;
+import pro.sky.telegramBot.handler.specificHandlers.impl.ShelterCommandHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.service.ShelterService;
 
@@ -23,7 +23,7 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @Tag(name = "API для работы с приютами")
 public class ShelterController {
     private final ShelterService shelterservice;
-    private final CommandActionHandler commandActionHandler;
+    private final ShelterCommandHandler shelterCommandHandler;
 
     @PostMapping
     @Operation(summary = "Создать приют",
@@ -31,7 +31,8 @@ public class ShelterController {
                     description = "Используется автогенерация id. Введенный id будет проигнорирован")
     )
     public ResponseEntity<Shelter> create(@RequestBody Shelter shelterRq) {
-        Shelter shelter = commandActionHandler.create(shelterRq);
+        Shelter shelter = shelterservice.create(shelterRq);
+        shelterCommandHandler.updateCommandMap();
         return ResponseEntity.ok(shelter);
     }
 
@@ -51,6 +52,7 @@ public class ShelterController {
     )
     public ResponseEntity<Shelter> update(@RequestBody Shelter shelterRq) {
         Shelter shelter = shelterservice.update(shelterRq);
+        shelterCommandHandler.updateCommandMap();
         return ResponseEntity.ok(shelter);
     }
 
