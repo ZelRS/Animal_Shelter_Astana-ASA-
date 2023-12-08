@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.entity.Button;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
@@ -14,9 +13,7 @@ import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static pro.sky.telegramBot.entity.Button.CallbackData.*;
