@@ -30,10 +30,6 @@ import java.util.List;
 @Slf4j  // SLF4J logging
 public class DocumentMessageSender {
     private final UserService userService;
-    private final MessageSender messageSender;
-    private final ExcelFileReader excelFileReader;
-    private final ReportService reportService;
-    private final TelegramBot bot;
     private final SpecificDocumentMessageCreator specificDocumentMessageCreator;
     private final MessageExecutor messageExecutor;
     private final BotConfig botConfig;
@@ -46,6 +42,15 @@ public class DocumentMessageSender {
         log.info("Was invoked method sendReportResponseMessage");
         try {
             SendPhoto sendPhoto = specificDocumentMessageCreator.createReportResponseMessage(chatId, document);
+            messageExecutor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send response message to {}", chatId, e);
+        }
+    }
+    public void sendPhotoResponseMessage(Document document, Long chatId) {
+        log.info("Was invoked method sendPhotoResponseMessage");
+        try {
+            SendPhoto sendPhoto = specificDocumentMessageCreator.createPhotoResponseMessage(chatId, document);
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send response message to {}", chatId, e);
@@ -87,4 +92,5 @@ public class DocumentMessageSender {
             log.error("Failed to send response message to {}", chatId, e);
         }
     }
+
 }

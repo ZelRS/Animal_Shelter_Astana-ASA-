@@ -31,8 +31,8 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
 
     //Метод для получения текущего отчета
     @Override
-    public Report getCurrentReport(Long id, LocalDate date) {
-        User user = userService.findById(id).orElse(null);
+    public Report getCurrentReport(Long chatId, LocalDate date) {
+        User user = userService.findUserByChatId(chatId);
         if (user != null) {
             List<Report> reports = adoptionRecordRepository.findReportsByUser(user);
             for (Report report : reports) {
@@ -41,7 +41,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
                 }
             }
         }
-        return new Report();
+        return null;
     }
 
     /**

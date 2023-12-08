@@ -156,4 +156,22 @@ public class MediaLoader {
             return arrayOutputStream.toByteArray();
         }
     }
+    public byte[] resizeReportPhoto(byte[] imageData, int newWidth) throws IOException {
+        try (InputStream inputStream = new ByteArrayInputStream(imageData);
+             Closeable image = (Closeable) ImageIO.read(inputStream)) {
+
+            BufferedImage bufferedImage = (BufferedImage) image;
+
+            int height = bufferedImage.getHeight() / (bufferedImage.getWidth() / newWidth);
+            BufferedImage resizedImage = new BufferedImage(newWidth, height, bufferedImage.getType());
+            Graphics2D graphics = resizedImage.createGraphics();
+            graphics.drawImage(bufferedImage, 0, 0, newWidth, height, null);
+            graphics.dispose();
+
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            ImageIO.write(resizedImage, "jpg", outputStream);
+
+            return outputStream.toByteArray();
+        }
+    }
 }
