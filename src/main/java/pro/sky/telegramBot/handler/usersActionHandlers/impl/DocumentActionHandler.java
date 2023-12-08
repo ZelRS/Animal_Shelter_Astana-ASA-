@@ -57,15 +57,15 @@ public class DocumentActionHandler implements DocumentHandler {
             log.info("Processing report.xlsx document");
             // Проверяем, есть ли пользователь и может ли он присылать отчеты
             User user = userService.findUserByChatId(chatId);
-            if (user != null && user.getState().equals(PROBATION)) {
+            if (user != null && user.getState().equals(PROBATION) && user.getAdoptionRecord() != null) {
                 try {
                     documentMessageSender.sendReportResponseMessage(document, chatId);
                 } catch (IOException e) {
                     throw new UserNotFoundException("Пользователь не найден");
                 }
             } else {
-                //Сообщаем, что функция недоступна
-                messageSender.sendNotSupportedMessage(chatId);
+                //Сообщаем, что отсутствует запись об усыновлении
+                messageSender.sendNoAdoptionRecordMessage(chatId);
             }
         });
 

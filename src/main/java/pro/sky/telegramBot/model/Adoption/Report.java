@@ -49,4 +49,7 @@ public class Report {
     @Column(name = "photo")
     @JsonIgnore
     private byte[] data;
+
+    @JoinColumn(name = "rating_total")
+    private int ratingTotal;
 }

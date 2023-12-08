@@ -14,6 +14,7 @@ import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.UserService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static pro.sky.telegramBot.enums.PetType.NOPET;
@@ -42,6 +43,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         }
         return new Report();
     }
+
     /**
      * Метод заполняет запись об усыновлении
      */
@@ -60,24 +62,27 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
                 pet.setType(NOPET);
                 adoptionRecord.setPet(pet);
                 List<User> volunteers = userService.findAllByState(VOLUNTEER);
-                for(User volunteer : volunteers) {
+                for (User volunteer : volunteers) {
                     messageSender.sendMissingPetMessageToVolunteerPhotoMessage(user.getChatId(), volunteer.getChatId());
                 }
             }
             adoptionRecordRepository.save(adoptionRecord);
         }
     }
+
     /**
      * Метод добавляет новый отчет к записи усыновления
      */
     @Override
-    public void addNewReportToAdoptionRecord(Report newReport, int reportResult, Long chatId) {
+    public void addNewReportToAdoptionRecord(Report newReport, Long chatId) {
         User user = userService.findUserByChatId(chatId);
-        if(user != null && user.getAdoptionRecord() != null){
+        if (user != null && user.getAdoptionRecord() != null) {
             AdoptionRecord adoptionRecord = user.getAdoptionRecord();
-            adoptionRecord.setRatingTotal(adoptionRecord.getRatingTotal() + reportResult);
+            newReport.setAdoptionRecord(adoptionRecord);
+            adoptionRecordRepository.save(adoptionRecord);
         }
     }
+
     /**
      * Метод находит новых усыновителей, создает запись об усыновлении и отправляет сообщение
      * о возможности онлайн заполнения отчета
@@ -85,8 +90,8 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     @Override
     public void checkNewAdopter() {
         List<User> newAdopters = userService.findAllByAdoptionRecordIsNullAndState(PROBATION);
-        if(!newAdopters.isEmpty()){
-            for(User user : newAdopters){
+        if (!newAdopters.isEmpty()) {
+            for (User user : newAdopters) {
                 user.setAdoptionRecord(new AdoptionRecord());
                 setAdoptionRecordForUser(user);
                 userService.update(user);
@@ -94,27 +99,29 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             }
         }
     }
+
     /**
      * Метод находит усыновителей и запускает отправку сообщения о начале процедуры онлайн заполнения отчета
      */
     @Override
     public void informAdopterAboutStartReporting() {
         List<User> adopters = userService.findAllByState(PROBATION);
-        if(!adopters.isEmpty()){
-            for(User user : adopters){
+        if (!adopters.isEmpty()) {
+            for (User user : adopters) {
                 messageSender.sendNotificationToAdopterAboutStartReportPhotoMessage(user.getChatId());
             }
         }
 
     }
+
     /**
      * Метод находит усыновителей и запускает отправку сообщения о завершении процедуры онлайн заполнения отчета
      */
     @Override
     public void informAdopterAboutEndReporting() {
         List<User> adopters = userService.findAllByState(PROBATION);
-        if(!adopters.isEmpty()){
-            for(User user : adopters){
+        if (!adopters.isEmpty()) {
+            for (User user : adopters) {
                 messageSender.sendNotificationToAdopterAboutEndReportPhotoMessage(user.getChatId());
             }
         }
