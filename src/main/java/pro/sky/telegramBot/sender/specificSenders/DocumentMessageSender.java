@@ -47,16 +47,6 @@ public class DocumentMessageSender {
             log.error("Failed to send response message to {}", chatId, e);
         }
     }
-    public void sendPhotoResponseMessage(Document document, Long chatId) {
-        log.info("Was invoked method sendPhotoResponseMessage");
-        try {
-            SendPhoto sendPhoto = specificDocumentMessageCreator.createPhotoResponseMessage(chatId, document);
-            messageExecutor.executePhotoMessage(sendPhoto);
-        } catch (Exception e) {
-            log.error("Failed to send response message to {}", chatId, e);
-        }
-    }
-
     /**
      * Метод формирует и отправляет сообщение после отправки им Exel документа c контактными данными
      */

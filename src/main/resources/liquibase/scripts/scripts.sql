@@ -180,3 +180,18 @@ ADD COLUMN state VARCHAR(255) NOT NULL DEFAULT 'FREE';
 
 -- changeset YuriPet:7
 DROP TABLE IF EXISTS volunteer;
+
+-- changeset YuriPet:8
+ALTER TABLE adoption_record
+    ADD COLUMN report_id BIGINT,
+    ADD CONSTRAINT fk_report_id
+        FOREIGN KEY (report_id)
+        REFERENCES report (id)
+        ON DELETE SET NULL;
+
+-- changeset YuriPet:9
+ALTER TABLE adoption_record
+    ADD CONSTRAINT FK_report_adoption_record
+        FOREIGN KEY (report_id)
+        REFERENCES report (id)
+        ON DELETE SET NULL;

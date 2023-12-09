@@ -1,15 +1,13 @@
 package pro.sky.telegramBot.listener;
 
-import com.pengrad.telegrambot.model.CallbackQuery;
-import com.pengrad.telegrambot.model.Document;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.usersActionHandlers.impl.ButtonActionHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.impl.CommandActionHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.impl.DocumentActionHandler;
+import pro.sky.telegramBot.handler.usersActionHandlers.impl.PhotoActionHandler;
 
 import java.io.InputStream;
 
@@ -23,6 +21,7 @@ public class UpdateDispatcher {
     private final CommandActionHandler commandActionHandler;
     private final ButtonActionHandler buttonActionHandler;
     private final DocumentActionHandler documentActionHandler;
+    private final PhotoActionHandler photoActionHandler;
 
     /**
      * главный метод диспетчера, организующий проверку на null данных вытянутых из команды пользователя
@@ -30,10 +29,22 @@ public class UpdateDispatcher {
     public void dispatch(Update update) {
         if (update.message() != null && update.message().document() != null) {
             pullDataFromDocument(update.message());
+        }else if (update.message() != null && update.message().photo() != null) {
+            pullDataFromPhoto(update.message());
         } else if (update.message() != null) {
             pullDataFromMessageCommand(update.message());
         } else if (update.callbackQuery() != null) {
             pullDataFromButtonCommand(update.callbackQuery());
+
+        }
+    }
+
+    private void pullDataFromPhoto(Message message) {
+        log.info("Was invoked method pullDataFromPhoto");
+        PhotoSize[] photo = message.photo();
+        long chatId = message.chat().id();
+        if (photo != null) {
+            photoActionHandler.handle(photo, chatId);
         }
     }
 
