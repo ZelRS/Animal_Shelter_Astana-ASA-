@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.utils.mediaUtils;
 
 import com.pengrad.telegrambot.model.Document;
+import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,9 +58,11 @@ public class SpecificDocumentMessageCreator {
 
     }
 
-    public SendPhoto createPhotoResponseMessage(Long chatId, Document document) throws IOException {
+    public SendPhoto createPhotoResponseMessage(Long chatId, PhotoSize[] photo) throws IOException {
+        log.info("Was invoked createPhotoResponseMessage method for {}", chatId);
         MediaMessageParams params = new MediaMessageParams();
-        if (reportService.attachPhotoToReport(chatId, document)) {
+        if (reportService.attachPhotoToReport(chatId, photo)) {
+            log.info("Parameter were set for {}", chatId);
             params.setChatId(chatId);
             params.setFilePath(REPORT_ACCEPTED_MSG_IMG.getPath());
             params.setCaption(botConfig.getMSG_PHOTO_ACCEPTED());

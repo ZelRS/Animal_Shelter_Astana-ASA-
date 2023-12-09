@@ -157,6 +157,7 @@ public class MediaLoader {
         }
     }
     public byte[] resizeReportPhoto(byte[] imageData, int newWidth) throws IOException {
+        log.info("Was invoked resizeReportPhoto method for image");
         try (InputStream inputStream = new ByteArrayInputStream(imageData);
              Closeable image = (Closeable) ImageIO.read(inputStream)) {
 

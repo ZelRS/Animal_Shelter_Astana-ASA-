@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.service;
 
 import com.pengrad.telegrambot.model.Document;
+import com.pengrad.telegrambot.model.PhotoSize;
 import pro.sky.telegramBot.model.adoption.Report;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface ReportService {
 
     void createReportOnline(Long chatId);
 
-    void handlePetPhotoMessage(Long chatId, Document document, Long reportId);
+    void handlePetPhotoMessage(Long chatId, PhotoSize[] photo, Long reportId);
 
-    boolean attachPhotoToReport(Long chatId, Document document);
+    boolean attachPhotoToReport(Long chatId, PhotoSize[] photo);
 }

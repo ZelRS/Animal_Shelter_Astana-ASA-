@@ -68,19 +68,6 @@ public class DocumentActionHandler implements DocumentHandler {
                 messageSender.sendNoAdoptionRecordMessage(chatId);
             }
         });
-        // Получаем фото животного в формате .jpg
-        documentMap.put("pet.jpg", (document, chatId) -> {
-            log.info("Processing pet.jpg document");
-            // Проверяем, есть ли пользователь и может ли он присылать фотки животных
-            User user = userService.findUserByChatId(chatId);
-            if (user != null && user.getState().equals(PROBATION) && user.getAdoptionRecord() != null) {
-                documentMessageSender.sendPhotoResponseMessage(document, chatId);
-            } else {
-                //Сообщаем, что отсутствует запись об усыновлении
-                messageSender.sendNoAdoptionRecordMessage(chatId);
-            }
-        });
-
 
          // ключ принимает от пользователя заполненную таблицу с контактными данными
         documentMap.put("info_table.xlsx", (document, chatId) -> {

@@ -2,6 +2,7 @@ package pro.sky.telegramBot.service.impl;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Document;
+import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.response.GetFileResponse;
 import lombok.RequiredArgsConstructor;
@@ -143,9 +144,10 @@ public class ReportServiceImpl implements ReportService {
         fillOutReport(chatId, "11_0_" + reportId);
     }
     @Override
-    public void handlePetPhotoMessage(Long chatId, Document document, Long reportId) {
+    public void handlePetPhotoMessage(Long chatId, PhotoSize[] photo, Long reportId) {
+        log.info("Was invoked handlePetPhotoMessage method for {}", chatId);
         Report report = reportRepository.findById(reportId).orElseThrow();
-        String fileId = document.fileId();
+        String fileId = photo[0].fileId();
         GetFile getFileRequest = new GetFile(fileId);
         GetFileResponse getFileResponse = bot.execute(getFileRequest);
 
@@ -154,6 +156,7 @@ public class ReportServiceImpl implements ReportService {
                 byte[] fileInputStream = bot.getFileContent(getFileResponse.file());
                 byte[] resizedImage = mediaLoader.resizeReportPhoto(fileInputStream, 100);
                 report.setData(resizedImage);
+                log.info("Was invoked save method in report repository for {}", chatId);
                 reportRepository.save(report);
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -164,16 +167,19 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public boolean attachPhotoToReport(Long chatId, Document document) {
+    public boolean attachPhotoToReport(Long chatId, PhotoSize[] photo) {
+        log.info("Was invoked attachPhotoToReport method for {}", chatId);
         LocalDate date = LocalDate.now();
         User user = userService.findUserByChatId(chatId);
         if (user != null && user.getAdoptionRecord() != null){
-            Report report = adoptionRecordService.getCurrentReport(chatId, date);
-            if(report != null){
-                handlePetPhotoMessage(chatId, document, report.getId());
-            }
+            log.info("User and Adoption Report were found {}", chatId);
+            Report report = reportRepository.findByAdoptionRecordIdAndReportDateTime(user.getAdoptionRecord().getId(), date).orElseThrow();
+            handlePetPhotoMessage(chatId, photo, report.getId());
+            log.info("should be true");
             return true;
+        } else {
+            log.info("User and Adoption Report not found {}", chatId);
+            return false;
         }
-        return false;
     }
 }
