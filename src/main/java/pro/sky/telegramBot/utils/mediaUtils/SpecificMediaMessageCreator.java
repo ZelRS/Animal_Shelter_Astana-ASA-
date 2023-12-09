@@ -312,6 +312,14 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    public SendPhoto createAskVolunteerForHelpPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(REPORT_NOT_ACCEPTED_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_GET_HELP_FROM_VOLUNTEER());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 //    .......  медиа-сообщения для других целей......
 
 

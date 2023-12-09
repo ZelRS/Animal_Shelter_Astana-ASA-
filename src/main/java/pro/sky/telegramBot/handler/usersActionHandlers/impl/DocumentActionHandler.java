@@ -95,6 +95,7 @@ public class DocumentActionHandler implements DocumentHandler {
         User user = userService.findUserByChatId(chatId);
         if (user != null && user.getState().equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
+            return;
         }
         String fileName = document.fileName();
         DocumentProcessor documentProcessor = documentMap.get(fileName);

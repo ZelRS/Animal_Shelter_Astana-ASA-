@@ -5,9 +5,10 @@ import com.pengrad.telegrambot.model.PhotoSize;
 import pro.sky.telegramBot.model.adoption.Report;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ReportService {
-    boolean saveReport(Report newReport);
+    boolean saveReport(Report newReport, Long chatId);
 
     boolean createReportFromExcel(Long chatId, List<String> values);
 
@@ -18,4 +19,6 @@ public interface ReportService {
     void handlePetPhotoMessage(Long chatId, PhotoSize[] photo, Long reportId);
 
     boolean attachPhotoToReport(Long chatId, PhotoSize[] photo);
+
+    Report getReportById(Long id);
 }
