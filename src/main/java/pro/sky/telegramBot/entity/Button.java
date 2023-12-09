@@ -29,6 +29,7 @@ public class Button {
         BUT_WANT_CAT("cats_but"),
 
         BUT_SEND_REPORT("send_report_but"),
+        BUT_SEND_PET_PHOTO("but_send_pet_photo"),
 
         BUT_CALL_VOLUNTEER("call_volunteer_but"),
         BUT_GET_FULL_INFO("get_full_button_info_but"),

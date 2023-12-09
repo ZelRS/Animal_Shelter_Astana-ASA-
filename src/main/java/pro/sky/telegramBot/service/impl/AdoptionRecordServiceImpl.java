@@ -78,6 +78,12 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         User user = userService.findUserByChatId(chatId);
         if (user != null && user.getAdoptionRecord() != null) {
             AdoptionRecord adoptionRecord = user.getAdoptionRecord();
+            List<Report> reports = adoptionRecord.getReports();
+            if(reports == null) {
+                reports = new ArrayList<>();
+                adoptionRecord.setReports(reports);
+                adoptionRecordRepository.save(adoptionRecord);
+            }
             newReport.setAdoptionRecord(adoptionRecord);
             adoptionRecordRepository.save(adoptionRecord);
         }
@@ -125,6 +131,11 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
                 messageSender.sendNotificationToAdopterAboutEndReportPhotoMessage(user.getChatId());
             }
         }
+    }
+
+    @Override
+    public void save(AdoptionRecord adoptionRecord) {
+        adoptionRecordRepository.save(adoptionRecord);
     }
 
 }

@@ -17,8 +17,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
-import static pro.sky.telegramBot.enums.UserState.BLOCKED;
-import static pro.sky.telegramBot.enums.UserState.PROBATION;
+import static pro.sky.telegramBot.enums.UserState.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,11 +39,11 @@ public class PhotoActionHandler {
     @PostConstruct
     public void init() {
 
-        photoMap.put(PROBATION, (photo, chatId) -> {
+        photoMap.put(PROBATION_PHOTO, (photo, chatId) -> {
             log.info("Processing pet.jpg photo");
             // Проверяем, есть ли пользователь и может ли он присылать фото
             User user = userService.findUserByChatId(chatId);
-            if (user != null && user.getState().equals(PROBATION) && user.getAdoptionRecord() != null) {
+            if (user != null && user.getState().equals(PROBATION_PHOTO) && user.getAdoptionRecord() != null) {
                 photoMessageSender.sendPhotoResponseMessage(photo, chatId);
             } else {
                 //Сообщаем, что отсутствует запись об усыновлении
@@ -57,15 +56,15 @@ public class PhotoActionHandler {
         User user = userService.findUserByChatId(chatId);
         if (user != null && user.getState().equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
+            return;
         }
-        if (user != null && user.getState().equals(PROBATION)) {
-            PhotoActionHandler.PhotoProcessor photoProcessor = photoMap.get(PROBATION);
+        assert user != null;
+        PhotoActionHandler.PhotoProcessor photoProcessor = photoMap.get(user.getState());
             if (photoProcessor != null) {
                 photoProcessor.processPhoto(photo, chatId);
             } else {
                 // Если не нашли обработчик для присланной фотографии
                 log.warn("No handler found for the state");
             }
-        }
     }
 }

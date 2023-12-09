@@ -158,12 +158,14 @@ public class MediaLoader {
     }
     public byte[] resizeReportPhoto(byte[] imageData, int newWidth) throws IOException {
         log.info("Was invoked resizeReportPhoto method for image");
-        try (InputStream inputStream = new ByteArrayInputStream(imageData);
-             Closeable image = (Closeable) ImageIO.read(inputStream)) {
+        if (imageData == null || imageData.length == 0) {
+            log.error("Image data is empty or null");
+            return new byte[0];
+        }
+        try (InputStream inputStream = new ByteArrayInputStream(imageData)) {
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
 
-            BufferedImage bufferedImage = (BufferedImage) image;
-
-            int height = bufferedImage.getHeight() / (bufferedImage.getWidth() / newWidth);
+            int height = (int) ((double) bufferedImage.getHeight() * newWidth / bufferedImage.getWidth());
             BufferedImage resizedImage = new BufferedImage(newWidth, height, bufferedImage.getType());
             Graphics2D graphics = resizedImage.createGraphics();
             graphics.drawImage(bufferedImage, 0, 0, newWidth, height, null);

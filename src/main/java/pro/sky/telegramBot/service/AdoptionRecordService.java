@@ -1,5 +1,6 @@
 package pro.sky.telegramBot.service;
 
+import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.adoption.Report;
 
 import java.time.LocalDate;
@@ -14,4 +15,6 @@ public interface AdoptionRecordService {
     void informAdopterAboutStartReporting();
 
     void informAdopterAboutEndReporting();
+
+    void save(AdoptionRecord adoptionRecord);
 }

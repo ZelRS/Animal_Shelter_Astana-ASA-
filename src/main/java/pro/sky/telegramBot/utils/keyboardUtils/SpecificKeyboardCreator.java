@@ -70,6 +70,7 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for taking pet message");
         List<Button> buttons = new ArrayList<>();
         buttons.add(new Button(config.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_ON.getCallbackData()));
+        buttons.add(new Button(config.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
@@ -81,6 +82,7 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for taking pet message");
         List<Button> buttons = new ArrayList<>();
         buttons.add(new Button(config.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_OFF.getCallbackData()));
+        buttons.add(new Button(config.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
