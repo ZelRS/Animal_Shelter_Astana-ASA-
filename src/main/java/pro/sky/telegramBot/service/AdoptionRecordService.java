@@ -17,4 +17,8 @@ public interface AdoptionRecordService {
     void informAdopterAboutEndReporting();
 
     void save(AdoptionRecord adoptionRecord);
+
+    void informAdopterAboutNeedToSendReport();
+
+    void informAdopterAboutNeedToSendPhotoForReport();
 }

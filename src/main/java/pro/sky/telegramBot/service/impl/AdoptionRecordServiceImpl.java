@@ -9,7 +9,7 @@ import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.AdoptionRecordRepository;
-import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
 import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.UserService;
 
@@ -27,7 +27,12 @@ import static pro.sky.telegramBot.enums.UserState.VOLUNTEER;
 public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     private final AdoptionRecordRepository adoptionRecordRepository;
     private final UserService userService;
-    private final MessageSender messageSender;
+    private final NotificationSender notificationSender;
+
+    @Override
+    public void save(AdoptionRecord adoptionRecord) {
+        adoptionRecordRepository.save(adoptionRecord);
+    }
 
     //Метод для получения текущего отчета
     @Override
@@ -63,7 +68,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
                 adoptionRecord.setPet(pet);
                 List<User> volunteers = userService.findAllByState(VOLUNTEER);
                 for (User volunteer : volunteers) {
-                    messageSender.sendMissingPetMessageToVolunteerPhotoMessage(user.getChatId(), volunteer.getChatId());
+                    notificationSender.sendMissingPetMessageToVolunteerPhotoMessage(user.getChatId(), volunteer.getChatId());
                 }
             }
             adoptionRecordRepository.save(adoptionRecord);
@@ -101,7 +106,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
                 user.setAdoptionRecord(new AdoptionRecord());
                 setAdoptionRecordForUser(user);
                 userService.update(user);
-                messageSender.sendNotificationToAdopterAboutDailyReportPhotoMessage(user.getChatId());
+                notificationSender.sendNotificationToAdopterAboutDailyReportPhotoMessage(user.getChatId());
             }
         }
     }
@@ -114,7 +119,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         List<User> adopters = userService.findAllByState(PROBATION);
         if (!adopters.isEmpty()) {
             for (User user : adopters) {
-                messageSender.sendNotificationToAdopterAboutStartReportPhotoMessage(user.getChatId());
+                notificationSender.sendNotificationToAdopterAboutStartReportPhotoMessage(user.getChatId());
             }
         }
 
@@ -128,14 +133,35 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         List<User> adopters = userService.findAllByState(PROBATION);
         if (!adopters.isEmpty()) {
             for (User user : adopters) {
-                messageSender.sendNotificationToAdopterAboutEndReportPhotoMessage(user.getChatId());
+                notificationSender.sendNotificationToAdopterAboutEndReportPhotoMessage(user.getChatId());
             }
         }
     }
-
+    /**
+     * Метод находит усыновителей, которые не прислали отчет, и запускает отправку сообщения
+     * о необходимости прислать отчет
+     */
     @Override
-    public void save(AdoptionRecord adoptionRecord) {
-        adoptionRecordRepository.save(adoptionRecord);
+    public void informAdopterAboutNeedToSendReport() {
+        List<User> adopters = adoptionRecordRepository.findUsersWithProbationAndNoReportToday();
+        if (!adopters.isEmpty()) {
+            for (User user : adopters) {
+                notificationSender.sendNotificationToAdopterAboutNeedToSendReportPhotoMessage(user.getChatId());
+            }
+        }
+    }
+    /**
+     * Метод находит усыновителей, которые прислали отчет, но не прислали фото, и запускает отправку
+     * сообщения о необходимости прислать фото
+     */
+    @Override
+    public void informAdopterAboutNeedToSendPhotoForReport() {
+        List<User> adopters = adoptionRecordRepository.findUsersWithReportTodayAndNoPhoto();
+        if (!adopters.isEmpty()) {
+            for (User user : adopters) {
+                notificationSender.sendNotificationToAdopterAboutNeedToSendPhotoForReportPhotoMessage(user.getChatId());
+            }
+        }
     }
 
 }
