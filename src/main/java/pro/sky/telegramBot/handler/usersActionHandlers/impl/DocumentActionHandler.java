@@ -69,7 +69,6 @@ public class DocumentActionHandler implements DocumentHandler {
             }
         });
 
-
          // ключ принимает от пользователя заполненную таблицу с контактными данными
         documentMap.put("info_table.xlsx", (document, chatId) -> {
             log.info("Processing info_table.xlsx document");
@@ -96,6 +95,7 @@ public class DocumentActionHandler implements DocumentHandler {
         User user = userService.findUserByChatId(chatId);
         if (user != null && user.getState().equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
+            return;
         }
         String fileName = document.fileName();
         DocumentProcessor documentProcessor = documentMap.get(fileName);

@@ -374,23 +374,32 @@ public class MessageSender implements BlockedUserHandler {
 // или скачать документ для заполнения. В другое время доступна только функция скачивания документа.
     public void sendReportPhotoMessage(Long chatId) {
         log.info("Sending report message to {}", chatId);
-        LocalDateTime currentTime = LocalDateTime.now();
-        SendPhoto sendPhoto;
-        try {
-            if (currentTime.toLocalTime().isAfter(LocalTime.of(18, 0))
+        SendPhoto sendPhoto = null;
+        User user = userService.findUserByChatId(chatId);
+        if (user != null && user.getState().equals(PROBATION) && user.getAdoptionRecord() != null) {
+            LocalDateTime currentTime = LocalDateTime.now();
+            try {
+                if (currentTime.toLocalTime().isAfter(LocalTime.of(18, 0))
                     && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))) {
-//             объявляется переменная SendPhoto для конкретного сообщения
-                sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
-                sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
-            } else {
-                sendPhoto = specificMediaMessageCreator.createReportSendOneOptionPhotoMessage(chatId);
-                sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportNotActiveMessageKeyboard());
+                    sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
+                    sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
+                } else {
+                    sendPhoto = specificMediaMessageCreator.createReportSendOneOptionPhotoMessage(chatId);
+                    sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportNotActiveMessageKeyboard());
+                }
+
+            } catch (Exception e) {
+                log.error("Failed to send welcome message to {}", chatId, e);
             }
-            // выполняется отправление сообщения с фото
-            messageExecutor.executePhotoMessage(sendPhoto);
-        } catch (Exception e) {
-            log.error("Failed to send welcome message to {}", chatId, e);
+
+        } else {
+            try {
+                sendPhoto = specificMediaMessageCreator.createAskVolunteerForHelpPhotoMessage(chatId);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
+        messageExecutor.executePhotoMessage(sendPhoto);
     }
 
     /**
@@ -536,61 +545,8 @@ public class MessageSender implements BlockedUserHandler {
         //    .........отправка сообщений пользователю на любые другие случаи........
     }
 
-    /**
-     * Метод формирует и отправляет сообщение об отсутствии животного в базе в нового усыновителя
-     */
-    public void sendMissingPetMessageToVolunteerPhotoMessage(Long userId, Long volunteerChatId) {
-        log.info("Sending a message to the volunteer {} than no pet was detected by the adopter {}", volunteerChatId, userId);
-        try {
-            SendPhoto sendPhoto;
-            sendPhoto = specificMediaMessageCreator.createMissingPetMessageToVolunteerPhotoMessage(volunteerChatId, userId);
-            messageExecutor.executePhotoMessage(sendPhoto);
-        } catch (Exception e) {
-            log.info("Failed to send a message to the volunteer {} than no pet was detected by the adopter {}", volunteerChatId, userId, e);
-        }
-    }
 
-    /**
-     * Метод формирует и отправляет сообщение о возможности заполнять отчет онлайн
-     */
-    public void sendNotificationToAdopterAboutDailyReportPhotoMessage(Long chatId) {
-        log.info("Sending a message to the user than he daily should fill out a report {}", chatId);
-        try {
-            SendPhoto sendPhoto;
-            sendPhoto = specificMediaMessageCreator.createNotificationToAdopterAboutDailyReportPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
-        } catch (Exception e) {
-            log.info("Failed to send a message to the user than he daily should fill out a report {}", chatId, e);
-        }
-    }
 
-    /**
-     * Метод формирует и отправляет сообщение о начале процедуры онлайн заполнения отчета
-     */
-    public void sendNotificationToAdopterAboutStartReportPhotoMessage(Long chatId) {
-        log.info("Sending a message to {} about starting to fill out the report online", chatId);
-        try {
-            SendPhoto sendPhoto;
-            sendPhoto = specificMediaMessageCreator.createNotificationToAdopterAboutStartReportPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
-        } catch (Exception e) {
-            log.info("Failed to send a message to {} about starting to fill out the report online", chatId, e);
-        }
-    }
-
-    /**
-     * Метод формирует и отправляет сообщение о завершении процедуры онлайн заполнения отчета
-     */
-    public void sendNotificationToAdopterAboutEndReportPhotoMessage(Long chatId) {
-        log.info("Sending a message to {} about finishing to fill out the report online", chatId);
-        try {
-            SendPhoto sendPhoto;
-            sendPhoto = specificMediaMessageCreator.createNotificationToAdopterAboutEndReportPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
-        } catch (Exception e) {
-            log.info("Failed to send a message to {} about finishing to fill out the report online", chatId, e);
-        }
-    }
 
     public void sendNoAdoptionRecordMessage(Long chatId) {
         log.info("Sending a no adoption record message to {}", chatId);

@@ -80,6 +80,16 @@ public class BotConfig {
     private String MSG_MISSING_PET;
     @Value("${MSG_NO_ADOPTION_RECORD}")
     private String MSG_NO_ADOPTION_RECORD;
+    @Value("${MSG_PHOTO_ACCEPTED}")
+    private String MSG_PHOTO_ACCEPTED;
+    @Value("${MSG_PHOTO_NOT_ACCEPTED}")
+    private String MSG_PHOTO_NOT_ACCEPTED;
+    @Value("${MSG_GET_HELP_FROM_VOLUNTEER}")
+    private String MSG_GET_HELP_FROM_VOLUNTEER;
+    @Value("${MSG_NEED_TO_SEND_REPORT}")
+    private String MSG_NEED_TO_SEND_REPORT;
+    @Value("${MSG_NEED_TO_SEND_PHOTO_FOR_REPORT}")
+    private String MSG_NEED_TO_SEND_PHOTO_FOR_REPORT;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
@@ -92,6 +102,8 @@ public class BotConfig {
     private String BUT_TAKING_PET;
     @Value("${BUT_SEND_REPORT}")
     private String BUT_SEND_REPORT;
+    @Value("${BUT_SEND_PET_PHOTO}")
+    private String BUT_SEND_PET_PHOTO;
     @Value("${BUT_CALL_VOLUNTEER}")
     private String BUT_CALL_VOLUNTEER;
     @Value("${BUT_CARE_PET_REC}")

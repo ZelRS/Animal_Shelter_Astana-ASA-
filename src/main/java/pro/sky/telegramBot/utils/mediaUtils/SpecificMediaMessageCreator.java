@@ -312,6 +312,30 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    public SendPhoto createAskVolunteerForHelpPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(REPORT_NOT_ACCEPTED_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_GET_HELP_FROM_VOLUNTEER());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNeedToSendReportPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
+        params.setCaption(config.getMSG_NEED_TO_SEND_REPORT());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNeedToSendPhotoForReportPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
+        params.setCaption(config.getMSG_NEED_TO_SEND_PHOTO_FOR_REPORT());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 //    .......  медиа-сообщения для других целей......
 
 

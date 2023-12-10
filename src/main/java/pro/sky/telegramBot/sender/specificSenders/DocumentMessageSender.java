@@ -30,10 +30,6 @@ import java.util.List;
 @Slf4j  // SLF4J logging
 public class DocumentMessageSender {
     private final UserService userService;
-    private final MessageSender messageSender;
-    private final ExcelFileReader excelFileReader;
-    private final ReportService reportService;
-    private final TelegramBot bot;
     private final SpecificDocumentMessageCreator specificDocumentMessageCreator;
     private final MessageExecutor messageExecutor;
     private final BotConfig botConfig;
@@ -51,7 +47,6 @@ public class DocumentMessageSender {
             log.error("Failed to send response message to {}", chatId, e);
         }
     }
-
     /**
      * Метод формирует и отправляет сообщение после отправки им Exel документа c контактными данными
      */
@@ -87,4 +82,5 @@ public class DocumentMessageSender {
             log.error("Failed to send response message to {}", chatId, e);
         }
     }
+
 }
