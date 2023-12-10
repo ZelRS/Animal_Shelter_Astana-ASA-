@@ -4,5 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pro.sky.telegramBot.model.Adoption.Report;
 import pro.sky.telegramBot.model.Adoption.Report;
 
+import java.time.LocalDate;
+
+
 public interface ReportRepository extends JpaRepository<Report, Long> {
+
+    Report findByAdoptionRecordIdAndReportDateTime(Long id, LocalDate date);
+
+    Report findByReportDateTime(LocalDate date);
 }

@@ -4,19 +4,17 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.entity.Button;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.sender.specificSenders.PhotoMessageSender;
 import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static pro.sky.telegramBot.entity.Button.CallbackData.*;
@@ -35,6 +33,7 @@ public class ButtonActionHandler implements ActionHandler {
     private final ReportService reportService;
     private final UserService userService;
     private final BlockedUserHandler blockedUserHandler;
+    private final PhotoMessageSender photoMessageSender;
 
     @FunctionalInterface
     interface Button {
@@ -74,6 +73,18 @@ public class ButtonActionHandler implements ActionHandler {
                 UserState state = user.getState();
                 if (state != null && state.equals(PROBATION)) {
                     messageSender.sendReportPhotoMessage(chatId);
+                } else {
+                    messageSender.sendDefaultHTMLMessage(chatId);
+                }
+            }
+        });
+        buttonMap.put(BUT_SEND_PET_PHOTO.getCallbackData(), (firstName, lastName, chatId) -> {
+            log.info("Pressed SEND_PET_PHOTO button");
+            User user = userService.findUserByChatId(chatId);
+            if (user != null && user.getAdoptionRecord() != null) {
+                UserState state = user.getState();
+                if (state != null && state.equals(PROBATION)) {
+                    photoMessageSender.sendPetPhotoForReportMessage(chatId);
                 } else {
                     messageSender.sendDefaultHTMLMessage(chatId);
                 }
@@ -154,8 +165,10 @@ public class ButtonActionHandler implements ActionHandler {
         if (user != null && user.getState().equals(PROBATION_REPORT)) {
             log.info("Was invoked method of sending question by callbackData {} in handler", callbackData);
             reportService.fillOutReport(chatId, callbackData);
+            return;
         } else if (user != null && user.getState().equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
+            return;
         }
         Button commandToRun = buttonMap.get(callbackData.toLowerCase());
         if (commandToRun != null) {

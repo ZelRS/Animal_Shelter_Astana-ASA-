@@ -8,6 +8,8 @@ import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * класс для обработки стартового приветственного сообщения
@@ -45,27 +47,20 @@ public class WelcomeMessageHandler {
         }
     }
     private void sendUserStateSpecificMessage(User user, Long chatId) {
-        switch (user.getState()) {
-            case FREE:
-                messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
-                break;
-            case POTENTIAL:
-                messageSender.sendChooseShelterMessage(chatId);
-                break;
-            case INVITED:
-                messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId);
-                break;
-            case PROBATION:
-                messageSender.sendReportPhotoMessage(chatId);
-                break;
-            case VOLUNTEER:
-                messageSender.sendVolunteerWelcomePhotoMessage(user.getUserName(), chatId);
-                break;
-            default:
-                log.warn("Unknown user state: {}", user.getState());
-                messageSender.sendDefaultHTMLMessage(chatId);
-                break;
-        }
+        Map<UserState, MessageSender> stateMessageMap = new HashMap<>();
+        stateMessageMap.put(UserState.FREE, () -> messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId));
+        stateMessageMap.put(UserState.POTENTIAL, () -> messageSender.sendChooseShelterMessage(chatId));
+        stateMessageMap.put(UserState.INVITED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId));
+        stateMessageMap.put(UserState.PROBATION, () -> messageSender.sendReportPhotoMessage(chatId));
+        stateMessageMap.put(UserState.VOLUNTEER, () -> messageSender.sendVolunteerWelcomePhotoMessage(user.getUserName(), chatId));
+
+        MessageSender defaultMessageSender = () -> {
+            log.warn("Unknown user state: {}", user.getState());
+            messageSender.sendDefaultHTMLMessage(chatId);
+        };
+
+        MessageSender messageSenderAction = stateMessageMap.getOrDefault(user.getState(), defaultMessageSender);
+        sendMessageWithExceptionHandling(messageSenderAction);
     }
 
     @FunctionalInterface

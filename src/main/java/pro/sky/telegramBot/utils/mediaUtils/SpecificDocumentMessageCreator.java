@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.utils.mediaUtils;
 
 import com.pengrad.telegrambot.model.Document;
+import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,12 +10,15 @@ import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.loader.DocumentLoader;
+import pro.sky.telegramBot.loader.MediaLoader;
+import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import static pro.sky.telegramBot.enums.MessageImage.*;
@@ -29,6 +33,7 @@ import static pro.sky.telegramBot.enums.MessageImage.*;
 public class SpecificDocumentMessageCreator {
 
     private final DocumentLoader documentLoader;
+    private final MediaLoader mediaLoader;
     private final ReportService reportService;
     private final BotConfig botConfig;
     private final MediaMessageCreator mediaMessageCreator;
@@ -48,6 +53,23 @@ public class SpecificDocumentMessageCreator {
             params.setChatId(chatId);
             params.setFilePath(REPORT_NOT_ACCEPTED_MSG_IMG.getPath());
             params.setCaption(botConfig.getMSG_REPORT_NOT_ACCEPTED());
+        }
+        return mediaMessageCreator.createPhotoMessage(params);
+
+    }
+
+    public SendPhoto createPhotoResponseMessage(Long chatId, PhotoSize[] photo) throws IOException {
+        log.info("Was invoked createPhotoResponseMessage method for {}", chatId);
+        MediaMessageParams params = new MediaMessageParams();
+        if (reportService.attachPhotoToReport(chatId, photo)) {
+            log.info("Parameter were set for {}", chatId);
+            params.setChatId(chatId);
+            params.setFilePath(REPORT_ACCEPTED_MSG_IMG.getPath());
+            params.setCaption(botConfig.getMSG_PHOTO_ACCEPTED());
+        } else {
+            params.setChatId(chatId);
+            params.setFilePath(REPORT_NOT_ACCEPTED_MSG_IMG.getPath());
+            params.setCaption(botConfig.getMSG_PHOTO_NOT_ACCEPTED());
         }
         return mediaMessageCreator.createPhotoMessage(params);
     }
@@ -103,4 +125,5 @@ public class SpecificDocumentMessageCreator {
 
         return mediaMessageCreator.createPhotoMessage(params);
     }
+
 }

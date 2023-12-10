@@ -1,9 +1,15 @@
 package pro.sky.telegramBot.service.impl;
 
+import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.model.PhotoSize;
+import com.pengrad.telegrambot.request.GetFile;
+import com.pengrad.telegrambot.response.GetFileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.QuestionsForReport;
+import pro.sky.telegramBot.loader.MediaLoader;
+import pro.sky.telegramBot.model.Adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.Adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.ReportRepository;
@@ -14,6 +20,8 @@ import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.ReportDataConverter;
 import pro.sky.telegramBot.utils.ReportSumCalculator;
 
+import javax.transaction.Transactional;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -24,6 +32,7 @@ import static pro.sky.telegramBot.enums.UserState.PROBATION;
  * Сервис для обработки отчетов пользователей
  */
 @Service
+@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class ReportServiceImpl implements ReportService {
@@ -33,10 +42,18 @@ public class ReportServiceImpl implements ReportService {
     private final AdoptionRecordService adoptionRecordService;
     private final MessageSender messageSender;
     private final ReportSumCalculator reportSumCalculator;
+    private final TelegramBot bot;
+    private final MediaLoader mediaLoader;
 
     @Override
-    public boolean saveReport(Report newReport) {
+    public boolean saveReport(Report newReport, Long chatId) {
         log.info("Was invoked method saveReport");
+        LocalDate date = newReport.getReportDateTime();
+        Report report = reportRepository.findByReportDateTime(date);
+        if (date != null && report != null) {
+            newReport.setId(report.getId());
+        }
+        adoptionRecordService.addNewReportToAdoptionRecord(newReport, chatId);
         reportRepository.save(newReport);
         return true;
     }
@@ -44,41 +61,47 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public boolean createReportFromExcel(Long chatId, List<String> values) {
 
-        Report newReport = new Report();
-
+        User user = userService.findUserByChatId(chatId);
         String dateString = values.get(5);
-        newReport.setReportDateTime(reportDataConverter.convertToData(dateString));
+        LocalDate date = reportDataConverter.convertToData(dateString);
+        Report newReport = null;
+        if(user != null && user.getAdoptionRecord() != null){
+            AdoptionRecord adoptionRecord = user.getAdoptionRecord();
+            newReport = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
+            if(newReport == null){
+                newReport = new Report();
+                newReport.setReportDateTime(date);
+                newReport.setAdoptionRecord(adoptionRecord);
+            }
+            String valueA6 = values.get(4);
+            int a6Int = reportDataConverter.convertToInteger(valueA6);
+            newReport.setBehaviorChange(a6Int);
+            String valueA8 = values.get(2);
+            int a8Int = reportDataConverter.convertToInteger(valueA8);
+            newReport.setDietAllergies(a8Int);
+            String valueA10 = values.get(1);
+            int a10Int = reportDataConverter.convertToInteger(valueA10);
+            newReport.setDietPreferences(a10Int);
+            String valueA12 = values.get(0);
+            int a12Int = reportDataConverter.convertToInteger(valueA12);
+            newReport.setDietAppetite(a12Int);
+            String valueA14 = values.get(3);
+            int a14Int = reportDataConverter.convertToInteger(valueA14);
+            newReport.setHealthStatus(a14Int);
+            reportRepository.save(newReport);
+            Long reportId = newReport.getId();
+            calculateReportRatingTotal(reportId);
+            return true;
+        } else {
+            return false;
+        }
 
-        String valueA6 = values.get(4);
-        int a6Int = reportDataConverter.convertToInteger(valueA6);
-        newReport.setBehaviorChange(a6Int);
 
-        String valueA8 = values.get(2);
-        int a8Int = reportDataConverter.convertToInteger(valueA8);
-        newReport.setDietAllergies(a8Int);
-
-        String valueA10 = values.get(1);
-        int a10Int = reportDataConverter.convertToInteger(valueA10);
-        newReport.setDietPreferences(a10Int);
-
-        String valueA12 = values.get(0);
-        int a12Int = reportDataConverter.convertToInteger(valueA12);
-        newReport.setDietAppetite(a12Int);
-
-        String valueA14 = values.get(3);
-        int a14Int = reportDataConverter.convertToInteger(valueA14);
-        newReport.setHealthStatus(a14Int);
-
-        int reportResult = reportSumCalculator.calculateReportSum(new int[]{a6Int, a8Int, a10Int, a12Int, a14Int});
-        newReport.setRatingTotal(reportResult);
-
-        adoptionRecordService.addNewReportToAdoptionRecord(newReport, chatId);
-
-        return saveReport(newReport);
     }
 
     List<QuestionsForReport> questions = new ArrayList<>(Arrays.asList(QuestionsForReport.values()));
-//Метод инициирует вопросы пользователю и сохраняет ответы в отчете
+
+    //Метод инициирует вопросы пользователю и сохраняет ответы в отчете
     @Override
     public void fillOutReport(Long chatId, String callbackData) {
         String[] parts = callbackData.split("_");
@@ -107,10 +130,12 @@ public class ReportServiceImpl implements ReportService {
                 case 4:
                     report.setBehaviorChange(buttonIdentifier);
                     reportRepository.save(report);
+                    calculateReportRatingTotal(reportId);
                     User user = userService.findUserByChatId(chatId);
                     user.setState(PROBATION);
                     userService.update(user);
                     messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(1).getQuestion(), 5, reportId);
+                    adoptionRecordService.addNewReportToAdoptionRecord(report, chatId);
                     break;
             }
             reportRepository.save(report);
@@ -121,14 +146,92 @@ public class ReportServiceImpl implements ReportService {
             }
         }
     }
-//Метод создает новый отчет, сохраняет его в базе и инициирует его заполнение
+
+    //Метод создает новый отчет, сохраняет его в базе и инициирует его заполнение
     @Override
     public void createReportOnline(Long chatId) {
-        Report newReport = new Report();
+        User user = userService.findUserByChatId(chatId);
         LocalDate date = LocalDate.now();
-        newReport.setReportDateTime(date);
-        reportRepository.save(newReport);
-        Long reportId = newReport.getId();
-        fillOutReport(chatId, "11_0_" + reportId);
+        Report newReport = null;
+        if(user != null && user.getAdoptionRecord() != null){
+            AdoptionRecord adoptionRecord = user.getAdoptionRecord();
+            newReport = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
+            if(newReport == null){
+                newReport = new Report();
+                newReport.setReportDateTime(date);
+                newReport.setAdoptionRecord(adoptionRecord);
+                reportRepository.save(newReport);
+            }
+            Long reportId = newReport.getId();
+            log.info("Was set report id {}", reportId);
+            fillOutReport(chatId, "11_0_" + reportId);
+        }
     }
+
+    @Override
+    public void handlePetPhotoMessage(Long chatId, PhotoSize[] photo, Long reportId) {
+        log.info("Was invoked handlePetPhotoMessage method for {}", chatId);
+        Report report = reportRepository.findById(reportId).orElseThrow();
+        String fileId = photo[0].fileId();
+        GetFile getFileRequest = new GetFile(fileId);
+        GetFileResponse getFileResponse = bot.execute(getFileRequest);
+
+        if (getFileResponse.isOk()) {
+            try {
+                byte[] fileInputStream = bot.getFileContent(getFileResponse.file());
+                byte[] resizedImage = mediaLoader.resizeReportPhoto(fileInputStream, 300);
+                report.setData(resizedImage);
+                log.info("Was invoked save method in report repository for {}", chatId);
+                reportRepository.save(report);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while resizing image: " + e.getMessage());
+            }
+        }
+        User user = userService.findUserByChatId(chatId);
+        user.setState(PROBATION);
+        userService.update(user);
+    }
+
+    @Override
+    public boolean attachPhotoToReport(Long chatId, PhotoSize[] photo) {
+        log.info("Was invoked attachPhotoToReport method for {}", chatId);
+        LocalDate date = LocalDate.now();
+        User user = userService.findUserByChatId(chatId);
+        if (user != null && user.getAdoptionRecord() != null) {
+            log.info("User and Adoption Report were found {}", chatId);
+            Report report = reportRepository.findByAdoptionRecordIdAndReportDateTime(user.getAdoptionRecord().getId(), date);
+            if (report != null) {
+                handlePetPhotoMessage(chatId, photo, report.getId());
+                log.info("should be true");
+                return true;
+            } else {
+                log.info("Today Report not found {}", chatId);
+                user.setState(PROBATION);
+                userService.update(user);
+                return false;
+            }
+        }
+        log.info("User or Adoption Report not found {}", chatId);
+        return false;
+    }
+
+    @Override
+    public Report getReportById(Long id) {
+        return reportRepository.findById(id).orElseThrow();
+    }
+
+    private void calculateReportRatingTotal (Long reportId) {
+        Report report = reportRepository.findById(reportId).orElseThrow();
+        int a6Int = report.getDietAppetite();
+        int a8Int = report.getDietPreferences();
+        int a10Int = report.getDietAllergies();
+        int a12Int = report.getHealthStatus();
+        int a14Int = report.getBehaviorChange();
+        int reportResult = reportSumCalculator.calculateReportSum(new int[]{a6Int, a8Int, a10Int, a12Int, a14Int});
+        report.setRatingTotal(reportResult);
+        reportRepository.save(report);
+    }
+
 }

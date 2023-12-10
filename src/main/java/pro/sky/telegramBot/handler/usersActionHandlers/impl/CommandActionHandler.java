@@ -30,7 +30,6 @@ import static pro.sky.telegramBot.enums.UserState.PROBATION;
  * при отправке им какой-либо определенной команды
  */
 @Service
-//@Transactional
 @RequiredArgsConstructor
 @Getter
 @Slf4j  // SLF4J logging
