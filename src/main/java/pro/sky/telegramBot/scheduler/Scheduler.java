@@ -44,4 +44,8 @@ public class Scheduler {
     public void informAdopterAboutNeedToSendPhotoForReport() {
         adoptionRecordService.informAdopterAboutNeedToSendPhotoForReport();
     }
+    @Scheduled(cron = "0 00 00 * * *")
+    public void decreaseTrialPeriodDaysAndCheckEvents() {
+        adoptionRecordService.decreaseTrialPeriodDaysAndCheckEvents();
+    }
 }

@@ -336,6 +336,42 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    public SendPhoto createNotificationToAdopterAndVolunteerAboutProblemPhotoMessage(
+            Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_PROBLEM(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAndVolunteerAboutTryYourBest(
+            Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_TRY_YOUR_BEST(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAndVolunteerAboutGoodJob(
+            Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_GOOD_JOB(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToVolunteerAboutCalculationsError(
+            Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_CALCULATION_ERROR_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_CALCULATION_ERROR(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 //    .......  медиа-сообщения для других целей......
 
 

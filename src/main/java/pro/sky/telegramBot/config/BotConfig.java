@@ -90,6 +90,14 @@ public class BotConfig {
     private String MSG_NEED_TO_SEND_REPORT;
     @Value("${MSG_NEED_TO_SEND_PHOTO_FOR_REPORT}")
     private String MSG_NEED_TO_SEND_PHOTO_FOR_REPORT;
+    @Value("${MSG_NOTIFICATION_PROBLEM}")
+    private String MSG_NOTIFICATION_PROBLEM;
+    @Value("${MSG_NOTIFICATION_TRY_YOUR_BEST}")
+    private String MSG_NOTIFICATION_TRY_YOUR_BEST;
+    @Value("${MSG_NOTIFICATION_GOOD_JOB}")
+    private String MSG_NOTIFICATION_GOOD_JOB;
+    @Value("${MSG_NOTIFICATION_CALCULATION_ERROR}")
+    private String MSG_NOTIFICATION_CALCULATION_ERROR;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")

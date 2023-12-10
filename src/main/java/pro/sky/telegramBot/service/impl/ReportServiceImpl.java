@@ -1,7 +1,6 @@
 package pro.sky.telegramBot.service.impl;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.model.File;
 import com.pengrad.telegrambot.model.PhotoSize;
 import com.pengrad.telegrambot.request.GetFile;
 import com.pengrad.telegrambot.response.GetFileResponse;
@@ -18,8 +17,8 @@ import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
-import pro.sky.telegramBot.utils.ReportDataConverter;
-import pro.sky.telegramBot.utils.ReportSumCalculator;
+import pro.sky.telegramBot.utils.statistic.ReportDataConverter;
+import pro.sky.telegramBot.utils.statistic.ReportSumCalculator;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
