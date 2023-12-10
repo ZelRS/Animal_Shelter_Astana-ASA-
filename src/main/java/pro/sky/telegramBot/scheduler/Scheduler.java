@@ -33,4 +33,15 @@ public class Scheduler {
     public void informAdopterAboutEndReporting() {
         adoptionRecordService.informAdopterAboutEndReporting();
     }
+
+    //Запускаем напоминание о необходимости прислать отчет
+    @Scheduled(cron = "0 00 21 * * *")
+    public void informAdopterAboutNeedToSendReport() {
+        adoptionRecordService.informAdopterAboutNeedToSendReport();
+    }
+    //Запускаем напоминание о необходимости прислать фото для отчета
+    @Scheduled(cron = "0 05 21 * * *")
+    public void informAdopterAboutNeedToSendPhotoForReport() {
+        adoptionRecordService.informAdopterAboutNeedToSendPhotoForReport();
+    }
 }

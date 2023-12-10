@@ -86,6 +86,10 @@ public class BotConfig {
     private String MSG_PHOTO_NOT_ACCEPTED;
     @Value("${MSG_GET_HELP_FROM_VOLUNTEER}")
     private String MSG_GET_HELP_FROM_VOLUNTEER;
+    @Value("${MSG_NEED_TO_SEND_REPORT}")
+    private String MSG_NEED_TO_SEND_REPORT;
+    @Value("${MSG_NEED_TO_SEND_PHOTO_FOR_REPORT}")
+    private String MSG_NEED_TO_SEND_PHOTO_FOR_REPORT;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ НА КНОПКАХ
     @Value("${BUT_WANT_DOG}")
