@@ -1,5 +1,7 @@
 package pro.sky.telegramBot.handler.usersActionHandlers.impl;
 
+import com.pengrad.telegrambot.request.SendMessage;
+import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -40,6 +43,7 @@ public class CommandActionHandler implements ActionHandler {
     private final UserService userService;
     private final BlockedUserHandler blockedUserHandler;
     private final ShelterCommandHandler shelterCommandHandler;
+    private final SpecificKeyboardCreator specificKeyboardCreator;
 
     @FunctionalInterface
     interface Command {
@@ -79,44 +83,77 @@ public class CommandActionHandler implements ActionHandler {
         //Узнать дополнительную информацию о приюте
         commandMap.put("/details", (firstName, lastName, chatId) -> {
             log.info("Received /details command");
-            messageSender.menuInformationHandler(chatId, "/details");
+            User user = userService.findUserByChatId(chatId);
+            if (user.getShelter().getDescription() != null) {
+                sendTextMessageFromInfoMenu(chatId, user.getShelter().getDescription());
+            } else {
+                messageSender.sendInformationNotFoundMessage(chatId);
+            }
         });
 
         // Получить одрес приюта
         commandMap.put("/address", (firstName, lastName, chatId) -> {
             log.info("Received /address command");
-            messageSender.menuInformationHandler(chatId, "/address");
+            User user = userService.findUserByChatId(chatId);
+            if (user.getShelter().getAddress() != null) {
+                sendTextMessageFromInfoMenu(chatId, user.getShelter().getAddress());
+            } else {
+                messageSender.sendInformationNotFoundMessage(chatId);
+            }
         });
 
-        // Получить график работы приюта
+//         Получить график работы приюта
         commandMap.put("/schedule", (firstName, lastName, chatId) -> {
             log.info("Received /schedule command");
-            messageSender.menuInformationHandler(chatId, "/schedule");
+            User user = userService.findUserByChatId(chatId);
+            if (user.getShelter().getSchedule() != null) {
+                sendTextMessageFromInfoMenu(chatId, user.getShelter().getSchedule());
+            } else {
+                messageSender.sendInformationNotFoundMessage(chatId);
+            }
         });
 
-        // Посмотреть схему проезда к приюту
+//         Посмотреть схему проезда к приюту
         commandMap.put("/schema", (firstName, lastName, chatId) -> {
             log.info("Received /schema command");
-            messageSender.menuInformationHandler(chatId, "/schema");
+            User user = userService.findUserByChatId(chatId);
+            if (user.getShelter().getSchema() != null) {
+                SendPhoto sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
+                sendPhoto.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+                messageSender.menuInformationHandler(chatId, sendPhoto);
+            } else {
+                messageSender.sendInformationNotFoundMessage(chatId);
+            }
         });
 
-        // Узнать номер телефона охраны для оформления пропуска
+//         Узнать номер телефона охраны для оформления пропуска
         commandMap.put("/sec_phone", (firstName, lastName, chatId) -> {
             log.info("Received /sec_phone command");
-            messageSender.menuInformationHandler(chatId, "/sec_phone");
+            User user = userService.findUserByChatId(chatId);
+            if (user.getShelter().getSecurityPhone() != null) {
+                sendTextMessageFromInfoMenu(chatId, user.getShelter().getSecurityPhone());
+            } else {
+                messageSender.sendInformationNotFoundMessage(chatId);
+            }
         });
 
-        // Прочитать правила техники безопасности приюта
+//         Прочитать правила техники безоп
+//         асности приюта
         commandMap.put("/safety", (firstName, lastName, chatId) -> {
             log.info("Received /safety command");
-            messageSender.menuInformationHandler(chatId, "/safety");
+            User user = userService.findUserByChatId(chatId);
+            if (user.getShelter().getSafetyRules() != null) {
+                sendTextMessageFromInfoMenu(chatId, user.getShelter().getSafetyRules());
+            } else {
+                messageSender.sendInformationNotFoundMessage(chatId);
+            }
         });
 
-        // Оставить заявку на обратный звонок
-        commandMap.put("/callme", (firstName, lastName, chatId) -> {
-            log.info("Received /callMe command");
-            messageSender.menuInformationHandler(chatId, "/callMe");
-        });
+//         Оставить заявку на обратный звонок
+//        commandMap.put("/callme", (firstName, lastName, chatId) -> {
+//            log.info("Received /callMe command");
+//            messageSender.menuInformationHandler(chatId, "/callMe");
+//        });
 
         // Связаться с волонтером
         commandMap.put("/volunteer", (firstName, lastName, chatId) -> {
@@ -136,6 +173,13 @@ public class CommandActionHandler implements ActionHandler {
         }
     }
 
+    private void sendTextMessageFromInfoMenu(Long chatId, String msg) {
+        SendMessage message;
+        message = new SendMessage(chatId, msg);
+        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        messageSender.menuInformationHandler(chatId, message);
+    }
+
     /**
      * Метод ищет, есть ли в {@link #commandMap} кнопка по ключу.
      * Если кнопка найдена, совершается логика, лежащая по значению этого ключа.
@@ -148,11 +192,11 @@ public class CommandActionHandler implements ActionHandler {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
             return;
         }
-        if (command.startsWith("/phone")) {
-            String phone = command.split(" ")[1];
-            messageSender.addPhoneNumberToPersonInfo(firstName, lastName, chatId, phone);
-            return;
-        }
+//        if (command.startsWith("/phone")) {
+//            String phone = command.split(" ")[1];
+//            messageSender.addPhoneNumberToPersonInfo(firstName, lastName, chatId, phone);
+//            return;
+//        }
         if (command.matches("^/\\d+_((DOG)|(CAT))$")) {
             shelterCommandHandler.handle(command, firstName, lastName, chatId);
             return;
