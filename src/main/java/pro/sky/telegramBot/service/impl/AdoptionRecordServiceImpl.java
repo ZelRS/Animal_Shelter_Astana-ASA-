@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.TrialPeriodState;
+import pro.sky.telegramBot.exception.notFound.PetNotFoundException;
+import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
 import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.pet.Pet;
@@ -11,6 +13,7 @@ import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.AdoptionRecordRepository;
 import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
 import pro.sky.telegramBot.service.AdoptionRecordService;
+import pro.sky.telegramBot.service.PetService;
 import pro.sky.telegramBot.service.UserService;
 
 import java.time.LocalDate;
@@ -18,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static pro.sky.telegramBot.enums.PetType.NOPET;
+import static pro.sky.telegramBot.enums.TrialPeriodState.SUCCESSFUL;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
 import static pro.sky.telegramBot.enums.UserState.VOLUNTEER;
 
@@ -27,7 +31,46 @@ import static pro.sky.telegramBot.enums.UserState.VOLUNTEER;
 public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     private final AdoptionRecordRepository adoptionRecordRepository;
     private final UserService userService;
+    private final PetService petService;
     private final NotificationSender notificationSender;
+
+    @Override
+    public AdoptionRecord createNewAdoptionRecord(Long userId, Integer trialPeriodDays, Long petId) {
+        User user = userService.getById(userId);
+        LocalDate date = LocalDate.now();
+        if(user == null) {
+            log.error("No user was found by id {}", userId);
+            throw new UserNotFoundException("No user was found");
+        }
+      if(user.getAdoptionRecord() != null && !user.getAdoptionRecord().getState().equals(SUCCESSFUL)) {
+          log.error("Is is not possible to create e new adoption record for user {}", userId);
+          throw new UserNotFoundException("No user was found");
+      }
+        AdoptionRecord newAdoptionRecord = new AdoptionRecord();
+        Pet pet = petService.getById(petId);
+        if(pet == null) {
+            log.error("No pet was found by id {}", petId);
+            throw new PetNotFoundException("No user was found");
+        }
+        newAdoptionRecord.setUser(user);
+        newAdoptionRecord.setPet(pet);
+        newAdoptionRecord.setState(TrialPeriodState.PROBATION);
+        newAdoptionRecord.setAdoptionDate(date);
+        newAdoptionRecord.setTrialPeriodDays(trialPeriodDays);
+
+        AdoptionRecord savedAdoptionRecord = adoptionRecordRepository.save(newAdoptionRecord);
+
+        user.setState(PROBATION);
+        user.setAdoptionRecord(savedAdoptionRecord);
+        user.setPet(pet);
+        userService.update(user);
+        pet.setOwner(user);
+        pet.setAdoptionRecord(savedAdoptionRecord);
+        petService.update(pet);
+
+        return savedAdoptionRecord;
+
+    }
 
     @Override
     public void save(AdoptionRecord adoptionRecord) {
@@ -84,7 +127,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         if (user != null && user.getAdoptionRecord() != null) {
             AdoptionRecord adoptionRecord = user.getAdoptionRecord();
             List<Report> reports = adoptionRecord.getReports();
-            if(reports == null) {
+            if (reports == null) {
                 reports = new ArrayList<>();
                 adoptionRecord.setReports(reports);
                 adoptionRecordRepository.save(adoptionRecord);
@@ -137,6 +180,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             }
         }
     }
+
     /**
      * Метод находит усыновителей, которые не прислали отчет, и запускает отправку сообщения
      * о необходимости прислать отчет
@@ -150,6 +194,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             }
         }
     }
+
     /**
      * Метод находит усыновителей, которые прислали отчет, но не прислали фото, и запускает отправку
      * сообщения о необходимости прислать фото
