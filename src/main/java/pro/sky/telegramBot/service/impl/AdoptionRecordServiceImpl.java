@@ -15,6 +15,7 @@ import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
 import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.PetService;
 import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.utils.statistic.StatisticPreparer;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -33,22 +34,23 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     private final UserService userService;
     private final PetService petService;
     private final NotificationSender notificationSender;
+    private final StatisticPreparer statisticPreparer;
 
     @Override
     public AdoptionRecord createNewAdoptionRecord(Long userId, Integer trialPeriodDays, Long petId) {
         User user = userService.getById(userId);
         LocalDate date = LocalDate.now();
-        if(user == null) {
+        if (user == null) {
             log.error("No user was found by id {}", userId);
             throw new UserNotFoundException("No user was found");
         }
-      if(user.getAdoptionRecord() != null && !user.getAdoptionRecord().getState().equals(SUCCESSFUL)) {
-          log.error("Is is not possible to create e new adoption record for user {}", userId);
-          throw new UserNotFoundException("No user was found");
-      }
+        if (user.getAdoptionRecord() != null && !user.getAdoptionRecord().getState().equals(SUCCESSFUL)) {
+            log.error("Is is not possible to create a new adoption record for user {}", userId);
+            throw new UserNotFoundException("No user was found");
+        }
         AdoptionRecord newAdoptionRecord = new AdoptionRecord();
         Pet pet = petService.getById(petId);
-        if(pet == null) {
+        if (pet == null) {
             log.error("No pet was found by id {}", petId);
             throw new PetNotFoundException("No user was found");
         }
@@ -207,6 +209,58 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
                 notificationSender.sendNotificationToAdopterAboutNeedToSendPhotoForReportPhotoMessage(user.getChatId());
             }
         }
+    }
+
+    @Override
+    public void decreaseTrialPeriodDaysAndCheckEvents() {
+        LocalDate currentDate = LocalDate.now();
+        List<AdoptionRecord> adoptionRecords = adoptionRecordRepository.findByTrialPeriodEndAfterAndState(
+                currentDate, TrialPeriodState.PROBATION);
+        adoptionRecords.stream()
+                .filter(adoptionRecord -> adoptionRecord.getTrialPeriodDays() > 0)
+                .forEach(adoptionRecord -> {
+                    int trialPeriodDays = adoptionRecord.getTrialPeriodDays() - 1;
+                    adoptionRecord.setTrialPeriodDays(trialPeriodDays);
+
+                    if (trialPeriodDays % 5 == 0) {
+                        prepareStatisticForVolunteer(adoptionRecord.getId());
+                    }
+                    if (trialPeriodDays == 0) {
+                        prepareFinalReportForVolunteer(adoptionRecord.getId());
+                    }
+                    adoptionRecordRepository.save(adoptionRecord);
+                });
+    }
+
+    private void prepareFinalReportForVolunteer(Long id) {
+        AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(id).orElseThrow();
+        List<Report> reports = adoptionRecordRepository.findAllReportsByAdoptionRecord(adoptionRecord);
+        Long userChatId = adoptionRecord.getUser().getChatId();
+
+        int overallScore = statisticPreparer.checkProgress(adoptionRecord, reports);
+
+        List<User> volunteers = userService.findAllByState(VOLUNTEER);
+        String notificationAction;
+        if (overallScore == -1) {
+            notificationAction = "problem";
+        } else if (overallScore == 0) {
+            notificationAction = "try your best";
+        } else if (overallScore == 1) {
+            notificationAction = "good job";
+        } else {
+            notificationAction = "calculations error";
+        }
+        for (User volunteer : volunteers) {
+            notificationSender.sendNotificationToVolunteerAboutCheck(notificationAction, volunteer.getChatId(), userChatId);
+        }
+        notificationSender.sendNotificationToAdopterAboutCheck(notificationAction, userChatId);
+    }
+
+    private void prepareStatisticForVolunteer(Long id) {
+        AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(id).orElseThrow();
+        List<Report> reports = adoptionRecordRepository.findAllReportsByAdoptionRecord(adoptionRecord);
+
+        statisticPreparer.checkProgress(adoptionRecord, reports);
     }
 
 }

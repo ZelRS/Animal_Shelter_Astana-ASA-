@@ -21,4 +21,5 @@ public interface ReportService {
     boolean attachPhotoToReport(Long chatId, PhotoSize[] photo);
 
     Report getReportById(Long id);
+
 }

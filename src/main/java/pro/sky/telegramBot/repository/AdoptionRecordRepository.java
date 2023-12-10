@@ -1,11 +1,15 @@
 package pro.sky.telegramBot.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import pro.sky.telegramBot.enums.TrialPeriodState;
 import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface AdoptionRecordRepository extends JpaRepository<AdoptionRecord, Long> {
@@ -22,4 +26,9 @@ public interface AdoptionRecordRepository extends JpaRepository<AdoptionRecord, 
                "WHERE r.reportDateTime = CURRENT_DATE " +
                "AND (r.data IS NULL OR r.data = '')")
         List<User> findUsersWithReportTodayAndNoPhoto();
+
+        List<AdoptionRecord> findByTrialPeriodEndAfterAndState(LocalDate currentDate, TrialPeriodState state);
+
+        @Query("SELECT r FROM report r WHERE r.adoptionRecord = :adoptionRecord")
+        List<Report> findAllReportsByAdoptionRecord(@Param("adoptionRecord") AdoptionRecord adoptionRecord);
 }
