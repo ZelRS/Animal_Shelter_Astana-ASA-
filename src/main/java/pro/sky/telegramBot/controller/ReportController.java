@@ -18,12 +18,12 @@ import pro.sky.telegramBot.service.ReportService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/report")
+@RequestMapping("/adoption/record/report")
 @Tag(name = "API для работы с отчетами")
 public class ReportController {
     private final ReportService reportService;
 
-    @GetMapping("/reports/{id}/photo")
+    @GetMapping("/{id}/photo")
     public ResponseEntity<Resource> getReportPhoto(@PathVariable Long id) {
         Report report = reportService.getReportById(id);
         if (report == null || report.getData() == null) {
