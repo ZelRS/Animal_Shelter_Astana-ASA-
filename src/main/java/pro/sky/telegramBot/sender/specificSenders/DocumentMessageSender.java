@@ -1,6 +1,5 @@
 package pro.sky.telegramBot.sender.specificSenders;
 
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.Document;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
@@ -10,9 +9,6 @@ import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.reader.ExcelFileReader;
-import pro.sky.telegramBot.sender.MessageSender;
-import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificDocumentMessageCreator;
