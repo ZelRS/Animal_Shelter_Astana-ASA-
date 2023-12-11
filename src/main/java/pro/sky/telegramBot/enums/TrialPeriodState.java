@@ -8,7 +8,8 @@ public enum TrialPeriodState {
     PROBATION("испытательный срок"),
     PROBATION_EXTEND("продление испытательного срока"),
     SUCCESSFUL("успешно завершен"),
-    UNSUCCESSFUL("неуспешно завершен");
+    UNSUCCESSFUL("неуспешно завершен"),
+    CLOSED("закрыто");
 
     private final String state;
 

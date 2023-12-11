@@ -21,6 +21,7 @@ import pro.sky.telegramBot.utils.statistic.StatisticPreparer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static pro.sky.telegramBot.enums.PetType.NOPET;
 import static pro.sky.telegramBot.enums.TrialPeriodState.*;
@@ -38,9 +39,10 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     private final StatisticPreparer statisticPreparer;
 
     @Override
-    public AdoptionRecord createNewAdoptionRecord(Long userId, Integer trialPeriodDays, Long petId) {
+    public AdoptionRecord createNewAdoptionRecord(Long userId, Long petId) {
         User user = userService.getById(userId);
         LocalDate date = LocalDate.now();
+        int trialPeriodDays = 30;
         if (user == null) {
             log.error("No user was found by id {}", userId);
             throw new UserNotFoundException("No user was found");
@@ -74,6 +76,41 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
 
         return savedAdoptionRecord;
 
+    }
+    @Override
+    public AdoptionRecord extendAdoptionRecord(Long adoptionRecordId) {
+        AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(adoptionRecordId).orElseThrow();
+        if(!adoptionRecord.getState().equals(PROBATION_EXTEND)){
+            log.error("No adoption record can be extended");
+            throw new NoSuchElementException("No adoption record can be extended");
+        }
+        adoptionRecord.setState(CLOSED);
+        adoptionRecordRepository.save(adoptionRecord);
+        AdoptionRecord extendetAdoptionRecord = new AdoptionRecord();
+
+        User user = adoptionRecord.getUser();
+        Pet pet = adoptionRecord.getPet();
+        LocalDate date = LocalDate.now();
+        int trialPeriodDays = 14;
+
+        extendetAdoptionRecord.setUser(user);
+        extendetAdoptionRecord.setPet(pet);
+        extendetAdoptionRecord.setState(PROBATION_EXTEND);
+        extendetAdoptionRecord.setAdoptionDate(date);
+        extendetAdoptionRecord.setTrialPeriodDays(trialPeriodDays);
+        extendetAdoptionRecord.setTrialPeriodEnd(date.plusDays(trialPeriodDays));
+
+        AdoptionRecord savedAdoptionRecord = adoptionRecordRepository.save(extendetAdoptionRecord);
+
+        user.setState(PROBATION);
+        user.setAdoptionRecord(savedAdoptionRecord);
+        user.setPet(pet);
+        userService.update(user);
+        pet.setOwner(user);
+        pet.setAdoptionRecord(savedAdoptionRecord);
+        petService.update(pet);
+
+        return savedAdoptionRecord;
     }
 
     @Override
@@ -236,6 +273,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
                     }
                 });
     }
+
     /**
      * Метод подготавливает промежуточную оценку и
      * инициирует информирование волонтера и пользователя о результатах
@@ -265,9 +303,13 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
 
         int overallScore = statisticPreparer.checkProgress(adoptionRecord, reports);//получаем оценку результатов отчетов
         if (overallScore == 0){
-            adoptionRecord.setState(PROBATION_EXTEND);
+            if(adoptionRecord.getTrialPeriodDays() == 30) {
+                adoptionRecord.setState(PROBATION_EXTEND);
+            } else {
+                adoptionRecord.setState(UNSUCCESSFUL);
+            }
         }else if (overallScore == 1){
-            adoptionRecord.setState(SUCCESSFUL);
+                adoptionRecord.setState(SUCCESSFUL);
         }else if (overallScore == -1){
             adoptionRecord.setState(UNSUCCESSFUL);
         }

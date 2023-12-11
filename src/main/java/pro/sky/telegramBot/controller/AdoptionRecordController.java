@@ -16,15 +16,20 @@ import pro.sky.telegramBot.service.AdoptionRecordService;
 public class AdoptionRecordController {
     private final AdoptionRecordService adoptionRecordService;
     @PostMapping
-    @Operation(summary = "Завести новую запись")
+    @Operation(summary = "Завести новую запись об усыновлении")
     public ResponseEntity<AdoptionRecord> addAdoptionRecord(
             @RequestParam Long userId,
-            @RequestParam Integer trialPeriodDays,
             @RequestParam Long petId) {
         AdoptionRecord newAdoptionRecord = adoptionRecordService.createNewAdoptionRecord(
                 userId,
-                trialPeriodDays,
                 petId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newAdoptionRecord);
+    }
+    @PutMapping("/{id}")
+    @Operation(summary = "Продлить запись об усыновлении")
+    public ResponseEntity<AdoptionRecord> extendAdoptionRecord(
+            @RequestParam Long adoptionRecordId) {
+        AdoptionRecord newAdoptionRecord = adoptionRecordService.extendAdoptionRecord(adoptionRecordId);
         return ResponseEntity.status(HttpStatus.CREATED).body(newAdoptionRecord);
     }
 }

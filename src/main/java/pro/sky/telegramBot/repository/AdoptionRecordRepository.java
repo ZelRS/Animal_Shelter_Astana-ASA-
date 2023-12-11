@@ -11,6 +11,7 @@ import pro.sky.telegramBot.model.users.User;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface AdoptionRecordRepository extends JpaRepository<AdoptionRecord, Long> {
         List<Report> findReportsByUser(User user);
@@ -31,4 +32,5 @@ public interface AdoptionRecordRepository extends JpaRepository<AdoptionRecord, 
 
         @Query("SELECT r FROM report r WHERE r.adoptionRecord = :adoptionRecord")
         List<Report> findAllReportsByAdoptionRecord(@Param("adoptionRecord") AdoptionRecord adoptionRecord);
+
 }
