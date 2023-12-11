@@ -47,4 +47,8 @@ public interface UserService {
     List<User> findAllByAdoptionRecordIsNullAndState(UserState state);
 
     List<User> findAllByState(UserState userState);
+
+    Long getRandomVolunteerId();
+
+    void addPhoneNumberToPersonInfo(String firstName, String lastName, Long chatId, String phone);
 }

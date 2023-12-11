@@ -12,6 +12,7 @@ import pro.sky.telegramBot.handler.specificHandlers.impl.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
@@ -21,6 +22,7 @@ import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static pro.sky.telegramBot.enums.Command.*;
 import static pro.sky.telegramBot.enums.PetType.CAT;
@@ -150,10 +152,25 @@ public class CommandActionHandler implements ActionHandler {
         });
 
 //         Оставить заявку на обратный звонок
-//        commandMap.put("/callme", (firstName, lastName, chatId) -> {
-//            log.info("Received /callMe command");
-//            messageSender.menuInformationHandler(chatId, "/callMe");
-//        });
+        commandMap.put("/callme", (firstName, lastName, chatId) -> {
+            log.info("Received /callMe command");
+            User user = userService.findUserByChatId(chatId);
+            Optional<String> phoneFromDatabase = userService.getUserPhone(user.getId());
+            phoneFromDatabase.ifPresentOrElse(phone -> {
+                Long volunteerId = userService.getRandomVolunteerId();
+                if (volunteerId != 0L) {
+                    SendMessage message = new SendMessage(volunteerId, "Здравствуйте. Пользователь <b>" + user.getUserName() +
+                            "</b> запросил обратный звонок.\nПерезвоните по номеру телефона " + phone);
+                    messageSender.menuInformationHandler(volunteerId, message);
+                } else {
+                    log.error("There are no volunteers in database");
+                    sendTextMessageFromInfoMenu(chatId, "К сожалению на данный момент у нас нет свободных волонтеров");
+                }
+            }, () -> {
+                sendTextMessageFromInfoMenu(chatId, "К сожалению вы не предоставили свой номер телефона." +
+                        " Добавьте номер телефона в таком формате:\n/phone ##(###)###-##-##");
+            });
+        });
 
         // Связаться с волонтером
         commandMap.put("/volunteer", (firstName, lastName, chatId) -> {
@@ -192,11 +209,12 @@ public class CommandActionHandler implements ActionHandler {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
             return;
         }
-//        if (command.startsWith("/phone")) {
-//            String phone = command.split(" ")[1];
-//            messageSender.addPhoneNumberToPersonInfo(firstName, lastName, chatId, phone);
-//            return;
-//        }
+        if (command.startsWith("/phone")) {
+            String phone = command.split(" ")[1];
+            userService.addPhoneNumberToPersonInfo(firstName, lastName, chatId, phone);
+            sendTextMessageFromInfoMenu(chatId, "Ваш номер телефона успешно добавлен");
+            return;
+        }
         if (command.matches("^/\\d+_((DOG)|(CAT))$")) {
             shelterCommandHandler.handle(command, firstName, lastName, chatId);
             return;
@@ -210,5 +228,4 @@ public class CommandActionHandler implements ActionHandler {
             messageSender.sendDefaultHTMLMessage(chatId);
         }
     }
-
 }

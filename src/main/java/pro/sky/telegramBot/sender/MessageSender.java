@@ -49,73 +49,7 @@ public class MessageSender implements BlockedUserHandler {
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
 
-    @FunctionalInterface
-    interface Command {
-        void run(Long chatId, User user);
-    }
-
-    private final Map<String, Command> infoCommands = new HashMap<>();
     private SendPhoto sendPhoto;
-
-//    @PostConstruct
-//    public void fillMap() {
-//        infoCommands.put("/address", (chatId, user) -> {
-//            if (user.getShelter().getAddress() != null) {
-//                message = new SendMessage(chatId, user.getShelter().getAddress());
-//            } else {
-//                message = null;
-//            }
-//        });
-//        infoCommands.put("/schedule", (chatId, user) -> {
-//            if (user.getShelter().getSchedule() != null) {
-//                message = new SendMessage(chatId, user.getShelter().getSchedule());
-//            } else {
-//                message = null;
-//            }
-//        });
-//        infoCommands.put("/schema", (chatId, user) -> {
-//            if (user.getShelter().getSchema() != null) {
-//                sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
-//            } else {
-//                sendPhoto = null;
-//            }
-//        });
-//        infoCommands.put("/sec_phone", (chatId, user) -> {
-//            if (user.getShelter().getSecurityPhone() != null) {
-//                message = new SendMessage(chatId, user.getShelter().getSecurityPhone());
-//            } else {
-//                message = null;
-//            }
-//        });
-//        infoCommands.put("/safety", (chatId, user) -> {
-//            if (user.getShelter().getSafetyRules() != null) {
-//                message = new SendMessage(chatId, user.getShelter().getSafetyRules());
-//            } else {
-//                message = null;
-//            }
-//        });
-//        infoCommands.put("/callMe", (chatId, user) -> {
-//            Optional<String> phoneFromDatabase = userService.getUserPhone(user.getId());
-//            phoneFromDatabase.ifPresentOrElse(phone -> {
-//                message = new SendMessage(getRandomVolunteerId(), "Здравствуйте. Пользователь <b>" + user.getUserName() +
-//                        "</b> запросил обратный звонок.\nПерезвоните по номеру телефона " + phone);
-//            }, () -> {
-//                message = new SendMessage(chatId, "К сожалению вы не предоставили свой номер телефона." +
-//                        " Добавьте номер телефона в таком формате:\n/phone ##(###)###-##-##");
-//            });
-//        });
-//    }
-
-    /**
-     * метод возвращает chatID случайного волонтера
-     */
-    private Long getRandomVolunteerId() {
-        Random random = new Random();
-        List<Long> volunteersList = userService.findAllByState(VOLUNTEER).stream()
-                .map(User::getChatId)
-                .collect(Collectors.toList());
-        return volunteersList.get(random.nextInt(volunteersList.size()));
-    }
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -273,33 +207,14 @@ public class MessageSender implements BlockedUserHandler {
      * Обработчик команд из информационного меню
      */
     public void menuInformationHandler(Long chatId, SendMessage message) {
-//        User user = userService.findUserByChatId(chatId);
-//        Command function = infoCommands.get(command);
-//        function.run(chatId, user);
         log.info("Sending text message to user with chatID = " + chatId);
-//            if (!command.equals("/callMe"))
         messageExecutor.executeHTMLMessage(message);
-//        } else if (sendPhoto != null) {
-//            log.info("Sending media message for {} command", command);
-//            sendPhoto.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-//            messageExecutor.executePhotoMessage(sendPhoto);
-//            sendPhoto = null;
     }
 
     public void menuInformationHandler(Long chatId, SendPhoto message) {
         log.info("Sending media message to user with chatID = "+ chatId);
         messageExecutor.executePhotoMessage(message);
     }
-
-//    public void addPhoneNumberToPersonInfo(String firstName, String lastName, Long chatId, String phone) {
-//        User user = userService.findUserByChatId(chatId);
-//        UserInfo userInfo = userService.setUserPhone(new UserInfo(firstName, lastName, phone));
-//        user.setUserInfo(userInfo);
-//        userService.update(user);
-//        message = new SendMessage(chatId, "Ваш номер телефона успешно добавлен");
-//        messageExecutor.executeHTMLMessage(message);
-//        message = null;
-//    }
 
     /**
      * Метод отправляет пользователю сообщение об ошибке, если информация не найдена в базе

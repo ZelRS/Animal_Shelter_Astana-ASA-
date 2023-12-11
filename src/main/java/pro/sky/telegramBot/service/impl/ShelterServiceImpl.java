@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.exception.notFound.ShelterNotFoundException;
+import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.repository.ShelterRepository;
 import pro.sky.telegramBot.service.ShelterService;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 public class ShelterServiceImpl implements ShelterService {
     private final ShelterRepository shelterRepository;
 
-//    private final MediaLoader mediaLoader;
+    private final MediaLoader mediaLoader;
 
     /**
      * создать и сохранить приют в БД
@@ -93,7 +94,7 @@ public class ShelterServiceImpl implements ShelterService {
     public boolean uploadSchema(Long id, MultipartFile schema, Integer imageNewWidth) throws Exception {
         Optional<Shelter> shelter = shelterRepository.findById(id);
         if (shelter.isPresent()) {
-//            shelter.get().setSchema(mediaLoader.resizeImage(schema, imageNewWidth));
+            shelter.get().setSchema(mediaLoader.resizeImage(schema, imageNewWidth));
         } else {
             return false;
         }
