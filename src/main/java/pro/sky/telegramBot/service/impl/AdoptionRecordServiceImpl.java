@@ -2,6 +2,7 @@ package pro.sky.telegramBot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.TrialPeriodState;
 import pro.sky.telegramBot.exception.notFound.PetNotFoundException;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static pro.sky.telegramBot.enums.PetType.NOPET;
-import static pro.sky.telegramBot.enums.TrialPeriodState.SUCCESSFUL;
+import static pro.sky.telegramBot.enums.TrialPeriodState.*;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
 import static pro.sky.telegramBot.enums.UserState.VOLUNTEER;
 
@@ -211,7 +212,10 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             }
         }
     }
-
+    /**
+     * Метод следит за уменьшением остатка испытательного периода и инициирует отправку промежуточных проверок
+     * каждый пять дней или окончательного отчета
+     */
     @Override
     public void decreaseTrialPeriodDaysAndCheckEvents() {
         LocalDate currentDate = LocalDate.now();
@@ -220,48 +224,78 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         adoptionRecords.stream()
                 .filter(adoptionRecord -> adoptionRecord.getTrialPeriodDays() > 0)
                 .forEach(adoptionRecord -> {
-                    int trialPeriodDays = adoptionRecord.getTrialPeriodDays() - 1;
+                    int trialPeriodDays = adoptionRecord.getTrialPeriodDays() - 1;//уменьшили остаток дней на единицу
                     adoptionRecord.setTrialPeriodDays(trialPeriodDays);
-
-                    if (trialPeriodDays % 5 == 0) {
-                        prepareStatisticForVolunteer(adoptionRecord.getId());
-                    }
-                    if (trialPeriodDays == 0) {
-                        prepareFinalReportForVolunteer(adoptionRecord.getId());
-                    }
                     adoptionRecordRepository.save(adoptionRecord);
+                    if (trialPeriodDays == 0) {//сдан последний отчет
+                        analyzeFinalReportsResults(adoptionRecord.getId());
+                        return;
+                    }
+                    if (trialPeriodDays % 5 == 0) {//промежуточная проверка каждые пять дней
+                        analyzeReportsResults(adoptionRecord.getId());
+                    }
                 });
     }
-
-    private void prepareFinalReportForVolunteer(Long id) {
+    /**
+     * Метод подготавливает промежуточную оценку и
+     * инициирует информирование волонтера и пользователя о результатах
+     */
+    private void analyzeReportsResults(Long id) {
         AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(id).orElseThrow();
         List<Report> reports = adoptionRecordRepository.findAllReportsByAdoptionRecord(adoptionRecord);
         Long userChatId = adoptionRecord.getUser().getChatId();
 
-        int overallScore = statisticPreparer.checkProgress(adoptionRecord, reports);
+        int overallScore = statisticPreparer.checkProgress(adoptionRecord, reports);//получаем оценку результатов отчетов
 
         List<User> volunteers = userService.findAllByState(VOLUNTEER);
-        String notificationAction;
-        if (overallScore == -1) {
-            notificationAction = "problem";
-        } else if (overallScore == 0) {
-            notificationAction = "try your best";
-        } else if (overallScore == 1) {
-            notificationAction = "good job";
-        } else {
-            notificationAction = "calculations error";
-        }
-        for (User volunteer : volunteers) {
+        String notificationAction = getNotificationAction(overallScore);
+        for (User volunteer : volunteers) {//отправляем результаты волонтерам
             notificationSender.sendNotificationToVolunteerAboutCheck(notificationAction, volunteer.getChatId(), userChatId);
         }
-        notificationSender.sendNotificationToAdopterAboutCheck(notificationAction, userChatId);
+        notificationSender.sendNotificationToAdopterAboutCheck(notificationAction, userChatId);//результаты пользователю
     }
-
-    private void prepareStatisticForVolunteer(Long id) {
+    /**
+     * Метод подготавливает окончательную оценку и
+     * инициирует информирование волонтера и пользователя о результатах
+     */
+    private void analyzeFinalReportsResults(Long id) {
         AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(id).orElseThrow();
         List<Report> reports = adoptionRecordRepository.findAllReportsByAdoptionRecord(adoptionRecord);
+        Long userChatId = adoptionRecord.getUser().getChatId();
 
-        statisticPreparer.checkProgress(adoptionRecord, reports);
+        int overallScore = statisticPreparer.checkProgress(adoptionRecord, reports);//получаем оценку результатов отчетов
+        if (overallScore == 0){
+            adoptionRecord.setState(PROBATION_EXTEND);
+        }else if (overallScore == 1){
+            adoptionRecord.setState(SUCCESSFUL);
+        }else if (overallScore == -1){
+            adoptionRecord.setState(UNSUCCESSFUL);
+        }
+        adoptionRecordRepository.save(adoptionRecord);
+
+        List<User> volunteers = userService.findAllByState(VOLUNTEER);
+        String notificationAction = getNotificationAction(overallScore);
+        for (User volunteer : volunteers) {//отправляем результаты волонтерам
+            notificationSender.sendNotificationToVolunteerAboutFinalCheck(notificationAction, volunteer.getChatId(), userChatId);
+        }
+        notificationSender.sendNotificationToAdopterAboutFinalCheck(notificationAction, userChatId);//результаты пользователю
+    }
+    /**
+     * Метод оценивает результаты обработки отчетов, чтобы сформировать соответствующее сообщение
+     */
+    @NotNull
+    private static String getNotificationAction(int overallScore) {
+        String notificationAction;
+        if (overallScore == -1) {
+            notificationAction = "problem"; //общий бал меньше допустимого, животное передавать нельзя
+        } else if (overallScore == 0) {
+            notificationAction = "try your best"; //средний успех, можно продлить испытательный период
+        } else if (overallScore == 1) {
+            notificationAction = "good job";//все хорошо, можно передать животное
+        } else {
+            notificationAction = "calculations error";//в процессе подсчета получены неожиданные результаты
+        }
+        return notificationAction;
     }
 
 }

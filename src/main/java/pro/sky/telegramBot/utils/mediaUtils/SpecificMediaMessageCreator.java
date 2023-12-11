@@ -395,6 +395,54 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    public SendPhoto createUnsuccessfulNotificationToVolunteerPhotoMessage(Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_FAILED(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToVolunteerAboutExtension(Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_EXTENSION(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createSuccessfulNotificationToVolunteer(Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_SUCCESSFUL(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createUnsuccessfulNotificationToAdopterPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_FAILED());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAboutExtension(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_EXTENSION());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createSuccessfulNotificationToAdopter(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_SUCCESSFUL());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 //    .......  медиа-сообщения для других целей......
 
 
