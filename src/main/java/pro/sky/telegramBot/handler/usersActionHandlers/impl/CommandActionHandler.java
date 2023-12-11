@@ -87,7 +87,7 @@ public class CommandActionHandler implements ActionHandler {
             log.info("Received /details command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getDescription() != null) {
-                sendTextMessageFromInfoMenu(chatId, user.getShelter().getDescription());
+                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getDescription());
             } else {
                 messageSender.sendInformationNotFoundMessage(chatId);
             }
@@ -98,7 +98,7 @@ public class CommandActionHandler implements ActionHandler {
             log.info("Received /address command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getAddress() != null) {
-                sendTextMessageFromInfoMenu(chatId, user.getShelter().getAddress());
+                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getAddress());
             } else {
                 messageSender.sendInformationNotFoundMessage(chatId);
             }
@@ -109,7 +109,7 @@ public class CommandActionHandler implements ActionHandler {
             log.info("Received /schedule command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSchedule() != null) {
-                sendTextMessageFromInfoMenu(chatId, user.getShelter().getSchedule());
+                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getSchedule());
             } else {
                 messageSender.sendInformationNotFoundMessage(chatId);
             }
@@ -133,19 +133,18 @@ public class CommandActionHandler implements ActionHandler {
             log.info("Received /sec_phone command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSecurityPhone() != null) {
-                sendTextMessageFromInfoMenu(chatId, user.getShelter().getSecurityPhone());
+                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getSecurityPhone());
             } else {
                 messageSender.sendInformationNotFoundMessage(chatId);
             }
         });
 
-//         Прочитать правила техники безоп
-//         асности приюта
+//         Прочитать правила техники безопасности приюта
         commandMap.put("/safety", (firstName, lastName, chatId) -> {
             log.info("Received /safety command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSafetyRules() != null) {
-                sendTextMessageFromInfoMenu(chatId, user.getShelter().getSafetyRules());
+                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getSafetyRules());
             } else {
                 messageSender.sendInformationNotFoundMessage(chatId);
             }
@@ -164,10 +163,10 @@ public class CommandActionHandler implements ActionHandler {
                     messageSender.menuInformationHandler(volunteerId, message);
                 } else {
                     log.error("There are no volunteers in database");
-                    sendTextMessageFromInfoMenu(chatId, "К сожалению на данный момент у нас нет свободных волонтеров");
+                    messageSender.sendTextMessageFromInfoMenu(chatId, "К сожалению на данный момент у нас нет свободных волонтеров");
                 }
             }, () -> {
-                sendTextMessageFromInfoMenu(chatId, "К сожалению вы не предоставили свой номер телефона." +
+                messageSender.sendTextMessageFromInfoMenu(chatId, "К сожалению вы не предоставили свой номер телефона." +
                         " Добавьте номер телефона в таком формате:\n/phone ##(###)###-##-##");
             });
         });
@@ -190,13 +189,6 @@ public class CommandActionHandler implements ActionHandler {
         }
     }
 
-    private void sendTextMessageFromInfoMenu(Long chatId, String msg) {
-        SendMessage message;
-        message = new SendMessage(chatId, msg);
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        messageSender.menuInformationHandler(chatId, message);
-    }
-
     /**
      * Метод ищет, есть ли в {@link #commandMap} кнопка по ключу.
      * Если кнопка найдена, совершается логика, лежащая по значению этого ключа.
@@ -212,7 +204,7 @@ public class CommandActionHandler implements ActionHandler {
         if (command.startsWith("/phone")) {
             String phone = command.split(" ")[1];
             userService.addPhoneNumberToPersonInfo(firstName, lastName, chatId, phone);
-            sendTextMessageFromInfoMenu(chatId, "Ваш номер телефона успешно добавлен");
+            messageSender.sendTextMessageFromInfoMenu(chatId, "Ваш номер телефона успешно добавлен");
             return;
         }
         if (command.matches("^/\\d+_((DOG)|(CAT))$")) {

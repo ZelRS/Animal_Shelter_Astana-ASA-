@@ -473,4 +473,11 @@ public class MessageSender implements BlockedUserHandler {
         }
     }
 
+
+    public void sendTextMessageFromInfoMenu(Long chatId, String msg) {
+        SendMessage message;
+        message = new SendMessage(chatId, msg);
+        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        menuInformationHandler(chatId, message);
+    }
 }
