@@ -35,4 +35,6 @@ public interface AdoptionRecordService {
     void decreaseTrialPeriodDaysAndCheckEvents();
 
     AdoptionRecord extendAdoptionRecord(Long adoptionRecordId);
+
+    AdoptionRecord terminateAdoptionRecord(Long adoptionRecordId);
 }
