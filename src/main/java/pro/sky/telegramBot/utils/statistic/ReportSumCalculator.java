@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.utils;
+package pro.sky.telegramBot.utils.statistic;
 
 import org.springframework.stereotype.Component;
 

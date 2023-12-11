@@ -12,4 +12,5 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     Report findByAdoptionRecordIdAndReportDateTime(Long id, LocalDate date);
 
     Report findByReportDateTime(LocalDate date);
+
 }

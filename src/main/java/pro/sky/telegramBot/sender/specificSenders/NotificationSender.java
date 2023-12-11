@@ -93,4 +93,122 @@ public class NotificationSender {
             log.info("Failed to send a message to the adopter {} than he should send a photo for the report", chatId, e);
         }
     }
+
+    public void sendNotificationToVolunteerAboutCheck(String notificationAction, Long chatId, Long userChatId) {
+        log.info("Sending a message to the Volunteer {} about adopter's statistic", chatId);
+        try {
+            SendPhoto sendPhoto;
+            switch (notificationAction) {
+                case "problem":
+                    sendPhoto = specificMediaMessageCreator
+                            .createNotificationToVolunteerAboutProblemPhotoMessage(chatId, userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "try your best":
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToVolunteerAboutTryYourBest(chatId, userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "good job":
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToVolunteerAboutGoodJob(chatId, userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                default:
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToVolunteerAboutCalculationsError(chatId, userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+            }
+        } catch (Exception e) {
+            log.info("Failed to send a message to the Volunteer {} about adopter's statistic", chatId, e);
+        }
+    }
+
+    public void sendNotificationToAdopterAboutCheck(String notificationAction, Long userChatId) {
+        log.info("Sending a message to the user {} about his statistic", userChatId);
+        try {
+            SendPhoto sendPhoto;
+            switch (notificationAction) {
+                case "problem":
+                    sendPhoto = specificMediaMessageCreator
+                            .createNotificationToAdopterAboutProblemPhotoMessage(userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "try your best":
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToAdopterAboutTryYourBest(userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "good job":
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToAdopterAboutGoodJob(userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            log.info("Failed to send a message to the user {} about his statistic", userChatId, e);
+        }
+    }
+
+    public void sendNotificationToVolunteerAboutFinalCheck(String notificationAction, Long chatId, Long userChatId) {
+        log.info("Sending a message to the Volunteer {} about adopter's statistic", chatId);
+        try {
+            SendPhoto sendPhoto;
+            switch (notificationAction) {
+                case "problem":
+                    sendPhoto = specificMediaMessageCreator
+                            .createUnsuccessfulNotificationToVolunteerPhotoMessage(chatId, userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "try your best":
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToVolunteerAboutExtension(chatId, userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "good job":
+                    sendPhoto = specificMediaMessageCreator.
+                            createSuccessfulNotificationToVolunteer(chatId, userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                default:
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToVolunteerAboutCalculationsError(chatId, userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+            }
+        } catch (Exception e) {
+            log.info("Failed to send a message to the Volunteer {} about adopter's statistic", chatId, e);
+        }
+    }
+
+    public void sendNotificationToAdopterAboutFinalCheck(String notificationAction, Long userChatId) {
+        log.info("Sending a message to the user {} about his statistic", userChatId);
+        try {
+            SendPhoto sendPhoto;
+            switch (notificationAction) {
+                case "problem":
+                    sendPhoto = specificMediaMessageCreator
+                            .createUnsuccessfulNotificationToAdopterPhotoMessage(userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "try your best":
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToAdopterAboutExtension(userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "good job":
+                    sendPhoto = specificMediaMessageCreator.
+                            createSuccessfulNotificationToAdopter(userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            log.info("Failed to send a message to the user {} about his statistic", userChatId, e);
+        }
+    }
 }
