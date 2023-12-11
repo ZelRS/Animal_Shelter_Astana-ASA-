@@ -59,6 +59,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         newAdoptionRecord.setState(TrialPeriodState.PROBATION);
         newAdoptionRecord.setAdoptionDate(date);
         newAdoptionRecord.setTrialPeriodDays(trialPeriodDays);
+        newAdoptionRecord.setTrialPeriodEnd(date.plusDays(trialPeriodDays));
 
         AdoptionRecord savedAdoptionRecord = adoptionRecordRepository.save(newAdoptionRecord);
 
