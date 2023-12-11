@@ -25,8 +25,8 @@ import java.util.NoSuchElementException;
 
 import static pro.sky.telegramBot.enums.PetType.NOPET;
 import static pro.sky.telegramBot.enums.TrialPeriodState.*;
+import static pro.sky.telegramBot.enums.UserState.*;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
-import static pro.sky.telegramBot.enums.UserState.VOLUNTEER;
 
 @Service
 @RequiredArgsConstructor
@@ -108,6 +108,21 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         userService.update(user);
         pet.setOwner(user);
         pet.setAdoptionRecord(savedAdoptionRecord);
+        petService.update(pet);
+
+        return savedAdoptionRecord;
+    }
+
+    @Override
+    public AdoptionRecord terminateAdoptionRecord(Long adoptionRecordId) {
+        AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(adoptionRecordId).orElseThrow();
+        adoptionRecord.setState(CLOSED);
+        User user = adoptionRecord.getUser();
+        Pet pet = adoptionRecord.getPet();
+        AdoptionRecord savedAdoptionRecord = adoptionRecordRepository.save(adoptionRecord);
+        user.setState(BLOCKED);
+        userService.update(user);
+        pet.setOwner(null);
         petService.update(pet);
 
         return savedAdoptionRecord;
