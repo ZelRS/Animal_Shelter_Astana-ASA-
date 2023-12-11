@@ -29,7 +29,11 @@ public enum MessageImage {
     SAVING_USER_PERSONAL_DOCS_SCREENS_MSG_IMG("/photos/saving_user_personal_docs_screens_msg.jpg"),
     NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG("/photos/saving_user_personal_docs_screens_msg.jpg"),
     REMINDER_FOR_ADOPTER_ABOUT_REPORTING_IMG("/photos/reminder_for_adopter_about_reporting.jpg"),
-    MISSING_PET_IMG("/photos/missing_pet.jpg");
+    MISSING_PET_IMG("/photos/missing_pet.jpg"),
+    NOTIFICATION_PROBLEM_IMG("/photos/notification_problem.jpg"),
+    NOTIFICATION_TRY_YOUR_BEST_IMG("/photos/notification_try_your_best.jpg"),
+    NOTIFICATION_GOOD_JOB_IMG("/photos/notification_good_job.jpg"),
+    NOTIFICATION_CALCULATION_ERROR_IMG("/photos/notification_calculation_error.jpg");
 
 
 

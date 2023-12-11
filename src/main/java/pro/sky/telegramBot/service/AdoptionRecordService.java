@@ -31,4 +31,6 @@ public interface AdoptionRecordService {
     void informAdopterAboutNeedToSendReport();
 
     void informAdopterAboutNeedToSendPhotoForReport();
+
+    void decreaseTrialPeriodDaysAndCheckEvents();
 }
