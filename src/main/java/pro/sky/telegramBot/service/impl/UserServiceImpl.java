@@ -13,6 +13,10 @@ import pro.sky.telegramBot.service.UserService;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+import static pro.sky.telegramBot.enums.UserState.VOLUNTEER;
 
 /**
  * сервис для обработки запросов к БД пользователей и информации о пользователях
@@ -86,5 +90,29 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllByState(userState);
     }
 
+    /**
+     * метод возвращает chatID случайного волонтера
+     */
+    public Long getRandomVolunteerId() {
+        Random random = new Random();
+        List<User> volunteersList = findAllByState(VOLUNTEER);
+        if (!volunteersList.isEmpty()) {
+            List<Long> volunteersIdList = volunteersList.stream()
+                    .map(User::getChatId)
+                    .collect(Collectors.toList());
+            return volunteersIdList.get(random.nextInt(volunteersList.size()));
+        } else {
+            return 0L;
+        }
+    }
 
+    /**
+     * Метод добавляет номер телефона в таблицу UserInfo
+     */
+    public void addPhoneNumberToPersonInfo(String firstName, String lastName, Long chatId, String phone) {
+        User user = findUserByChatId(chatId);
+        UserInfo userInfo = setUserPhone(new UserInfo(firstName, lastName, phone));
+        user.setUserInfo(userInfo);
+        update(user);
+    }
 }

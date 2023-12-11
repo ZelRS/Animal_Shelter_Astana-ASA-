@@ -44,7 +44,7 @@ public class User {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "shelter_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Shelter shelter;
