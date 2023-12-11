@@ -101,17 +101,17 @@ public class NotificationSender {
             switch (notificationAction) {
                 case "problem":
                     sendPhoto = specificMediaMessageCreator
-                            .createNotificationToAdopterAndVolunteerAboutProblemPhotoMessage(chatId, userChatId);
+                            .createNotificationToVolunteerAboutProblemPhotoMessage(chatId, userChatId);
                     messageExecutor.executePhotoMessage(sendPhoto);
                     break;
                 case "try your best":
                     sendPhoto = specificMediaMessageCreator.
-                            createNotificationToAdopterAndVolunteerAboutTryYourBest(chatId, userChatId);
+                            createNotificationToVolunteerAboutTryYourBest(chatId, userChatId);
                     messageExecutor.executePhotoMessage(sendPhoto);
                     break;
                 case "good job":
                     sendPhoto = specificMediaMessageCreator.
-                            createNotificationToAdopterAndVolunteerAboutGoodJob(chatId, userChatId);
+                            createNotificationToVolunteerAboutGoodJob(chatId, userChatId);
                     messageExecutor.executePhotoMessage(sendPhoto);
                     break;
                 default:
@@ -126,5 +126,30 @@ public class NotificationSender {
     }
 
     public void sendNotificationToAdopterAboutCheck(String notificationAction, Long userChatId) {
+        log.info("Sending a message to the user {} about his statistic", userChatId);
+        try {
+            SendPhoto sendPhoto;
+            switch (notificationAction) {
+                case "problem":
+                    sendPhoto = specificMediaMessageCreator
+                            .createNotificationToAdopterAboutProblemPhotoMessage(userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "try your best":
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToAdopterAboutTryYourBest(userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                case "good job":
+                    sendPhoto = specificMediaMessageCreator.
+                            createNotificationToAdopterAboutGoodJob(userChatId);
+                    messageExecutor.executePhotoMessage(sendPhoto);
+                    break;
+                default:
+                    break;
+            }
+        } catch (Exception e) {
+            log.info("Failed to send a message to the user {} about his statistic", userChatId, e);
+        }
     }
 }

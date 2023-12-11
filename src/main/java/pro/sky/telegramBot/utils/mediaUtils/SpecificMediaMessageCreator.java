@@ -1,7 +1,6 @@
 package pro.sky.telegramBot.utils.mediaUtils;
 
 import com.pengrad.telegrambot.request.SendDocument;
-import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -336,7 +335,7 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    public SendPhoto createNotificationToAdopterAndVolunteerAboutProblemPhotoMessage(
+    public SendPhoto createNotificationToVolunteerAboutProblemPhotoMessage(
             Long chatId, Long userChatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -345,7 +344,7 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    public SendPhoto createNotificationToAdopterAndVolunteerAboutTryYourBest(
+    public SendPhoto createNotificationToVolunteerAboutTryYourBest(
             Long chatId, Long userChatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -354,7 +353,7 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    public SendPhoto createNotificationToAdopterAndVolunteerAboutGoodJob(
+    public SendPhoto createNotificationToVolunteerAboutGoodJob(
             Long chatId, Long userChatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -369,6 +368,30 @@ public class SpecificMediaMessageCreator {
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_CALCULATION_ERROR_IMG.getPath());
         params.setCaption(String.format(config.getMSG_NOTIFICATION_CALCULATION_ERROR(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAboutProblemPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_ABOUT_PROBLEM());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAboutTryYourBest(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_ABOUT_TRY_YOUR_BEST());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAboutGoodJob(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_ABOUT_GOOD_JOB());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
