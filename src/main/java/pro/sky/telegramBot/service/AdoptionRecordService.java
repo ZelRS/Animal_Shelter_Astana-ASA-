@@ -16,7 +16,7 @@ import java.util.List;
 public interface AdoptionRecordService {
     Report getCurrentReport(Long id, LocalDate date);
 
-    AdoptionRecord createNewAdoptionRecord(Long userId, Integer trialPeriodDays, Long petId);
+    AdoptionRecord createNewAdoptionRecord(Long userId, Long petId);
 
     void addNewReportToAdoptionRecord(Report newReport, Long chatId);
 
@@ -33,4 +33,6 @@ public interface AdoptionRecordService {
     void informAdopterAboutNeedToSendPhotoForReport();
 
     void decreaseTrialPeriodDaysAndCheckEvents();
+
+    AdoptionRecord extendAdoptionRecord(Long adoptionRecordId);
 }
