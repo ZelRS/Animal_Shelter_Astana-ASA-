@@ -472,6 +472,12 @@ public class MessageSender implements BlockedUserHandler {
             log.info("Failed to send a no adoption record message to {}", chatId, e);
         }
     }
+    public void sendTextMessageFromInfoMenu(Long chatId, String msg) {
+        SendMessage message;
+        message = new SendMessage(chatId, msg);
+        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        menuInformationHandler(chatId, message);
+    }
 
 
     public void sendTextMessageFromInfoMenu(Long chatId, String msg) {
