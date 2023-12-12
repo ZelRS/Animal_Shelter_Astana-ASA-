@@ -33,7 +33,7 @@ public class AdoptionRecordController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newAdoptionRecord);
     }
     @PutMapping("/terminate/{id}")
-    @Operation(summary = "Продлить запись об усыновлении")
+    @Operation(summary = "Закрыть запись об усыновлении")
     public ResponseEntity<AdoptionRecord>  terminateAdoptionRecord(
             @RequestParam Long adoptionRecordId) {
         AdoptionRecord newAdoptionRecord = adoptionRecordService.terminateAdoptionRecord(adoptionRecordId);

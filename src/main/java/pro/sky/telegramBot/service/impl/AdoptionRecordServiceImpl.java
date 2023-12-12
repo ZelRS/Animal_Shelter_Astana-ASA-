@@ -84,14 +84,15 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             log.error("No adoption record can be extended");
             throw new NoSuchElementException("No adoption record can be extended");
         }
-        adoptionRecord.setState(CLOSED);
-        adoptionRecordRepository.save(adoptionRecord);
-        AdoptionRecord extendetAdoptionRecord = new AdoptionRecord();
 
         User user = adoptionRecord.getUser();
+        log.info("Get User {}", user.getId());
         Pet pet = adoptionRecord.getPet();
+        log.info("Get Pet {}", user.getId());
         LocalDate date = LocalDate.now();
         int trialPeriodDays = 14;
+
+        AdoptionRecord extendetAdoptionRecord = new AdoptionRecord();
 
         extendetAdoptionRecord.setUser(user);
         extendetAdoptionRecord.setPet(pet);
@@ -102,13 +103,12 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
 
         AdoptionRecord savedAdoptionRecord = adoptionRecordRepository.save(extendetAdoptionRecord);
 
-        user.setState(PROBATION);
         user.setAdoptionRecord(savedAdoptionRecord);
-        user.setPet(pet);
         userService.update(user);
-        pet.setOwner(user);
         pet.setAdoptionRecord(savedAdoptionRecord);
         petService.update(pet);
+        adoptionRecord.setState(CLOSED);
+        adoptionRecordRepository.save(adoptionRecord);
 
         return savedAdoptionRecord;
     }
@@ -116,16 +116,17 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     @Override
     public AdoptionRecord terminateAdoptionRecord(Long adoptionRecordId) {
         AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(adoptionRecordId).orElseThrow();
-        adoptionRecord.setState(CLOSED);
         User user = adoptionRecord.getUser();
         Pet pet = adoptionRecord.getPet();
-        AdoptionRecord savedAdoptionRecord = adoptionRecordRepository.save(adoptionRecord);
+        adoptionRecordRepository.save(adoptionRecord);
+        adoptionRecord.setState(CLOSED);
         user.setState(BLOCKED);
+        user.setPet(null);
         userService.update(user);
         pet.setOwner(null);
         petService.update(pet);
 
-        return savedAdoptionRecord;
+        return adoptionRecord;
     }
 
     @Override
