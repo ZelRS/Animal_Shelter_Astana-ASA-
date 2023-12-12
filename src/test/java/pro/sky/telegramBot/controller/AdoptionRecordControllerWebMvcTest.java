@@ -27,7 +27,6 @@ import pro.sky.telegramBot.utils.statistic.ReportDataConverter;
 import pro.sky.telegramBot.utils.statistic.ReportSumCalculator;
 import pro.sky.telegramBot.utils.statistic.StatisticPreparer;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
