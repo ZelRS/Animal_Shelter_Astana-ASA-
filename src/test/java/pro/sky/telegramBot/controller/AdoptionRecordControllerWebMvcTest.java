@@ -38,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static pro.sky.telegramBot.enums.TrialPeriodState.*;
 import static pro.sky.telegramBot.enums.UserState.BLOCKED;
+import static pro.sky.telegramBot.enums.UserState.UNTRUSTED;
 
 @WebMvcTest(AdoptionRecordController.class)
 class AdoptionRecordControllerWebMvcTest {
@@ -231,7 +232,7 @@ class AdoptionRecordControllerWebMvcTest {
 
         // Проверяем изменения в объектах
         assertThat(adoptionRecord.getState()).isEqualTo(CLOSED);
-        assertThat(user.getState()).isEqualTo(BLOCKED);
+        assertThat(user.getState()).isEqualTo(UNTRUSTED);
         assertThat(user.getPet()).isNull();
         assertThat(pet.getOwner()).isNull();
     }

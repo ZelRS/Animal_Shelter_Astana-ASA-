@@ -67,41 +67,49 @@ public class ReportServiceImpl implements ReportService {
         Report newReport = null;
         if (user != null && user.getAdoptionRecord() != null) {
             AdoptionRecord adoptionRecord = user.getAdoptionRecord();
-            newReport = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
-            if (newReport == null) {
-                newReport = new Report();
-                newReport.setReportDateTime(date);
-                newReport.setAdoptionRecord(adoptionRecord);
+            LocalDate startDate = adoptionRecord.getAdoptionDate();
+            LocalDate endDate = LocalDate.now();
+            if (reportDataConverter.isDateWithinRange(date, startDate, endDate)) {
+                newReport = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
+                if (newReport == null) {
+                    newReport = new Report();
+                    newReport.setReportDateTime(date);
+                    newReport.setAdoptionRecord(adoptionRecord);
+                }
+            } else {
+                user.setState(PROBATION);
+                userService.update(user);
+                return false;
             }
             int a6Int = 0;
             String valueA6 = values.get(4);
             if (valueA6 != null) {
                 a6Int = reportDataConverter.convertToInteger(valueA6);
-                newReport.setBehaviorChange(a6Int);
+                newReport.setDietAppetite(a6Int);
             }
             int a8Int = 0;
             String valueA8 = values.get(2);
             if (valueA8 != null) {
                 a8Int = reportDataConverter.convertToInteger(valueA8);
-                newReport.setBehaviorChange(a8Int);
+                newReport.setDietPreferences(a8Int);
             }
             int a10Int = 0;
             String valueA10 = values.get(1);
             if (valueA10 != null) {
                 a10Int = reportDataConverter.convertToInteger(valueA10);
-                newReport.setDietPreferences(a10Int);
+                newReport.setDietAllergies(a10Int);
             }
             int a12Int = 0;
             String valueA12 = values.get(0);
             if (valueA12 != null) {
                 a12Int = reportDataConverter.convertToInteger(valueA12);
-                newReport.setDietAppetite(a12Int);
+                newReport.setHealthStatus(a12Int);
             }
             int a14Int = 0;
             String valueA14 = values.get(3);
             if (valueA14 != null) {
                 a14Int = reportDataConverter.convertToInteger(valueA14);
-                newReport.setHealthStatus(a14Int);
+                newReport.setBehaviorChange(a14Int);
             }
             reportRepository.save(newReport);
             Long reportId = newReport.getId();
