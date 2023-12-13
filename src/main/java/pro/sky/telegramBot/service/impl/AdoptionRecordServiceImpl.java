@@ -130,7 +130,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         Pet pet = adoptionRecord.getPet();
         adoptionRecord.setState(CLOSED);
         adoptionRecordRepository.save(adoptionRecord);
-        user.setState(BLOCKED);
+        user.setState(UNTRUSTED);
         user.setPet(null);
         userService.update(user);
         pet.setOwner(null);
