@@ -440,9 +440,11 @@ public class MessageSender implements BlockedUserHandler {
      * метод формирует и отправляет сообщение пользователю,<br>
      * когда он нажал на кнопку "Позвать Волонтёра"
      */
-    public void sendCallVolunteerPhotoMessage(Long chatId) {
+    public void sendCallVolunteerPhotoMessage(Long chatId, String username) {
         log.info("Sending a message to the user \"call a volunteer\" {}", chatId);
         try {
+            // тут дописать логику высылки уведомления волонтеру, в котором будет отражаться ссылка на вызывающего пользователя
+            
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
             messageExecutor.executePhotoMessage(sendPhoto);
