@@ -14,7 +14,8 @@ public enum UserState {
     PROBATION_PHOTO("отправление фото"),
     BLOCKED("в черном списке"),
     VOLUNTEER("волонтер"),
-    INVITED("приглашен в приют");
+    INVITED("приглашен в приют"),
+    UNTRUSTED("не надежный");
 
     private final String state;
 
