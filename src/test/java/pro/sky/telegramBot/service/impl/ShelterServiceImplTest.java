@@ -11,6 +11,7 @@ import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.repository.ShelterRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +41,7 @@ public class ShelterServiceImplTest {
     }
 
     @Test
-    public void shouldCreateShelterSuccessfully() {
+    public void should_Create_Shelter_Successfully_Test() {
         when(shelterRepository.save(any(Shelter.class))).thenReturn(testShelter);
 
         Shelter savedShelter = shelterService.create(testShelter);
@@ -51,7 +52,7 @@ public class ShelterServiceImplTest {
     }
 
     @Test
-    public void shouldUpdateShelterSuccessfully() {
+    public void should_Update_Shelter_Successfully_Test() {
         when(shelterRepository.save(any(Shelter.class))).thenReturn(testShelter);
 
         Shelter updatedShelter = shelterService.update(testShelter);
@@ -62,7 +63,7 @@ public class ShelterServiceImplTest {
     }
 
     @Test
-    public void shouldGetByIdShelterSuccessfully() {
+    public void should_GetById_Shelter_Successfully_Test() {
         when(shelterRepository.findById(testShelterId)).thenReturn(Optional.of(testShelter));
 
         Shelter foundShelter = shelterService.getById(testShelterId);
@@ -73,12 +74,24 @@ public class ShelterServiceImplTest {
     }
 
     @Test
-    public void shouldThrowShelterNotFoundException() {
+    public void should_Throw_Shelter_NotFound_Exception_Test() {
         when(shelterRepository.findById(testShelterId)).thenReturn(Optional.empty());
 
         assertThrows(ShelterNotFoundException.class, () -> shelterService.getById(testShelterId));
 
         verify(shelterRepository).findById(testShelterId);
+    }
+    @Test
+    public void should_Return_A_List_Of_Shelter_Names_By_Type_Test() {
+        when(shelterRepository.findByTypeOrderById(PetType.DOG))
+                .thenReturn(List.of(testShelter));
+
+        List<Shelter> shelters = shelterService.findAllShelterNamesByType(PetType.DOG);
+
+        assertNotNull(shelters);
+        assertEquals(1, shelters.size());
+        assertEquals(testShelter, shelters.get(0));
+        verify(shelterRepository).findByTypeOrderById(PetType.DOG);
     }
 
 

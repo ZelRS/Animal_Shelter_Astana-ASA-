@@ -12,9 +12,12 @@ import pro.sky.telegramBot.repository.AdoptionRecordRepository;
 import pro.sky.telegramBot.service.PetService;
 import pro.sky.telegramBot.service.UserService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static pro.sky.telegramBot.enums.TrialPeriodState.*;
 
 class AdoptionRecordServiceImplTest {
 
@@ -36,7 +39,7 @@ class AdoptionRecordServiceImplTest {
     }
 
     @Test
-    void createNewAdoptionRecordTest() {
+    void create_NewAdoptionRecord_Test() {
         Long userId = 1L;
         Long petId = 1L;
         User mockUser = new User();
@@ -59,5 +62,70 @@ class AdoptionRecordServiceImplTest {
         verify(userService).update(mockUser);
         verify(petService).update(mockPet);
     }
+    @Test
+    void extendAdoptionRecord_whenRecordCanBeExtended() {
+        Long recordId = 1L;
+        AdoptionRecord existingRecord = new AdoptionRecord();
+        existingRecord.setState(PROBATION_EXTEND);
 
+        User mockUser = new User();
+        Pet mockPet = new Pet();
+        existingRecord.setUser(mockUser);
+        existingRecord.setPet(mockPet);
+
+        when(adoptionRecordRepository.findById(recordId)).thenReturn(Optional.of(existingRecord));
+
+        AdoptionRecord extendedRecord = new AdoptionRecord();
+        extendedRecord.setState(PROBATION);
+        when(adoptionRecordRepository.save(any(AdoptionRecord.class))).thenReturn(extendedRecord);
+
+        AdoptionRecord actualRecord = adoptionRecordService.extendAdoptionRecord(recordId);
+
+        assertNotNull(actualRecord);
+        assertEquals(PROBATION, actualRecord.getState());
+        verify(adoptionRecordRepository, times(2)).save(any(AdoptionRecord.class));
+        assertEquals(CLOSED, existingRecord.getState());
+    }
+
+
+    @Test
+    void extendAdoptionRecord_whenRecordCannotBeExtended() {
+        Long recordId = 1L;
+        when(adoptionRecordRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        AdoptionRecord result = adoptionRecordService.extendAdoptionRecord(recordId);
+
+        assertNull(result, "Adoption record not found");
+    }
+
+    @Test
+    void terminateAdoptionRecord_whenRecordExists() {
+        Long recordId = 1L;
+        AdoptionRecord existingRecord = new AdoptionRecord();
+        existingRecord.setState(PROBATION);
+
+        User mockUser = new User();
+        Pet mockPet = new Pet();
+        existingRecord.setUser(mockUser);
+        existingRecord.setPet(mockPet);
+
+        when(adoptionRecordRepository.findById(recordId)).thenReturn(Optional.of(existingRecord));
+        when(adoptionRecordRepository.save(any(AdoptionRecord.class))).thenReturn(existingRecord);
+
+        AdoptionRecord actualRecord = adoptionRecordService.terminateAdoptionRecord(recordId);
+
+        assertNotNull(actualRecord);
+        assertEquals(CLOSED, actualRecord.getState());
+        verify(adoptionRecordRepository).save(existingRecord);
+    }
+
+    @Test
+    void terminateAdoptionRecord_whenRecordDoesNotExist() {
+        Long recordId = 1L;
+        when(adoptionRecordRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        AdoptionRecord result = adoptionRecordService.extendAdoptionRecord(recordId);
+
+        assertNull(result, "Adoption record not found");
+    }
 }

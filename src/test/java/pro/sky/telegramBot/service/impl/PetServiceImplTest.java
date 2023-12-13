@@ -25,7 +25,7 @@ public class PetServiceImplTest {
     private PetServiceImpl petService;
 
     @Test
-    public void createShouldReturnSavedPet() {
+    public void create_Should_Return_SavedPet() {
         Pet expectedPet = new Pet();
         when(petRepository.save(any(Pet.class))).thenReturn(expectedPet);
 
@@ -36,7 +36,7 @@ public class PetServiceImplTest {
     }
 
     @Test
-    public void updateShouldReturnUpdatedPet() {
+    public void update_Should_Return_UpdatedPet() {
         Pet expectedPet = new Pet();
         when(petRepository.save(any(Pet.class))).thenReturn(expectedPet);
 
@@ -47,7 +47,7 @@ public class PetServiceImplTest {
     }
 
     @Test
-    public void getByIdShouldReturnPetIfFound() {
+    public void getById_Should_Return_Pet_IfFound_Test() {
         Pet expectedPet = new Pet();
         Long petId = 1L;
         when(petRepository.findById(petId)).thenReturn(Optional.of(expectedPet));
@@ -59,7 +59,7 @@ public class PetServiceImplTest {
     }
 
     @Test
-    public void getByIdShouldThrowPetNotFoundExceptionIfNotFound() {
+    public void getById_Should_Throw_PetNotFound_Exception_IfNotFound_Test() {
         Long petId = 1L;
         when(petRepository.findById(petId)).thenReturn(Optional.empty());
 
@@ -68,7 +68,7 @@ public class PetServiceImplTest {
     }
 
     @Test
-    public void uploadPhotoShouldSavePetWithPhoto() throws IOException {
+    public void uploadPhoto_Should_SavePet_WithPhoto_Test() throws IOException {
         Long petId = 1L;
         byte[] photoData = new byte[]{1, 2, 3};
         MultipartFile mockMultipartFile = mock(MultipartFile.class);
@@ -86,5 +86,41 @@ public class PetServiceImplTest {
 
         verify(petRepository).save(petArgumentCaptor.capture());
         assertArrayEquals(photoData, petArgumentCaptor.getValue().getData());
+    }
+    @Test
+    public void create_Should_ThrowException_When_PetIsNull_Test() {
+        assertThrows(IllegalArgumentException.class, () -> petService.create(null));
+        verify(petRepository, never()).save(any(Pet.class));
+    }
+
+    @Test
+    public void update_Should_ThrowException_When_PetIsNull_Test() {
+        assertThrows(IllegalArgumentException.class, () -> petService.update(null));
+        verify(petRepository, never()).save(any(Pet.class));
+    }
+
+    @Test
+    public void uploadPhoto_Should_ThrowException_When_FileIsEmpty_Test() {
+        Long petId = 1L;
+        MultipartFile mockMultipartFile = mock(MultipartFile.class);
+        when(mockMultipartFile.isEmpty()).thenReturn(true);
+
+        assertThrows(IllegalArgumentException.class, () -> petService.uploadPhoto(petId, mockMultipartFile));
+
+    }
+
+
+    @Test
+    public void uploadPhoto_Should_ThrowException_When_IdIsNull_Test() {
+        MultipartFile mockMultipartFile = mock(MultipartFile.class);
+
+        assertThrows(IllegalArgumentException.class, () -> petService.uploadPhoto(null, mockMultipartFile));
+        verify(petRepository, never()).findById(anyLong());
+    }
+
+    @Test
+    public void getById_Should_ThrowException_When_IdIsNull_Test() {
+        assertThrows(IllegalArgumentException.class, () -> petService.getById(null));
+        verify(petRepository, never()).findById(anyLong());
     }
 }

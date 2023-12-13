@@ -25,21 +25,25 @@ public class PetServiceImpl implements PetService {
     /**
      * создать и сохранить животное в БД
      */
-    @Override
     public Pet create(Pet pet) {
+        if (pet == null) {
+            throw new IllegalArgumentException("Pet argument cannot be null");
+        }
         return petRepository.save(pet);
     }
+
 
     /**
      * загрузить в БД фото животного
      */
     @Override
     public void uploadPhoto(Long id, MultipartFile multipartFile) throws IOException {
-        log.info("Was invoked method for upload photo to shelter with ID = {}", id);
+        if (multipartFile.isEmpty()) {
+            throw new IllegalArgumentException("The file is empty");
+        }
         Pet pet = getById(id);
         pet.setData(multipartFile.getBytes());
         petRepository.save(pet);
-        log.debug("The avatar was uploaded successfully");
     }
 
     /**
@@ -47,15 +51,23 @@ public class PetServiceImpl implements PetService {
      */
     @Override
     public Pet update(Pet pet) {
+        if (pet == null) {
+            throw new IllegalArgumentException("Pet cannot be null");
+        }
         return petRepository.save(pet);
     }
+
 
     /**
      * получить животное из БД по id
      */
     @Override
     public Pet getById(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID не может быть null");
+        }
         return petRepository.findById(id)
                 .orElseThrow(() -> new PetNotFoundException("Животное не найдено"));
     }
+
 }
