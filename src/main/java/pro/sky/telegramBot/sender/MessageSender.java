@@ -270,7 +270,15 @@ public class MessageSender implements BlockedUserHandler {
 //    после внесению данных о себе, пользователю будет присвоен статус POTENTIAL
     public void sendStartRegistrationMessage(Long chatId) {
         log.info("Sending info_table sample document to {}", chatId);
-        SendMessage message = new SendMessage(chatId, config.getMSG_START_REGISTRATION()).parseMode(HTML);
+        User user = userService.findUserByChatId(chatId);
+        SendMessage message;
+        if (!user.getState().equals(INVITED)) {
+            message = new SendMessage(chatId, config.getMSG_START_REGISTRATION()).parseMode(HTML);
+        } else {
+            message = new SendMessage(chatId, "Вы уже прошли регистрацию в конкретном приюте.\n" +
+                    "Если вы хотите отменить Вашу запись, свяжитесь с волонтером");
+            message.replyMarkup(specificKeyboardCreator.pressTheButtonToCallVolunteer());
+        }
         messageExecutor.executeHTMLMessage(message);
     }
 
