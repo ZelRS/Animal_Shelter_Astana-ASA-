@@ -14,19 +14,15 @@ import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
@@ -48,8 +44,6 @@ public class MessageSender implements BlockedUserHandler {
     private final BotConfig config;
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
-
-    private SendPhoto sendPhoto;
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -237,7 +231,6 @@ public class MessageSender implements BlockedUserHandler {
         log.info("Sending \"Taking Pet\" message to {}", chatId);
         try {
             SendPhoto sendPhoto;
-            User user = userService.findUserByChatId(chatId);
             // происходит проверка статуса пользователя на UNTRUSTED и BLOCKED
             sendPhoto = specificMediaMessageCreator.createTakingPetPhotoMessage(chatId, firstName);
             sendPhoto.replyMarkup(specificKeyboardCreator.takingPetMessageKeyboard());
@@ -395,15 +388,6 @@ public class MessageSender implements BlockedUserHandler {
 
     }
 
-    public void sendInfoForPotentialUserMessage(Long chatId) {
-
-    }
-
-    public void sendInfoForProbationUserMessage(Long chatId) {
-
-
-    }
-
     /**
      * Метод формирует и отправляет сообщение пользователю,<br>
      * когда он заполняет отчет онлайн в боте
@@ -443,7 +427,6 @@ public class MessageSender implements BlockedUserHandler {
         }
     }
 
-
     /**
      * метод формирует и отправляет сообщение пользователю,<br>
      * когда он нажал на кнопку "Позвать Волонтёра"
@@ -457,11 +440,7 @@ public class MessageSender implements BlockedUserHandler {
         } catch (Exception e) {
             log.info("Failed to send \"call a volunteer\" message to {}", chatId, e);
         }
-        //    .........отправка сообщений пользователю на любые другие случаи........
     }
-
-
-
 
     public void sendNoAdoptionRecordMessage(Long chatId) {
         log.info("Sending a no adoption record message to {}", chatId);
@@ -479,11 +458,5 @@ public class MessageSender implements BlockedUserHandler {
         menuInformationHandler(chatId, message);
     }
 
-
-    public void sendTextMessageFromInfoMenu(Long chatId, String msg) {
-        SendMessage message;
-        message = new SendMessage(chatId, msg);
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-        menuInformationHandler(chatId, message);
-    }
+    //    .........отправка сообщений пользователю на любые другие случаи........
 }
