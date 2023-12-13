@@ -44,7 +44,7 @@ public class SpecificMediaMessageCreator {
      * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
      * имеющего статус UNTRUSTED("не надежный")
      */
-    public SendPhoto createSorryWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
+    public SendPhoto createAnswerForUntrustedUserMessage(Long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(SORRY_WELCOME_MSG_IMG.getPath());

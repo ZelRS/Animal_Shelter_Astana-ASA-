@@ -9,10 +9,8 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.specificHandlers.impl.ShelterCommandHandler;
 import pro.sky.telegramBot.handler.specificHandlers.impl.WelcomeMessageHandler;
-import pro.sky.telegramBot.handler.usersActionHandlers.ActionHandler;
-import pro.sky.telegramBot.model.shelter.Shelter;
+import pro.sky.telegramBot.handler.usersActionHandlers.CommandActionHandler;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
@@ -20,13 +18,10 @@ import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static pro.sky.telegramBot.enums.Command.*;
-import static pro.sky.telegramBot.enums.PetType.CAT;
-import static pro.sky.telegramBot.enums.PetType.DOG;
 import static pro.sky.telegramBot.enums.UserState.BLOCKED;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
 
@@ -38,7 +33,7 @@ import static pro.sky.telegramBot.enums.UserState.PROBATION;
 @RequiredArgsConstructor
 @Getter
 @Slf4j  // SLF4J logging
-public class CommandActionHandler implements ActionHandler {
+public class CommandActionHandlerImpl implements CommandActionHandler {
     private final MessageSender messageSender;
     private final WelcomeMessageHandler welcomeMessageHandler;
     private final ShelterService shelterService;

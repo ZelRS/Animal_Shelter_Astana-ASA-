@@ -53,6 +53,7 @@ public class WelcomeMessageHandler {
         stateMessageMap.put(UserState.INVITED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId));
         stateMessageMap.put(UserState.PROBATION, () -> messageSender.sendReportPhotoMessage(chatId));
         stateMessageMap.put(UserState.VOLUNTEER, () -> messageSender.sendVolunteerWelcomePhotoMessage(user.getUserName(), chatId));
+        stateMessageMap.put(UserState.UNTRUSTED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId));
 
         MessageSender defaultMessageSender = () -> {
             log.warn("Unknown user state: {}", user.getState());
