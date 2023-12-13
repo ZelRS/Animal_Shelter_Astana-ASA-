@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.UserService;
 
@@ -25,8 +26,14 @@ public class UserController {
         return ResponseEntity.ok(userService.getById(id));
     }
     @PostMapping
-    @Operation(summary = "добавить пользователя")
+    @Operation(summary = "Добавить пользователя")
     public ResponseEntity<User> create(@RequestBody User user) {
         return ResponseEntity.ok(userService.create(user));
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Изменить статус пользователя")
+    public void setUserState(@PathVariable("id") Long id, @RequestParam UserState state) {
+        userService.setUserState(id, state);
     }
 }

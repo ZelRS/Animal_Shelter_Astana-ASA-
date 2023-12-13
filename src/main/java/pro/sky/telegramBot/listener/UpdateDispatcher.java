@@ -4,92 +4,66 @@ import com.pengrad.telegrambot.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.handler.usersActionHandlers.impl.ButtonActionHandler;
-import pro.sky.telegramBot.handler.usersActionHandlers.impl.CommandActionHandler;
-import pro.sky.telegramBot.handler.usersActionHandlers.impl.DocumentActionHandler;
-import pro.sky.telegramBot.handler.usersActionHandlers.impl.PhotoActionHandler;
+import pro.sky.telegramBot.handler.usersActionHandlers.impl.*;
 
-import java.io.InputStream;
-
-/**
- * диспетчер принимает апдейты от слушателя и, проверяя на null, достает необходимые данные
- */
 @Service
 @RequiredArgsConstructor
-@Slf4j  // SLF4J logging
+@Slf4j
 public class UpdateDispatcher {
-    private final CommandActionHandler commandActionHandler;
-    private final ButtonActionHandler buttonActionHandler;
+    private final CommandActionHandlerImpl commandActionHandler;
+    private final ButtonActionHandlerImpl buttonActionHandler;
     private final DocumentActionHandler documentActionHandler;
     private final PhotoActionHandler photoActionHandler;
 
-    /**
-     * главный метод диспетчера, организующий проверку на null данных вытянутых из команды пользователя
-     */
     public void dispatch(Update update) {
-        if (update.message() != null && update.message().document() != null) {
-            pullDataFromDocument(update.message());
-        }else if (update.message() != null && update.message().photo() != null) {
-            pullDataFromPhoto(update.message());
-        } else if (update.message() != null) {
-            pullDataFromMessageCommand(update.message());
-        } else if (update.callbackQuery() != null) {
-            pullDataFromButtonCommand(update.callbackQuery());
+        if (update == null) return;
 
+        Message message = update.message();
+        CallbackQuery callbackQuery = update.callbackQuery();
+
+        // Вызываем соответствующий обработчик в зависимости от контента апдейта.
+        if (message != null) {
+            handleIncomingMessage(message);
+        } else if (callbackQuery != null) {
+            handleCallbackQuery(callbackQuery);
         }
     }
 
-    private void pullDataFromPhoto(Message message) {
-        log.info("Was invoked method pullDataFromPhoto");
-        PhotoSize[] photo = message.photo();
-        long chatId = message.chat().id();
-        if (photo != null) {
-            photoActionHandler.handle(photo, chatId);
+    private void handleIncomingMessage(Message message) {
+        Long chatId = message.chat().id();
+        if (message.document() != null) {
+            log.info("Invoking document handler for chatId: {}", chatId);
+            documentActionHandler.handle(message.document(), chatId);
+        } else if (message.photo() != null) {
+            log.info("Invoking photo handler for chatId: {}", chatId);
+            photoActionHandler.handle(message.photo(), chatId);
+        } else {
+            log.info("Invoking message command handler for chatId: {}", chatId);
+            handleMessageCommand(message);
         }
     }
 
-    /**
-     * метод достает из апдейта необходимые данные для формирования ответа<br>
-     * при получении текстовой команды от пользователя.<br>
-     * Далее данные отправляются в обработчик команд {@link #commandActionHandler}
-     */
-    private void pullDataFromMessageCommand(Message message) {
-        log.info("Was invoked method pullDataFromMessageCommand");
+    private void handleMessageCommand(Message message) {
         String messageText = message.text();
-        long chatId = message.chat().id();
-        String firstName = message.chat().firstName();
-        String lastName = message.chat().lastName();
         if (messageText != null) {
-            commandActionHandler.handle(messageText, firstName, lastName, chatId);
+            Chat chat = message.chat();
+            commandActionHandler.handle(messageText, chat.firstName(), chat.lastName(), chat.id());
         }
     }
 
-    /**
-     * метод достает из апдейта необходимые данные для формирования ответа<br>
-     * при нажатии на кнопку пользователем.<br>
-     * Далее данные отправляются в обработчик кнопок<br>
-     * {@link #buttonActionHandler}
-     */
-    private void pullDataFromButtonCommand(CallbackQuery callbackQuery) {
-        log.info("Was invoked method pullDataFromButtonCommand");
+    private void handleCallbackQuery(CallbackQuery callbackQuery) {
         String callbackData = callbackQuery.data();
-        long chatId = callbackQuery.message().chat().id();
-        String firstName = callbackQuery.from().firstName();
-        String lastName = callbackQuery.from().lastName();
-        buttonActionHandler.handle(callbackData, firstName, lastName, chatId);
-    }
-    /**
-     * Метод достает из апдейта необходимые данные для формирования ответа<br>
-     * при получении документа от пользователя.<br>
-     * Далее данные отправляются в обработчик документов {@link #documentActionHandler}
-     */
-    private void pullDataFromDocument(Message message) {
-        log.info("Was invoked method pullDataFromDocument");
-        Document document = message.document();
-        long chatId = message.chat().id();
-        if (document != null) {
-            documentActionHandler.handle(document, chatId);
+        Message message = callbackQuery.message();
+
+        if (message != null) {
+            log.info("Invoking button handler for chatId: {}", message.chat().id());
+            buttonActionHandler.handle(
+                    callbackData,
+                    callbackQuery.from().firstName(),
+                    callbackQuery.from().lastName(),
+                    message.chat().id(),
+                    message.chat().username()
+            );
         }
     }
-
 }

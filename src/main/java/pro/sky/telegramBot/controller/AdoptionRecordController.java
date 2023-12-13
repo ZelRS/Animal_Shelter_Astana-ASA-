@@ -27,16 +27,17 @@ public class AdoptionRecordController {
     }
     @PutMapping("/{id}")
     @Operation(summary = "Продлить запись об усыновлении")
-    public ResponseEntity<AdoptionRecord> extendAdoptionRecord(
-            @RequestParam Long adoptionRecordId) {
+    public ResponseEntity<AdoptionRecord> extendAdoptionRecord(@PathVariable("id") Long adoptionRecordId) {
         AdoptionRecord newAdoptionRecord = adoptionRecordService.extendAdoptionRecord(adoptionRecordId);
         return ResponseEntity.status(HttpStatus.CREATED).body(newAdoptionRecord);
     }
+
     @PutMapping("/terminate/{id}")
-    @Operation(summary = "Продлить запись об усыновлении")
-    public ResponseEntity<AdoptionRecord>  terminateAdoptionRecord(
-            @RequestParam Long adoptionRecordId) {
-        AdoptionRecord newAdoptionRecord = adoptionRecordService.terminateAdoptionRecord(adoptionRecordId);
-        return ResponseEntity.status(HttpStatus.OK).body(newAdoptionRecord);
+    public ResponseEntity<?> terminateAdoptionRecord(@PathVariable("id") Long id) {
+        AdoptionRecord adoptionRecord = adoptionRecordService.terminateAdoptionRecord(id);
+        if (adoptionRecord == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(adoptionRecord);
     }
 }

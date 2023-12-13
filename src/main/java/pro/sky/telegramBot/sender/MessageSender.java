@@ -14,19 +14,15 @@ import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
@@ -48,8 +44,6 @@ public class MessageSender implements BlockedUserHandler {
     private final BotConfig config;
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
-
-    private SendPhoto sendPhoto;
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -237,12 +231,12 @@ public class MessageSender implements BlockedUserHandler {
         log.info("Sending \"Taking Pet\" message to {}", chatId);
         try {
             SendPhoto sendPhoto;
-            User user = userService.findUserByChatId(chatId);
-            // происходит проверка статуса пользователя на UNTRUSTED и BLOCKED
-            sendPhoto = specificMediaMessageCreator.createTakingPetPhotoMessage(chatId, firstName);
-            sendPhoto.replyMarkup(specificKeyboardCreator.takingPetMessageKeyboard());
-            // выполняется отправление сообщения с фото
-            messageExecutor.executePhotoMessage(sendPhoto);
+            // происходит проверка статуса пользователя на UNTRUSTED
+            if (!untrustedUserCheck(chatId, firstName)) {
+                sendPhoto = specificMediaMessageCreator.createTakingPetPhotoMessage(chatId, firstName);
+                sendPhoto.replyMarkup(specificKeyboardCreator.takingPetMessageKeyboard());
+                messageExecutor.executePhotoMessage(sendPhoto);
+            }
         } catch (Exception e) {
             log.error("Failed to send \"Taking Pet\" message to {}", chatId, e);
         }
@@ -277,7 +271,15 @@ public class MessageSender implements BlockedUserHandler {
 //    после внесению данных о себе, пользователю будет присвоен статус POTENTIAL
     public void sendStartRegistrationMessage(Long chatId) {
         log.info("Sending info_table sample document to {}", chatId);
-        SendMessage message = new SendMessage(chatId, config.getMSG_START_REGISTRATION()).parseMode(HTML);
+        User user = userService.findUserByChatId(chatId);
+        SendMessage message;
+        if (!user.getState().equals(INVITED)) {
+            message = new SendMessage(chatId, config.getMSG_START_REGISTRATION()).parseMode(HTML);
+        } else {
+            message = new SendMessage(chatId, "Вы уже прошли регистрацию в конкретном приюте.\n" +
+                    "Если вы хотите отменить Вашу запись, свяжитесь с волонтером");
+            message.replyMarkup(specificKeyboardCreator.pressTheButtonToCallVolunteer());
+        }
         messageExecutor.executeHTMLMessage(message);
     }
 
@@ -395,15 +397,6 @@ public class MessageSender implements BlockedUserHandler {
 
     }
 
-    public void sendInfoForPotentialUserMessage(Long chatId) {
-
-    }
-
-    public void sendInfoForProbationUserMessage(Long chatId) {
-
-
-    }
-
     /**
      * Метод формирует и отправляет сообщение пользователю,<br>
      * когда он заполняет отчет онлайн в боте
@@ -443,25 +436,22 @@ public class MessageSender implements BlockedUserHandler {
         }
     }
 
-
     /**
      * метод формирует и отправляет сообщение пользователю,<br>
      * когда он нажал на кнопку "Позвать Волонтёра"
      */
-    public void sendCallVolunteerPhotoMessage(Long chatId) {
+    public void sendCallVolunteerPhotoMessage(Long chatId, String username) {
         log.info("Sending a message to the user \"call a volunteer\" {}", chatId);
         try {
+            // тут дописать логику высылки уведомления волонтеру, в котором будет отражаться ссылка на вызывающего пользователя
+            
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
             messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.info("Failed to send \"call a volunteer\" message to {}", chatId, e);
         }
-        //    .........отправка сообщений пользователю на любые другие случаи........
     }
-
-
-
 
     public void sendNoAdoptionRecordMessage(Long chatId) {
         log.info("Sending a no adoption record message to {}", chatId);
@@ -472,12 +462,26 @@ public class MessageSender implements BlockedUserHandler {
             log.info("Failed to send a no adoption record message to {}", chatId, e);
         }
     }
-
-
     public void sendTextMessageFromInfoMenu(Long chatId, String msg) {
         SendMessage message;
         message = new SendMessage(chatId, msg);
         message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
         menuInformationHandler(chatId, message);
     }
+
+    /**
+     * проверка пользователя на статус "не надежный" c высылкой сообщения, что функционал ограничен
+     */
+    private boolean untrustedUserCheck(Long chatId, String firstName) throws IOException {
+        User user = userService.findUserByChatId(chatId);
+        SendPhoto sendPhoto;
+        if (user.getState().equals(UNTRUSTED)) {
+            sendPhoto = specificMediaMessageCreator.createAnswerForUntrustedUserMessage(chatId, firstName);
+            messageExecutor.executePhotoMessage(sendPhoto);
+            return true;
+        }
+        return false;
+    }
+
+    //    .........отправка сообщений пользователю на любые другие случаи........
 }

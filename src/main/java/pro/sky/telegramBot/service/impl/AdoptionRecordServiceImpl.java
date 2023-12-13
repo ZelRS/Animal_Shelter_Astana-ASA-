@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegramBot.enums.TrialPeriodState;
 import pro.sky.telegramBot.exception.notFound.PetNotFoundException;
 import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
@@ -18,6 +19,7 @@ import pro.sky.telegramBot.service.PetService;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.statistic.StatisticPreparer;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,19 +81,21 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     }
     @Override
     public AdoptionRecord extendAdoptionRecord(Long adoptionRecordId) {
-        AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(adoptionRecordId).orElseThrow();
-        if(!adoptionRecord.getState().equals(PROBATION_EXTEND)){
-            log.error("No adoption record can be extended");
-            throw new NoSuchElementException("No adoption record can be extended");
-        }
-        adoptionRecord.setState(CLOSED);
-        adoptionRecordRepository.save(adoptionRecord);
-        AdoptionRecord extendetAdoptionRecord = new AdoptionRecord();
+        try {
+            AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(adoptionRecordId)
+                    .orElseThrow(() -> new NoSuchElementException("Adoption record not found"));
+
+            if(!adoptionRecord.getState().equals(PROBATION_EXTEND)){
+                log.error("No adoption record can be extended for recordID: {}", adoptionRecordId);
+                throw new IllegalStateException("No adoption record can be extended");
+            }
 
         User user = adoptionRecord.getUser();
         Pet pet = adoptionRecord.getPet();
         LocalDate date = LocalDate.now();
         int trialPeriodDays = 14;
+
+        AdoptionRecord extendetAdoptionRecord = new AdoptionRecord();
 
         extendetAdoptionRecord.setUser(user);
         extendetAdoptionRecord.setPet(pet);
@@ -102,30 +106,41 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
 
         AdoptionRecord savedAdoptionRecord = adoptionRecordRepository.save(extendetAdoptionRecord);
 
-        user.setState(PROBATION);
         user.setAdoptionRecord(savedAdoptionRecord);
-        user.setPet(pet);
         userService.update(user);
-        pet.setOwner(user);
         pet.setAdoptionRecord(savedAdoptionRecord);
         petService.update(pet);
+        adoptionRecord.setState(CLOSED);
+        adoptionRecordRepository.save(adoptionRecord);
 
-        return savedAdoptionRecord;
+            return savedAdoptionRecord;
+        } catch (NoSuchElementException | IllegalStateException e) {
+            log.error("Error extending adoption record: {}", e.getMessage());
+            return null;
+        }
     }
-
+    @Transactional
     @Override
     public AdoptionRecord terminateAdoptionRecord(Long adoptionRecordId) {
-        AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(adoptionRecordId).orElseThrow();
-        adoptionRecord.setState(CLOSED);
+        try {
+            AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(adoptionRecordId)
+                    .orElseThrow(() -> new NoSuchElementException("Adoption record not found"));
+
         User user = adoptionRecord.getUser();
         Pet pet = adoptionRecord.getPet();
-        AdoptionRecord savedAdoptionRecord = adoptionRecordRepository.save(adoptionRecord);
+        adoptionRecord.setState(CLOSED);
+        adoptionRecordRepository.save(adoptionRecord);
         user.setState(BLOCKED);
+        user.setPet(null);
         userService.update(user);
         pet.setOwner(null);
         petService.update(pet);
 
-        return savedAdoptionRecord;
+        return adoptionRecord;
+        } catch (NoSuchElementException | IllegalStateException e) {
+            log.error("Error extending adoption record: {}", e.getMessage());
+            return null;
+        }
     }
 
     @Override
