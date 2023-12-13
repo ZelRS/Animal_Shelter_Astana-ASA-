@@ -38,8 +38,6 @@ public interface UserService {
      */
     UserInfo create(UserInfo userInfo);
 
-    Optional<User> findById(Long id);
-
     Optional<String> getUserPhone(Long id);
 
     UserInfo setUserPhone(UserInfo userInfo);
@@ -51,4 +49,6 @@ public interface UserService {
     Long getRandomVolunteerId();
 
     void addPhoneNumberToPersonInfo(String firstName, String lastName, Long chatId, String phone);
+
+    void setUserState(Long id, UserState state);
 }
