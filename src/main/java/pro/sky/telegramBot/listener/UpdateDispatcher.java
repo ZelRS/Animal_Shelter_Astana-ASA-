@@ -10,8 +10,8 @@ import pro.sky.telegramBot.handler.usersActionHandlers.impl.*;
 @RequiredArgsConstructor
 @Slf4j
 public class UpdateDispatcher {
-    private final CommandActionHandler commandActionHandler;
-    private final ButtonActionHandler buttonActionHandler;
+    private final CommandActionHandlerImpl commandActionHandler;
+    private final ButtonActionHandlerImpl buttonActionHandler;
     private final DocumentActionHandler documentActionHandler;
     private final PhotoActionHandler photoActionHandler;
 
@@ -61,7 +61,8 @@ public class UpdateDispatcher {
                     callbackData,
                     callbackQuery.from().firstName(),
                     callbackQuery.from().lastName(),
-                    message.chat().id()
+                    message.chat().id(),
+                    message.chat().username()
             );
         }
     }
