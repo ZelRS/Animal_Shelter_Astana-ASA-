@@ -76,11 +76,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
-    }
-
-    @Override
     public List<User> findAllByAdoptionRecordIsNullAndState(UserState state) {
         return userRepository.findAllByAdoptionRecordIsNullAndState(state);
     }
@@ -113,6 +108,13 @@ public class UserServiceImpl implements UserService {
         User user = findUserByChatId(chatId);
         UserInfo userInfo = setUserPhone(new UserInfo(firstName, lastName, phone));
         user.setUserInfo(userInfo);
+        update(user);
+    }
+
+    @Override
+    public void setUserState(Long id, UserState state) {
+        User user = getById(id);
+        user.setState(state);
         update(user);
     }
 }
