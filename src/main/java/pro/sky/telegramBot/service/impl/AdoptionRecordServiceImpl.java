@@ -2,7 +2,6 @@ package pro.sky.telegramBot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegramBot.enums.TrialPeriodState;
@@ -18,19 +17,18 @@ import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.PetService;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.statistic.ReportAnalyser;
-import pro.sky.telegramBot.utils.statistic.StatisticPreparer;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import static pro.sky.telegramBot.enums.PetType.NOPET;
 import static pro.sky.telegramBot.enums.TrialPeriodState.*;
 import static pro.sky.telegramBot.enums.UserState.*;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
-
+@Transactional
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -120,7 +118,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             return null;
         }
     }
-    @Transactional
+
     @Override
     public AdoptionRecord terminateAdoptionRecord(Long adoptionRecordId) {
         try {
@@ -274,24 +272,26 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         LocalDate currentDate = LocalDate.now();
         List<AdoptionRecord> adoptionRecords = adoptionRecordRepository.findByTrialPeriodEndAfterAndState(
                 currentDate, TrialPeriodState.PROBATION);
-        adoptionRecords.stream()
+        List<AdoptionRecord> updatedAdoptionRecords = adoptionRecords.stream()
                 .filter(adoptionRecord -> adoptionRecord.getTrialPeriodDays() > 0)
-                .forEach(adoptionRecord -> {
-                    int trialPeriodDays = adoptionRecord.getTrialPeriodDays() - 1;//уменьшили остаток дней на единицу
+                .peek(adoptionRecord -> {
+                    int trialPeriodDays = adoptionRecord.getTrialPeriodDays() - 1;
                     adoptionRecord.setTrialPeriodDays(trialPeriodDays);
-                    adoptionRecordRepository.save(adoptionRecord);
                     checkEvents(adoptionRecord);
-                });
+                })
+                .collect(Collectors.toList());
+        adoptionRecordRepository.saveAll(updatedAdoptionRecords);
     }
+
 
     private void checkEvents(AdoptionRecord adoptionRecord) {
         List<Report> reports = adoptionRecordRepository.findAllReportsByAdoptionRecord(adoptionRecord);
         Long userChatId = adoptionRecord.getUser().getChatId();
         int trialPeriodDays = adoptionRecord.getTrialPeriodDays();
+        int overallScore = reportAnalyser.analyzeReportsResults(adoptionRecord, reports, userChatId);
+        List<User> volunteers = userService.findAllByState(VOLUNTEER);
+        String notificationAction = ReportAnalyser.getNotificationAction(overallScore);
         if (trialPeriodDays == 0) {//сдан последний отчет
-            int overallScore = reportAnalyser.analyzeFinalReportsResults(adoptionRecord, reports, userChatId);
-            List<User> volunteers = userService.findAllByState(VOLUNTEER);
-            String notificationAction = ReportAnalyser.getNotificationAction(overallScore);
             for (User volunteer : volunteers) {//отправляем результаты волонтерам
                 notificationSender.sendNotificationToVolunteerAboutFinalCheck(notificationAction, volunteer.getChatId(), userChatId);
             }
@@ -299,9 +299,6 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             return;
         }
         if (trialPeriodDays % 5 == 0) {//промежуточная проверка каждые пять дней
-            int overallScore = reportAnalyser.analyzeReportsResults(adoptionRecord, reports, userChatId);
-            List<User> volunteers = userService.findAllByState(VOLUNTEER);
-            String notificationAction = ReportAnalyser.getNotificationAction(overallScore);
             for (User volunteer : volunteers) {//отправляем результаты волонтерам
                 notificationSender.sendNotificationToVolunteerAboutCheck(notificationAction, volunteer.getChatId(), userChatId);
             }
@@ -309,6 +306,4 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             adoptionRecordRepository.save(adoptionRecord);
         }
     }
-
-
 }

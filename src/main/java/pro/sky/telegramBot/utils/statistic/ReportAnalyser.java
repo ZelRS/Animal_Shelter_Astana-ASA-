@@ -6,14 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.adoption.Report;
-import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
 
 import java.util.List;
 
 import static pro.sky.telegramBot.enums.TrialPeriodState.*;
 import static pro.sky.telegramBot.enums.TrialPeriodState.UNSUCCESSFUL;
-import static pro.sky.telegramBot.enums.UserState.VOLUNTEER;
 
 /**
  * Класс для анализа отчетов
@@ -26,19 +24,10 @@ public class ReportAnalyser {
     private final NotificationSender notificationSender;
 
     /**
-     * Метод подготавливает промежуточную оценку и
-     * инициирует информирование волонтера и пользователя о результатах
-     */
-
-    public int analyzeReportsResults(AdoptionRecord adoptionRecord, List<Report>reports, Long userChatId) {
-
-        return statisticPreparer.checkProgress(adoptionRecord, reports);//получаем оценку результатов отчетов
-    }
-    /**
      * Метод подготавливает окончательную оценку и
      * инициирует информирование волонтера и пользователя о результатах
      */
-    public int analyzeFinalReportsResults(AdoptionRecord adoptionRecord, List<Report>reports, Long userChatId) {
+    public int analyzeReportsResults(AdoptionRecord adoptionRecord, List<Report>reports, Long userChatId) {
 
         int overallScore = statisticPreparer.checkProgress(adoptionRecord, reports);//получаем оценку результатов отчетов
         if (overallScore == 0){
