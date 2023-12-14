@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class ReportDataConverter {
     public LocalDate convertToData(String dateString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         return LocalDate.parse(dateString, formatter);
     }
 
