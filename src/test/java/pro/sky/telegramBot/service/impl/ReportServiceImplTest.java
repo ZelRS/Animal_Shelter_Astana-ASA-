@@ -22,6 +22,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -72,27 +73,25 @@ class ReportServiceImplTest {
         assertEquals(newReport, captured);
         assertTrue(result);
     }
-//    @Test
-//    void createReportFromExcel_Should_CreateReport_When_ValidInput_Test() {
-//        Long chatId = 123L;
-//        User user = new User();
-//        user.setAdoptionRecord(new AdoptionRecord());
-//
-//        when(reportDataConverter.isDateWithinRange(any(LocalDate.class), any(LocalDate.class), any(LocalDate.class))).thenReturn(true);
-//        when(userService.findUserByChatId(anyLong())).thenReturn(user);
-//        when(reportRepository.findByAdoptionRecordIdAndReportDateTime(anyLong(), any(LocalDate.class))).thenReturn(null);
-//        when(reportRepository.save(any(Report.class))).thenAnswer(invocation -> {
-//            Report report = invocation.getArgument(0);
-//            report.setId(1L);
-//            return report;
-//        });
-//        when(reportRepository.findById(1L)).thenReturn(Optional.of(new Report()));
-//
-//        boolean result = underTest.createReportFromExcel(chatId, Arrays.asList("3", "2", "1", "4", "5", "14-12-2023"));
-//
-//        assertTrue(result);
-//        verify(reportRepository, times(2)).save(any(Report.class));
-//    }
+    @Test
+    public void testCreateReportFromExcel_Success() {
+        Long chatId = 12345L;
+        List<String> values = Arrays.asList("10", "20", "30", "40", "50", "2023-12-14");
+
+        User mockUser = new User();
+        mockUser.setAdoptionRecord(new AdoptionRecord());
+        when(userService.findUserByChatId(chatId)).thenReturn(mockUser);
+        when(reportDataConverter.isDateWithinRange(any(), any(), any())).thenReturn(true);
+        when(reportDataConverter.convertToInteger(any())).thenReturn(100);
+        when(reportRepository.findByAdoptionRecordIdAndReportDateTime(any(), any())).thenReturn(null);
+
+        boolean result = underTest.createReportFromExcel(chatId, values);
+
+        assertTrue(result);
+        verify(userService, never()).update(any(User.class));
+        verify(reportRepository).save(any(Report.class));
+
+    }
 
     @Test
     void createReportFromExcel_Should_ReturnFalse_When_UserHasNoAdoptionRecord_Test() {
