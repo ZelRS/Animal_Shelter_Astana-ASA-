@@ -32,6 +32,8 @@ public class BotConfig {
     private String MSG_BLOCKED_WELCOME;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ ДЛЯ ДРУГИХ ОТВЕТНЫХ СООБЩЕНИЙ
+    @Value("${MSG_VOLUNTEER_NOTIFIED}")
+    private String MSG_VOLUNTEER_NOTIFIED;
     @Value("${MSG_DEFAULT}")
     private String MSG_DEFAULT;
     @Value("${MSG_NOT_SUPPORTED}")

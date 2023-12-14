@@ -1,8 +1,9 @@
 package pro.sky.telegramBot.service;
 
+import pro.sky.telegramBot.model.Adoption.Report;
 import com.pengrad.telegrambot.model.Document;
 import com.pengrad.telegrambot.model.PhotoSize;
-import pro.sky.telegramBot.model.adoption.Report;
+import pro.sky.telegramBot.model.Adoption.Report;
 
 import java.util.List;
 import java.util.Optional;

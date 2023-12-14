@@ -269,7 +269,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CALL_VOLUNTEER_MSG_IMG.getPath());
-        params.setCaption(config.getBUT_CALL_VOLUNTEER());
+        params.setCaption(String.format(config.getMSG_VOLUNTEER_NOTIFIED()));
         return mediaMessageCreator.createPhotoMessage(params);
     }
     /**

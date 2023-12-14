@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.model.adoption;
+package pro.sky.telegramBot.model.Adoption;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;

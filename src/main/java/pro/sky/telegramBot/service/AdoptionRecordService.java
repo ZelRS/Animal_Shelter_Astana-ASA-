@@ -1,8 +1,9 @@
 package pro.sky.telegramBot.service;
 
+import pro.sky.telegramBot.model.Adoption.Report;
 import pro.sky.telegramBot.enums.TrialPeriodState;
-import pro.sky.telegramBot.model.adoption.AdoptionRecord;
-import pro.sky.telegramBot.model.adoption.Report;
+import pro.sky.telegramBot.model.Adoption.AdoptionRecord;
+import pro.sky.telegramBot.model.Adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 
 import javax.persistence.CascadeType;

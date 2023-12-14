@@ -23,6 +23,8 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Random;
 
 import static com.pengrad.telegrambot.model.request.ParseMode.HTML;
 import static pro.sky.telegramBot.enums.MessageImage.SHELTER_INFORMATION_MSG_IMG;
@@ -278,7 +280,7 @@ public class MessageSender implements BlockedUserHandler {
         } else {
             message = new SendMessage(chatId, "Вы уже прошли регистрацию в конкретном приюте.\n" +
                     "Если вы хотите отменить Вашу запись, свяжитесь с волонтером");
-            message.replyMarkup(specificKeyboardCreator.pressTheButtonToCallVolunteer());
+            message.replyMarkup(specificKeyboardCreator.pressTheButtonToCallVolunteerKeyboard());
         }
         messageExecutor.executeHTMLMessage(message);
     }
@@ -443,7 +445,13 @@ public class MessageSender implements BlockedUserHandler {
     public void sendCallVolunteerPhotoMessage(Long chatId, String username) {
         log.info("Sending a message to the user \"call a volunteer\" {}", chatId);
         try {
-            // тут дописать логику высылки уведомления волонтеру, в котором будет отражаться ссылка на вызывающего пользователя
+            List<User> users = userService.findAllByState(VOLUNTEER);
+            Random random = new Random();
+            int id = random.nextInt(users.size());
+                User user = users.get(id);
+                SendMessage sendMessage = new SendMessage(user.getChatId(), "Вас вызывает пользователь = @" + username);
+                messageExecutor.executeHTMLMessage(sendMessage);
+
             
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
