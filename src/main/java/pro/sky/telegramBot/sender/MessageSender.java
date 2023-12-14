@@ -451,7 +451,7 @@ public class MessageSender implements BlockedUserHandler {
                 User user = users.get(id);
                 SendMessage sendMessage = new SendMessage(user.getChatId(), "Вас вызывает пользователь = @" + username);
                 messageExecutor.executeHTMLMessage(sendMessage);
-            // тут дописать логику высылки уведомления волонтеру, в котором будет отражаться ссылка на вызывающего пользователя
+
             
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
