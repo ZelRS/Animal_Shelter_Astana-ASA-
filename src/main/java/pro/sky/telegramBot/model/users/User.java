@@ -11,7 +11,6 @@ import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.shelter.Shelter;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 /**
  * модель пользователя в базе данных
@@ -38,15 +37,18 @@ public class User {
 
     @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "info_id")
+    @JsonIgnore
     private UserInfo userInfo;
 
     @OneToOne
     @JoinColumn(name = "pet_id")
+    @JsonIgnore
     private Pet pet;
 
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "shelter_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private Shelter shelter;
 
     @OneToOne
