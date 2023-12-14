@@ -18,6 +18,7 @@ import pro.sky.telegramBot.service.impl.UserServiceImpl;
 
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,9 +51,9 @@ public class UserControllerWebMvcTest {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/user/{id}", user.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .get("/user/{id}", user.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(user.getId()))
                 .andExpect(jsonPath("$.userName").value(user.getUserName()))
@@ -82,6 +83,29 @@ public class UserControllerWebMvcTest {
                 .andExpect(jsonPath("$.state").value("FREE"))
                 .andExpect(jsonPath("$.chatId").value(user.getChatId()));
 
+    }
+
+    @Test
+    void testSetUserState() throws Exception {
+        User user = new User();
+        user.setId(1L);
+        user.setState(UserState.FREE);
+        user.setChatId(999L);
+        user.setUserName("Name");
+
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+        user.setState(UserState.POTENTIAL);
+        UserState expectedSate = UserState.POTENTIAL;
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/user/{id}", user.getId())
+                        .param("state", "POTENTIAL")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        assertEquals(expectedSate, user.getState());
     }
 
 }
