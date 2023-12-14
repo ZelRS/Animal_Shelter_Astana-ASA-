@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import pro.sky.telegramBot.enums.UserState;
-import pro.sky.telegramBot.model.Adoption.AdoptionRecord;
+import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.shelter.Shelter;
 

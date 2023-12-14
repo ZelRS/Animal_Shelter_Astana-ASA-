@@ -91,10 +91,10 @@ public class ShelterServiceImpl implements ShelterService {
      * метод для загрузки схемы проезда в базу
      */
     @Override
-    public boolean uploadSchema(Long id, MultipartFile schema, Integer imageNewWidth) throws Exception {
+    public boolean uploadSchema(Long id, MultipartFile schema) throws Exception {
         Optional<Shelter> shelter = shelterRepository.findById(id);
         if (shelter.isPresent()) {
-            shelter.get().setSchema(mediaLoader.resizeImage(schema, imageNewWidth));
+            shelter.get().setSchema(mediaLoader.resizeImage(schema, 500));
         } else {
             return false;
         }

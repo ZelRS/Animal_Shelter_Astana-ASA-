@@ -1,4 +1,4 @@
-package pro.sky.telegramBot.model.Adoption;
+package pro.sky.telegramBot.model.adoption;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,6 +11,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import pro.sky.telegramBot.model.adoption.*;
 
 @Entity(name = "adoption_record")
 @RequiredArgsConstructor

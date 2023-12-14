@@ -1,8 +1,8 @@
 package pro.sky.telegramBot.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import pro.sky.telegramBot.model.Adoption.Report;
-import pro.sky.telegramBot.model.Adoption.Report;
+import pro.sky.telegramBot.model.adoption.Report;
+import pro.sky.telegramBot.model.adoption.Report;
 
 import java.time.LocalDate;
 

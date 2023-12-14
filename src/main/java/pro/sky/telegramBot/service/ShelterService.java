@@ -44,5 +44,5 @@ public interface ShelterService {
     /**
      * загрузить схему проезда в базу
      */
-    boolean uploadSchema(Long id, MultipartFile schema, Integer imageNewWidth) throws Exception;
+    boolean uploadSchema(Long id, MultipartFile schema) throws Exception;
 }

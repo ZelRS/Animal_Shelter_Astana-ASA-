@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pro.sky.telegramBot.model.Adoption.AdoptionRecord;
+import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.service.AdoptionRecordService;
 
 @RestController

@@ -1,8 +1,8 @@
 package pro.sky.telegramBot.utils.statistic;
 
 import org.springframework.stereotype.Component;
-import pro.sky.telegramBot.model.Adoption.AdoptionRecord;
-import pro.sky.telegramBot.model.Adoption.Report;
+import pro.sky.telegramBot.model.adoption.AdoptionRecord;
+import pro.sky.telegramBot.model.adoption.Report;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
