@@ -1,5 +1,6 @@
 package pro.sky.telegramBot.controller;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,30 @@ public class UserControllerWebMvcTest {
                 .andExpect(jsonPath("$.userName").value(user.getUserName()))
                 .andExpect(jsonPath("$.state").value("FREE"))
                 .andExpect(jsonPath("$.chatId").value(user.getChatId()));
+    }
+
+    @Test
+    void testCreate() throws Exception {
+        User user = new User();
+        user.setId(1L);
+        user.setState(UserState.FREE);
+        user.setChatId(999L);
+        user.setUserName("Name");
+        JSONObject jsonObject = new JSONObject();
+
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/user")
+                        .content(jsonObject.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(user.getId()))
+                .andExpect(jsonPath("$.userName").value(user.getUserName()))
+                .andExpect(jsonPath("$.state").value("FREE"))
+                .andExpect(jsonPath("$.chatId").value(user.getChatId()));
+
     }
 
 }
