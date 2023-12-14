@@ -11,7 +11,7 @@ import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.loader.DocumentLoader;
 import pro.sky.telegramBot.loader.MediaLoader;
-import pro.sky.telegramBot.model.Adoption.Report;
+import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.service.ReportService;

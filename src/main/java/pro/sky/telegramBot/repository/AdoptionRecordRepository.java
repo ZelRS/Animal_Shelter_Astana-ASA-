@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import pro.sky.telegramBot.enums.TrialPeriodState;
-import pro.sky.telegramBot.model.Adoption.AdoptionRecord;
-import pro.sky.telegramBot.model.Adoption.Report;
+import pro.sky.telegramBot.model.adoption.AdoptionRecord;
+import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 
 import java.time.LocalDate;
