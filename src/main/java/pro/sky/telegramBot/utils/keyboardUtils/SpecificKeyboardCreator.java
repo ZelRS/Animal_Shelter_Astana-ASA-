@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.Button;
-import pro.sky.telegramBot.enums.QuestionsForReport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,13 +146,11 @@ public class SpecificKeyboardCreator {
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
-// я ещё не понял как и куда прикрутить этот метод
-//
 
     /**
      * клавиатура для сообщения "позвать волонтёра"
      */
-    public Keyboard pressTheButtonToCallVolunteer() {
+    public Keyboard pressTheButtonToCallVolunteerKeyboard() {
         log.info("Creating a keyboard call a volunteer");
         List<Button> buttons = new ArrayList<>(List.of(
            new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
