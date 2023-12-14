@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pro.sky.telegramBot.enums.UserState;
+import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.UserInfoRepository;
 import pro.sky.telegramBot.repository.UserRepository;
@@ -19,7 +20,7 @@ import pro.sky.telegramBot.service.impl.UserServiceImpl;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -50,6 +51,9 @@ public class UserControllerWebMvcTest {
         USER.setState(USER_STATE);
     }
 
+    /**
+     * проверка поиска пользователя по id
+     */
     @Test
     void testGetById() throws Exception {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(USER));
@@ -65,6 +69,24 @@ public class UserControllerWebMvcTest {
                 .andExpect(jsonPath("$.chatId").value(USER.getChatId()));
     }
 
+    /**
+     * если пользователя по id нет, должна выбрасываться ошибка UserNotFoundException()
+     */
+    @Test
+    void testGetByIdUserNotFoundException() throws Exception {
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/user/{id}", USER.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException));
+    }
+
+    /**
+     * проверка создания нового пользователя
+     */
     @Test
     void testCreate() throws Exception {
         JSONObject jsonObject = new JSONObject();
@@ -84,6 +106,9 @@ public class UserControllerWebMvcTest {
 
     }
 
+    /**
+     * проверка корректного изменения статуса пользователя
+     */
     @Test
     void testSetUserState() throws Exception {
 
