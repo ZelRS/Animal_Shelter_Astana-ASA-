@@ -208,7 +208,7 @@ public class MessageSender implements BlockedUserHandler {
     }
 
     public void menuInformationHandler(Long chatId, SendPhoto message) {
-        log.info("Sending media message to user with chatID = "+ chatId);
+        log.info("Sending media message to user with chatID = " + chatId);
         messageExecutor.executePhotoMessage(message);
     }
 
@@ -299,7 +299,7 @@ public class MessageSender implements BlockedUserHandler {
             LocalDateTime currentTime = LocalDateTime.now();
             try {
                 if (currentTime.toLocalTime().isAfter(LocalTime.of(18, 0))
-                    && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))) {
+                        && currentTime.toLocalTime().isBefore(LocalTime.of(21, 0))) {
                     sendPhoto = specificMediaMessageCreator.createReportSendTwoOptionsPhotoMessage(chatId);
                     sendPhoto.replyMarkup(specificKeyboardCreator.fillOutReportActiveMessageKeyboard());
                 } else {
@@ -446,16 +446,21 @@ public class MessageSender implements BlockedUserHandler {
         log.info("Sending a message to the user \"call a volunteer\" {}", chatId);
         try {
             List<User> users = userService.findAllByState(VOLUNTEER);
-            Random random = new Random();
-            int id = random.nextInt(users.size());
-                User user = users.get(id);
-                SendMessage sendMessage = new SendMessage(user.getChatId(), "Вас вызывает пользователь = @" + username);
-                messageExecutor.executeHTMLMessage(sendMessage);
+            SendMessage sendMessage;
+            if (users.size() != 0) {
+                Random random = new Random();
+                int id = random.nextInt(users.size());
+                sendMessage = new SendMessage(users.get(id).getChatId(),
+                        "<b>ВНИМАНИЕ!</b>\nВас вызывает пользователь @" + username);
+                SendPhoto sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
+                messageExecutor.executePhotoMessage(sendPhoto);
+            } else {
+                sendMessage = new SendMessage(chatId,
+                        "К сожалению, на данный момент у нас нет ни одного волонтера....");
+            }
+            messageExecutor.executeHTMLMessage(sendMessage);
 
-            
-            SendPhoto sendPhoto;
-            sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
+
         } catch (Exception e) {
             log.info("Failed to send \"call a volunteer\" message to {}", chatId, e);
         }
@@ -470,6 +475,7 @@ public class MessageSender implements BlockedUserHandler {
             log.info("Failed to send a no adoption record message to {}", chatId, e);
         }
     }
+
     public void sendTextMessageFromInfoMenu(Long chatId, String msg) {
         SendMessage message;
         message = new SendMessage(chatId, msg);
