@@ -72,7 +72,7 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
                 if (state != null && state.equals(PROBATION)) {
                     messageSender.sendReportPhotoMessage(chatId);
                 } else {
-                    messageSender.sendDefaultHTMLMessage(chatId);
+                    messageSender.sendReportNotAvailableMessage(chatId);
                 }
             }
         });
