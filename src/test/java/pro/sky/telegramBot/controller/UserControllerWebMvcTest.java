@@ -1,6 +1,7 @@
 package pro.sky.telegramBot.controller;
 
 import org.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static pro.sky.telegramBot.controller.constants.UserControllerTestConstants.*;
 
 @WebMvcTest(UserController.class)
 public class UserControllerWebMvcTest {
@@ -40,37 +42,34 @@ public class UserControllerWebMvcTest {
     @InjectMocks
     private UserController userController;
 
+    @BeforeEach
+    public void setUp() {
+        USER.setId(USER_ID);
+        USER.setChatId(USER_CHAT_ID);
+        USER.setUserName(USER_NAME);
+        USER.setState(USER_STATE);
+    }
+
     @Test
     void testGetById() throws Exception {
-        User user = new User();
-        user.setId(1L);
-        user.setState(UserState.FREE);
-        user.setChatId(999L);
-        user.setUserName("Name");
-
-        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(USER));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/user/{id}", user.getId())
+                        .get("/user/{id}", USER.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(user.getId()))
-                .andExpect(jsonPath("$.userName").value(user.getUserName()))
+                .andExpect(jsonPath("$.id").value(USER.getId()))
+                .andExpect(jsonPath("$.userName").value(USER.getUserName()))
                 .andExpect(jsonPath("$.state").value("FREE"))
-                .andExpect(jsonPath("$.chatId").value(user.getChatId()));
+                .andExpect(jsonPath("$.chatId").value(USER.getChatId()));
     }
 
     @Test
     void testCreate() throws Exception {
-        User user = new User();
-        user.setId(1L);
-        user.setState(UserState.FREE);
-        user.setChatId(999L);
-        user.setUserName("Name");
         JSONObject jsonObject = new JSONObject();
 
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenReturn(USER);
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/user")
@@ -78,34 +77,29 @@ public class UserControllerWebMvcTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(user.getId()))
-                .andExpect(jsonPath("$.userName").value(user.getUserName()))
+                .andExpect(jsonPath("$.id").value(USER.getId()))
+                .andExpect(jsonPath("$.userName").value(USER.getUserName()))
                 .andExpect(jsonPath("$.state").value("FREE"))
-                .andExpect(jsonPath("$.chatId").value(user.getChatId()));
+                .andExpect(jsonPath("$.chatId").value(USER.getChatId()));
 
     }
 
     @Test
     void testSetUserState() throws Exception {
-        User user = new User();
-        user.setId(1L);
-        user.setState(UserState.FREE);
-        user.setChatId(999L);
-        user.setUserName("Name");
 
-        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(user));
-        user.setState(UserState.POTENTIAL);
+        when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(USER));
+        USER.setState(ANOTHER_USER_STATE);
         UserState expectedSate = UserState.POTENTIAL;
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        when(userRepository.save(any(User.class))).thenReturn(USER);
 
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/user/{id}", user.getId())
+                        .put("/user/{id}", USER.getId())
                         .param("state", "POTENTIAL")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        assertEquals(expectedSate, user.getState());
+        assertEquals(expectedSate, USER.getState());
     }
 
 }
