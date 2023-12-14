@@ -451,7 +451,7 @@ public class MessageSender implements BlockedUserHandler {
                 Random random = new Random();
                 int id = random.nextInt(users.size());
                 sendMessage = new SendMessage(users.get(id).getChatId(),
-                        "<b>ВНИМАНИЕ!</b>\nВас вызывает пользователь @" + username);
+                        "\uD83D\uDD34<b>ВНИМАНИЕ!</b>\uD83D\uDD34\nВас вызывает пользователь @" + username);
                 SendPhoto sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
                 messageExecutor.executePhotoMessage(sendPhoto);
             } else {
