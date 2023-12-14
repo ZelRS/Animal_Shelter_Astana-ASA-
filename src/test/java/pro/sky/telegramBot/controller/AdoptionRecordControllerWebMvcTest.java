@@ -23,6 +23,7 @@ import pro.sky.telegramBot.utils.keyboardUtils.KeyboardCreator;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
+import pro.sky.telegramBot.utils.statistic.ReportAnalyser;
 import pro.sky.telegramBot.utils.statistic.ReportDataConverter;
 import pro.sky.telegramBot.utils.statistic.ReportSumCalculator;
 import pro.sky.telegramBot.utils.statistic.StatisticPreparer;
@@ -92,6 +93,8 @@ class AdoptionRecordControllerWebMvcTest {
     private UserServiceImpl userService;
     @MockBean
     private PetServiceImpl petService;
+    @MockBean
+    private ReportAnalyser reportAnalyser;
 
     private AdoptionRecordController adoptionRecordController;
 

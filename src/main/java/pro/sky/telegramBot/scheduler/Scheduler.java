@@ -46,6 +46,6 @@ public class Scheduler {
     }
     @Scheduled(cron = "0 00 00 * * *")
     public void decreaseTrialPeriodDaysAndCheckEvents() {
-        adoptionRecordService.decreaseTrialPeriodDaysAndCheckEvents();
+        adoptionRecordService.decreaseTrialPeriodDays();
     }
 }
