@@ -24,6 +24,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
 
@@ -57,70 +58,71 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(newReport);
         return true;
     }
+    //Метод создания отчета на основе данных эксель-файла
 
     @Override
     public boolean createReportFromExcel(Long chatId, List<String> values) {
-
         User user = userService.findUserByChatId(chatId);
-        String dateString = values.get(5);
-        LocalDate date = reportDataConverter.convertToData(dateString);
-        Report newReport = null;
-        if (user != null && user.getAdoptionRecord() != null) {
-            AdoptionRecord adoptionRecord = user.getAdoptionRecord();
-            LocalDate startDate = adoptionRecord.getAdoptionDate();
-            LocalDate endDate = LocalDate.now();
-            if (reportDataConverter.isDateWithinRange(date, startDate, endDate)) {
-                newReport = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
-                if (newReport == null) {
-                    newReport = new Report();
-                    newReport.setReportDateTime(date);
-                    newReport.setAdoptionRecord(adoptionRecord);
-                }
-            } else {
-                user.setState(PROBATION);
-                userService.update(user);
-                return false;
-            }
-            int a6Int = 0;
-            String valueA6 = values.get(4);
-            if (valueA6 != null) {
-                a6Int = reportDataConverter.convertToInteger(valueA6);
-                newReport.setDietAppetite(a6Int);
-            }
-            int a8Int = 0;
-            String valueA8 = values.get(2);
-            if (valueA8 != null) {
-                a8Int = reportDataConverter.convertToInteger(valueA8);
-                newReport.setDietPreferences(a8Int);
-            }
-            int a10Int = 0;
-            String valueA10 = values.get(1);
-            if (valueA10 != null) {
-                a10Int = reportDataConverter.convertToInteger(valueA10);
-                newReport.setDietAllergies(a10Int);
-            }
-            int a12Int = 0;
-            String valueA12 = values.get(0);
-            if (valueA12 != null) {
-                a12Int = reportDataConverter.convertToInteger(valueA12);
-                newReport.setHealthStatus(a12Int);
-            }
-            int a14Int = 0;
-            String valueA14 = values.get(3);
-            if (valueA14 != null) {
-                a14Int = reportDataConverter.convertToInteger(valueA14);
-                newReport.setBehaviorChange(a14Int);
-            }
-            reportRepository.save(newReport);
-            Long reportId = newReport.getId();
-            calculateReportRatingTotal(reportId);
-            return true;
-        } else {
+        if (user == null || user.getAdoptionRecord() == null) {
             return false;
         }
 
+        LocalDate date = reportDataConverter.convertToData(values.get(5));
+        LocalDate startDate = user.getAdoptionRecord().getAdoptionDate();
+        LocalDate endDate = LocalDate.now();
 
+        if (!reportDataConverter.isDateWithinRange(date, startDate, endDate)) {
+            user.setState(PROBATION);
+            userService.update(user);
+            return false;
+        }
+
+        Report newReport = getOrCreateReport(user, date);
+
+        // Автоматизация установки значений с использованием индексированных полей из списка values
+        setReportValues(newReport, values);
+
+        reportRepository.save(newReport);
+        calculateReportRatingTotal(newReport.getId());
+        return true;
     }
+//Метод для получения отчета, если такой уже есть, или создания нового отчета
+    private Report getOrCreateReport(User user, LocalDate date) {
+        AdoptionRecord adoptionRecord = user.getAdoptionRecord();
+        Report report = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
+        if (report == null) {
+            report = new Report();
+            report.setReportDateTime(date);
+            report.setAdoptionRecord(adoptionRecord);
+        }
+        return report;
+    }
+//В этом методу мы присваиваем значения. Если значения в отчете не указаны, то будет присвоен ноль.
+    private void setReportValues(Report report, List<String> values) {
+        int[] fieldsIndexes = {0, 1, 2, 3, 4};
+        List<Consumer<Integer>> valueSetters = Arrays.asList(
+                report::setHealthStatus,
+                report::setDietAllergies,
+                report::setDietPreferences,
+                report::setBehaviorChange,
+                report::setDietAppetite
+        );
+
+        for (int i = 0; i < fieldsIndexes.length; i++) {
+            String valueStr = values.get(fieldsIndexes[i]);
+            int valueInt = 0;
+            if (valueStr != null && !valueStr.isEmpty()) {
+                try {
+                    valueInt = reportDataConverter.convertToInteger(valueStr);
+                } catch (NumberFormatException e) {
+                    // Оставляем valueInt равным 0, если конвертация не удалась
+                }
+            }
+            // Настраиваем значение. Если valueStr был недопустим, valueInt останется 0.
+            valueSetters.get(i).accept(valueInt);
+        }
+    }
+
 
     List<QuestionsForReport> questions = new ArrayList<>(Arrays.asList(QuestionsForReport.values()));
 
