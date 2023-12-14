@@ -499,5 +499,15 @@ public class MessageSender implements BlockedUserHandler {
         return false;
     }
 
+    public void sendReportNotAvailableMessage(Long chatId) {
+        log.info("Sending a no report function available message to {}", chatId);
+        try {
+            SendMessage sendMessage = new SendMessage(chatId, config.getMSG_NO_REPORT_AVAILABLE());
+            messageExecutor.executeHTMLMessage(sendMessage);
+        } catch (Exception e) {
+            log.info("Failed to send a no adoption record message to {}", chatId, e);
+        }
+    }
+
     //    .........отправка сообщений пользователю на любые другие случаи........
 }
