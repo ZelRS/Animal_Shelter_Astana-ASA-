@@ -113,7 +113,7 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
             log.info("Pressed FILL_OUT_REPORT button");
         });
 
-        //  точка входа "позвать волонтёра"
+        //  Точка входа "позвать волонтёра"
         buttonMap.put(BUT_CALL_VOLUNTEER.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed CALL_VOLUNTEER button");
             messageSender.sendCallVolunteerPhotoMessage(chatId, username);
@@ -124,10 +124,12 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
             log.info("Pressed GET_FULL_INFO button");
             messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
         });
+
         buttonMap.put(BUT_WANT_DOG.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed WANT_DOG button");
             messageSender.sendDogSheltersListPhotoMessage(chatId);
         });
+
         buttonMap.put(BUT_WANT_CAT.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed WANT_CAT button");
             messageSender.sendCatSheltersListPhotoMessage(chatId);
@@ -150,7 +152,6 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
             log.info("Pressed BUT_GO_TO_SHELTER_SELECT button");
             messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId);
         });
-
     }
 
     /**
