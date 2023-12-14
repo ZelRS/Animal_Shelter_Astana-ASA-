@@ -65,29 +65,52 @@ public class ReportServiceImpl implements ReportService {
         String dateString = values.get(5);
         LocalDate date = reportDataConverter.convertToData(dateString);
         Report newReport = null;
-        if(user != null && user.getAdoptionRecord() != null){
+        if (user != null && user.getAdoptionRecord() != null) {
             AdoptionRecord adoptionRecord = user.getAdoptionRecord();
-            newReport = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
-            if(newReport == null){
-                newReport = new Report();
-                newReport.setReportDateTime(date);
-                newReport.setAdoptionRecord(adoptionRecord);
+            LocalDate startDate = adoptionRecord.getAdoptionDate();
+            LocalDate endDate = LocalDate.now();
+            if (reportDataConverter.isDateWithinRange(date, startDate, endDate)) {
+                newReport = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
+                if (newReport == null) {
+                    newReport = new Report();
+                    newReport.setReportDateTime(date);
+                    newReport.setAdoptionRecord(adoptionRecord);
+                }
+            } else {
+                user.setState(PROBATION);
+                userService.update(user);
+                return false;
             }
+            int a6Int = 0;
             String valueA6 = values.get(4);
-            int a6Int = reportDataConverter.convertToInteger(valueA6);
-            newReport.setBehaviorChange(a6Int);
+            if (valueA6 != null) {
+                a6Int = reportDataConverter.convertToInteger(valueA6);
+                newReport.setDietAppetite(a6Int);
+            }
+            int a8Int = 0;
             String valueA8 = values.get(2);
-            int a8Int = reportDataConverter.convertToInteger(valueA8);
-            newReport.setDietAllergies(a8Int);
+            if (valueA8 != null) {
+                a8Int = reportDataConverter.convertToInteger(valueA8);
+                newReport.setDietPreferences(a8Int);
+            }
+            int a10Int = 0;
             String valueA10 = values.get(1);
-            int a10Int = reportDataConverter.convertToInteger(valueA10);
-            newReport.setDietPreferences(a10Int);
+            if (valueA10 != null) {
+                a10Int = reportDataConverter.convertToInteger(valueA10);
+                newReport.setDietAllergies(a10Int);
+            }
+            int a12Int = 0;
             String valueA12 = values.get(0);
-            int a12Int = reportDataConverter.convertToInteger(valueA12);
-            newReport.setDietAppetite(a12Int);
+            if (valueA12 != null) {
+                a12Int = reportDataConverter.convertToInteger(valueA12);
+                newReport.setHealthStatus(a12Int);
+            }
+            int a14Int = 0;
             String valueA14 = values.get(3);
-            int a14Int = reportDataConverter.convertToInteger(valueA14);
-            newReport.setHealthStatus(a14Int);
+            if (valueA14 != null) {
+                a14Int = reportDataConverter.convertToInteger(valueA14);
+                newReport.setBehaviorChange(a14Int);
+            }
             reportRepository.save(newReport);
             Long reportId = newReport.getId();
             calculateReportRatingTotal(reportId);
@@ -153,10 +176,10 @@ public class ReportServiceImpl implements ReportService {
         User user = userService.findUserByChatId(chatId);
         LocalDate date = LocalDate.now();
         Report newReport = null;
-        if(user != null && user.getAdoptionRecord() != null){
+        if (user != null && user.getAdoptionRecord() != null) {
             AdoptionRecord adoptionRecord = user.getAdoptionRecord();
             newReport = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
-            if(newReport == null){
+            if (newReport == null) {
                 newReport = new Report();
                 newReport.setReportDateTime(date);
                 newReport.setAdoptionRecord(adoptionRecord);
@@ -219,19 +242,25 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Report getReportById(Long id) {
-        return reportRepository.findById(id).orElseThrow();
+        return reportRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Report with id " + id + " was not found"));
     }
 
-    private void calculateReportRatingTotal (Long reportId) {
-        Report report = reportRepository.findById(reportId).orElseThrow();
-        int a6Int = report.getDietAppetite();
-        int a8Int = report.getDietPreferences();
-        int a10Int = report.getDietAllergies();
-        int a12Int = report.getHealthStatus();
-        int a14Int = report.getBehaviorChange();
-        int reportResult = reportSumCalculator.calculateReportSum(new int[]{a6Int, a8Int, a10Int, a12Int, a14Int});
-        report.setRatingTotal(reportResult);
-        reportRepository.save(report);
+
+    private void calculateReportRatingTotal(Long reportId) {
+        try {
+            Report report = reportRepository.findById(reportId).orElseThrow();
+            int a6Int = report.getDietAppetite();
+            int a8Int = report.getDietPreferences();
+            int a10Int = report.getDietAllergies();
+            int a12Int = report.getHealthStatus();
+            int a14Int = report.getBehaviorChange();
+            int reportResult = reportSumCalculator.calculateReportSum(new int[]{a6Int, a8Int, a10Int, a12Int, a14Int});
+            report.setRatingTotal(reportResult);
+            reportRepository.save(report);
+        } catch (NoSuchElementException e) {
+            log.error("Ошибка при поиске отчета по идентификатору: {}", reportId);
+        }
     }
 
 }

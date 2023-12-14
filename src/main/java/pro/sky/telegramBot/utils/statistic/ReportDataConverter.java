@@ -21,4 +21,7 @@ public class ReportDataConverter {
         String value = valueA6.replaceAll("\\.\\d+", ""); // Remove decimal part
         return Integer.parseInt(value);
     }
+    public boolean isDateWithinRange(LocalDate date, LocalDate startDate, LocalDate endDate) {
+        return !date.isBefore(startDate) && !date.isAfter(endDate);
+    }
 }
