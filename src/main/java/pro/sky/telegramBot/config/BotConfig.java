@@ -30,6 +30,8 @@ public class BotConfig {
     private String MSG_SORRY_WELCOME;
     @Value("${MSG_BLOCKED_WELCOME}")
     private String MSG_BLOCKED_WELCOME;
+    @Value("${MSG_NO_REPORT_AVAILABLE}")
+    private String MSG_NO_REPORT_AVAILABLE;
 
     // ПЕРЕМЕННЫЕ С ТЕКСТОМ ДЛЯ ДРУГИХ ОТВЕТНЫХ СООБЩЕНИЙ
     @Value("${MSG_VOLUNTEER_NOTIFIED}")

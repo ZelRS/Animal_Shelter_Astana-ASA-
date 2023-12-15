@@ -48,7 +48,6 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
      */
     @PostConstruct
     public void init() {
-// ОТСЮДА НАЧИНАЕТСЯ РАБОТА РОМАНА
         buttonMap.put(BUT_TAKING_PET.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed BUT_TAKING_PET button");
             messageSender.sendTakingPetPhotoMessage(chatId, firstName);
@@ -64,8 +63,7 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
             messageSender.sendStartRegistrationMessage(chatId);
         });
 
-// ОТСЮДА НАЧИНАЕТСЯ РАБОТА ЮРИЯ ПЕТУХОВА
-        //Обработчик кнопки "Отправить отчет", проверяется статус пользователя
+        //  Обработчик кнопки "Отправить отчет", проверяется статус пользователя
         buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed SEND_REPORT button");
             User user = userService.findUserByChatId(chatId);
@@ -73,11 +71,12 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
                 UserState state = user.getState();
                 if (state != null && state.equals(PROBATION)) {
                     messageSender.sendReportPhotoMessage(chatId);
-                } else {
-                    messageSender.sendDefaultHTMLMessage(chatId);
+                    return;
                 }
             }
+            messageSender.sendReportNotAvailableMessage(chatId);
         });
+
         buttonMap.put(BUT_SEND_PET_PHOTO.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed SEND_PET_PHOTO button");
             User user = userService.findUserByChatId(chatId);
@@ -90,7 +89,8 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
                 }
             }
         });
-        //Если кнопка "Отправить отчет" доступна, то меняется статус пользователя и инициируется заполнение отчета
+
+        //  Если кнопка "Отправить отчет" доступна, то меняется статус пользователя и инициируется заполнение отчета
         buttonMap.put(BUT_FILL_OUT_REPORT_ON.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed FILL_OUT_REPORT button");
             User user = userService.findUserByChatId(chatId);
@@ -107,45 +107,47 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
                 }
             }
         });
-        //Кнопка сделана без ответа, так как отключена в нерабочее время
+
+        //  Кнопка сделана без ответа, так как отключена в нерабочее время
         buttonMap.put(BUT_FILL_OUT_REPORT_OFF.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed FILL_OUT_REPORT button");
         });
 
-// ОТСЮДА НАЧИНАЕТСЯ РАБОТА АЛЕКСЕЯ
-// точка входа "позвать волонтёра"
+        //  Точка входа "позвать волонтёра"
         buttonMap.put(BUT_CALL_VOLUNTEER.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed CALL_VOLUNTEER button");
             messageSender.sendCallVolunteerPhotoMessage(chatId, username);
         });
 
-//точка входа в информационное меню приюта
+        //  Точка входа в информационное меню приюта
         buttonMap.put(BUT_GET_FULL_INFO.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed GET_FULL_INFO button");
             messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
         });
+
         buttonMap.put(BUT_WANT_DOG.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed WANT_DOG button");
             messageSender.sendDogSheltersListPhotoMessage(chatId);
         });
+
         buttonMap.put(BUT_WANT_CAT.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed WANT_CAT button");
             messageSender.sendCatSheltersListPhotoMessage(chatId);
         });
 
-//возврат с навигационного меню в меню информации о приюте
+        //  Возврат с навигационного меню в меню информации о приюте
         buttonMap.put(BUT_MORE_INFORMATION.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed BUT_MORE_INFORMATION button");
             messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
         });
 
-//Возврат в главное меню с навигационных кнопок
+        //  Возврат в главное меню с навигационных кнопок
         buttonMap.put(BUT_GO_TO_MAIN.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed BUT_GO_TO_MAIN button");
             messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
 
-//возврат к выбору приюта c навигационных кнопок
+        //  Возврат к выбору приюта c навигационных кнопок
         buttonMap.put(BUT_GO_TO_SHELTER_SELECT.getCallbackData(), (firstName, lastName, chatId, username) -> {
             log.info("Pressed BUT_GO_TO_SHELTER_SELECT button");
             messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId);

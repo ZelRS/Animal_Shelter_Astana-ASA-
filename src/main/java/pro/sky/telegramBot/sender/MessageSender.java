@@ -14,7 +14,6 @@ import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
@@ -385,7 +384,9 @@ public class MessageSender implements BlockedUserHandler {
         }
 
     }
-
+    /**
+     * Метод для выбора типа животного
+     */
     public void sendChooseShelterMessage(Long chatId) {
         log.info("Sending first time welcome message to {}", chatId);
         try {
@@ -415,6 +416,7 @@ public class MessageSender implements BlockedUserHandler {
                 messageExecutor.executePhotoMessage(sendPhoto);
             } else {
                 SendPhoto sendPhoto = specificMediaMessageCreator.createReportAcceptedPhotoMessage(chatId);
+                sendPhoto.replyMarkup(specificKeyboardCreator.buttonToSendPhotoKeyboard());
                 messageExecutor.executePhotoMessage(sendPhoto);
             }
         } catch (Exception e) {
@@ -445,7 +447,6 @@ public class MessageSender implements BlockedUserHandler {
      * когда он нажал на кнопку "Позвать Волонтёра"
      */
     public void sendCallVolunteerPhotoMessage(Long chatId, String username) {
-        log.info("Sending a message to the user \"call a volunteer\" {}", chatId);
         try {
             List<User> users = userService.findAllByState(VOLUNTEER);
             SendMessage sendMessage;
@@ -453,12 +454,15 @@ public class MessageSender implements BlockedUserHandler {
                 Random random = new Random();
                 int id = random.nextInt(users.size());
                 sendMessage = new SendMessage(users.get(id).getChatId(),
-                        "<b>ВНИМАНИЕ!</b>\nВас вызывает пользователь @" + username);
+                        "\uD83D\uDD34<b>ВНИМАНИЕ!</b>\uD83D\uDD34\nВас вызывает пользователь @" + username);
+                log.info("\"Volunteer has already notified\" message was sent to user with chatId={}", chatId);
                 SendPhoto sendPhoto = specificMediaMessageCreator.createCallVolunteerPhotoMessage(chatId);
+                log.info("Notification was sent to volunteer wigth chatId={}", users.get(id).getChatId());
                 messageExecutor.executePhotoMessage(sendPhoto);
             } else {
                 sendMessage = new SendMessage(chatId,
                         "К сожалению, на данный момент у нас нет ни одного волонтера....");
+                log.info("\"We have no volunteers now\" message was sent to user with chatId={}", chatId);
             }
             messageExecutor.executeHTMLMessage(sendMessage);
 
@@ -497,6 +501,16 @@ public class MessageSender implements BlockedUserHandler {
             return true;
         }
         return false;
+    }
+
+    public void sendReportNotAvailableMessage(Long chatId) {
+        log.info("Sending a no report function available message to {}", chatId);
+        try {
+            SendMessage sendMessage = new SendMessage(chatId, config.getMSG_NO_REPORT_AVAILABLE());
+            messageExecutor.executeHTMLMessage(sendMessage);
+        } catch (Exception e) {
+            log.info("Failed to send a no adoption record message to {}", chatId, e);
+        }
     }
 
     public void sendStatisticAboutShelterMessage(Long chatId) {

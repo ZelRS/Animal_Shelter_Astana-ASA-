@@ -2,7 +2,6 @@ package pro.sky.telegramBot.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pro.sky.telegramBot.enums.TrialPeriodState;
@@ -17,19 +16,19 @@ import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
 import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.PetService;
 import pro.sky.telegramBot.service.UserService;
-import pro.sky.telegramBot.utils.statistic.StatisticPreparer;
+import pro.sky.telegramBot.utils.statistic.ReportAnalyser;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import static pro.sky.telegramBot.enums.PetType.NOPET;
 import static pro.sky.telegramBot.enums.TrialPeriodState.*;
 import static pro.sky.telegramBot.enums.UserState.*;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
-
+@Transactional
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -38,7 +37,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     private final UserService userService;
     private final PetService petService;
     private final NotificationSender notificationSender;
-    private final StatisticPreparer statisticPreparer;
+    private final ReportAnalyser reportAnalyser;
 
     @Override
     public AdoptionRecord createNewAdoptionRecord(Long userId, Long petId) {
@@ -119,7 +118,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             return null;
         }
     }
-    @Transactional
+
     @Override
     public AdoptionRecord terminateAdoptionRecord(Long adoptionRecordId) {
         try {
@@ -146,21 +145,6 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     @Override
     public void save(AdoptionRecord adoptionRecord) {
         adoptionRecordRepository.save(adoptionRecord);
-    }
-
-    //Метод для получения текущего отчета
-    @Override
-    public Report getCurrentReport(Long chatId, LocalDate date) {
-        User user = userService.findUserByChatId(chatId);
-        if (user != null) {
-            List<Report> reports = adoptionRecordRepository.findReportsByUser(user);
-            for (Report report : reports) {
-                if (report.getReportDateTime().equals(date)) {
-                    return report;
-                }
-            }
-        }
-        return null;
     }
 
     /**
@@ -284,90 +268,42 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
      * каждый пять дней или окончательного отчета
      */
     @Override
-    public void decreaseTrialPeriodDaysAndCheckEvents() {
+    public void decreaseTrialPeriodDays() {
         LocalDate currentDate = LocalDate.now();
         List<AdoptionRecord> adoptionRecords = adoptionRecordRepository.findByTrialPeriodEndAfterAndState(
                 currentDate, TrialPeriodState.PROBATION);
-        adoptionRecords.stream()
+        List<AdoptionRecord> updatedAdoptionRecords = adoptionRecords.stream()
                 .filter(adoptionRecord -> adoptionRecord.getTrialPeriodDays() > 0)
-                .forEach(adoptionRecord -> {
-                    int trialPeriodDays = adoptionRecord.getTrialPeriodDays() - 1;//уменьшили остаток дней на единицу
+                .peek(adoptionRecord -> {
+                    int trialPeriodDays = adoptionRecord.getTrialPeriodDays() - 1;
                     adoptionRecord.setTrialPeriodDays(trialPeriodDays);
-                    adoptionRecordRepository.save(adoptionRecord);
-                    if (trialPeriodDays == 0) {//сдан последний отчет
-                        analyzeFinalReportsResults(adoptionRecord.getId());
-                        return;
-                    }
-                    if (trialPeriodDays % 5 == 0) {//промежуточная проверка каждые пять дней
-                        analyzeReportsResults(adoptionRecord.getId());
-                    }
-                });
+                    checkEvents(adoptionRecord);
+                })
+                .collect(Collectors.toList());
+        adoptionRecordRepository.saveAll(updatedAdoptionRecords);
     }
 
-    /**
-     * Метод подготавливает промежуточную оценку и
-     * инициирует информирование волонтера и пользователя о результатах
-     */
-    private void analyzeReportsResults(Long id) {
-        AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(id).orElseThrow();
+
+    private void checkEvents(AdoptionRecord adoptionRecord) {
         List<Report> reports = adoptionRecordRepository.findAllReportsByAdoptionRecord(adoptionRecord);
         Long userChatId = adoptionRecord.getUser().getChatId();
-
-        int overallScore = statisticPreparer.checkProgress(adoptionRecord, reports);//получаем оценку результатов отчетов
-
+        int trialPeriodDays = adoptionRecord.getTrialPeriodDays();
+        int overallScore = reportAnalyser.analyzeReportsResults(adoptionRecord, reports, userChatId);
         List<User> volunteers = userService.findAllByState(VOLUNTEER);
-        String notificationAction = getNotificationAction(overallScore);
-        for (User volunteer : volunteers) {//отправляем результаты волонтерам
-            notificationSender.sendNotificationToVolunteerAboutCheck(notificationAction, volunteer.getChatId(), userChatId);
-        }
-        notificationSender.sendNotificationToAdopterAboutCheck(notificationAction, userChatId);//результаты пользователю
-    }
-    /**
-     * Метод подготавливает окончательную оценку и
-     * инициирует информирование волонтера и пользователя о результатах
-     */
-    private void analyzeFinalReportsResults(Long id) {
-        AdoptionRecord adoptionRecord = adoptionRecordRepository.findById(id).orElseThrow();
-        List<Report> reports = adoptionRecordRepository.findAllReportsByAdoptionRecord(adoptionRecord);
-        Long userChatId = adoptionRecord.getUser().getChatId();
-
-        int overallScore = statisticPreparer.checkProgress(adoptionRecord, reports);//получаем оценку результатов отчетов
-        if (overallScore == 0){
-            if(adoptionRecord.getTrialPeriodDays() == 30) {
-                adoptionRecord.setState(PROBATION_EXTEND);
-            } else {
-                adoptionRecord.setState(UNSUCCESSFUL);
+        String notificationAction = ReportAnalyser.getNotificationAction(overallScore);
+        if (trialPeriodDays == 0) {//сдан последний отчет
+            for (User volunteer : volunteers) {//отправляем результаты волонтерам
+                notificationSender.sendNotificationToVolunteerAboutFinalCheck(notificationAction, volunteer.getChatId(), userChatId);
             }
-        }else if (overallScore == 1){
-                adoptionRecord.setState(SUCCESSFUL);
-        }else if (overallScore == -1){
-            adoptionRecord.setState(UNSUCCESSFUL);
+            notificationSender.sendNotificationToAdopterAboutFinalCheck(notificationAction, userChatId);//результаты пользователю
+            return;
         }
-        adoptionRecordRepository.save(adoptionRecord);
-
-        List<User> volunteers = userService.findAllByState(VOLUNTEER);
-        String notificationAction = getNotificationAction(overallScore);
-        for (User volunteer : volunteers) {//отправляем результаты волонтерам
-            notificationSender.sendNotificationToVolunteerAboutFinalCheck(notificationAction, volunteer.getChatId(), userChatId);
+        if (trialPeriodDays % 5 == 0) {//промежуточная проверка каждые пять дней
+            for (User volunteer : volunteers) {//отправляем результаты волонтерам
+                notificationSender.sendNotificationToVolunteerAboutCheck(notificationAction, volunteer.getChatId(), userChatId);
+            }
+            notificationSender.sendNotificationToAdopterAboutCheck(notificationAction, userChatId);//результаты пользователю
+            adoptionRecordRepository.save(adoptionRecord);
         }
-        notificationSender.sendNotificationToAdopterAboutFinalCheck(notificationAction, userChatId);//результаты пользователю
     }
-    /**
-     * Метод оценивает результаты обработки отчетов, чтобы сформировать соответствующее сообщение
-     */
-    @NotNull
-    private static String getNotificationAction(int overallScore) {
-        String notificationAction;
-        if (overallScore == -1) {
-            notificationAction = "problem"; //общий бал меньше допустимого, животное передавать нельзя
-        } else if (overallScore == 0) {
-            notificationAction = "try your best"; //средний успех, можно продлить испытательный период
-        } else if (overallScore == 1) {
-            notificationAction = "good job";//все хорошо, можно передать животное
-        } else {
-            notificationAction = "calculations error";//в процессе подсчета получены неожиданные результаты
-        }
-        return notificationAction;
-    }
-
 }

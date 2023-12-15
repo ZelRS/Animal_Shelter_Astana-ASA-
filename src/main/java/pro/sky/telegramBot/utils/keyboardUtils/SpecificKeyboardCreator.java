@@ -122,7 +122,9 @@ public class SpecificKeyboardCreator {
         }
         return keyboardCreator.createInlineKeyboardTwoRow(buttons);
     }
-
+    /**
+     * Клавиатура для получения информации волонтером
+     */
     public Keyboard volunteerMenuMessageKeyboard() {
         log.info("Creating keyboard markup for volunteer");
 
@@ -154,6 +156,17 @@ public class SpecificKeyboardCreator {
         log.info("Creating a keyboard call a volunteer");
         List<Button> buttons = new ArrayList<>(List.of(
            new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+    /**
+     * Кнопка для отправки фотографии животного после заполнения отчета в боте
+     */
+
+    public Keyboard buttonToSendPhotoKeyboard() {
+        log.info("Creating a keyboard to send a photo for report");
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }

@@ -24,6 +24,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
 
@@ -45,6 +46,18 @@ public class ReportServiceImpl implements ReportService {
     private final TelegramBot bot;
     private final MediaLoader mediaLoader;
 
+    // Константы для идентификации вопросов и кнопок
+    private static final int START_QUESTION_BUTTON_ID = 11;
+    private static final int LAST_QUESTION_INDICATOR = 4;
+    private static final int NEXT_QUESTION_ID = 5;
+    /**
+     * Метод сохраняет новый отчет в записи об усыновлении и в базе.
+     * Если отчет с такой датой уже существует, то отчет перезаписывает его.
+     *
+     * @param newReport отчет, который нужно сохранить
+     * @param chatId    Telegram chat ID пользователя
+     * @return true если операция была успешной
+     */
     @Override
     public boolean saveReport(Report newReport, Long chatId) {
         log.info("Was invoked method saveReport");
@@ -57,74 +70,50 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(newReport);
         return true;
     }
-
+    //Метод создания отчета на основе данных эксель-файла
+    /**
+     * Создает отчет на основании значений, полученных из файла Excel.
+     * При этом проверяется дата отчета и обновляется состояние пользователя.
+     *
+     * @param chatId Telegram chat ID пользователя
+     * @param values список параметров типа string, полученные из файла Excel
+     * @return true если отчет успешно создан, в другом случае false
+     */
     @Override
     public boolean createReportFromExcel(Long chatId, List<String> values) {
-
         User user = userService.findUserByChatId(chatId);
-        String dateString = values.get(5);
-        LocalDate date = reportDataConverter.convertToData(dateString);
-        Report newReport = null;
-        if (user != null && user.getAdoptionRecord() != null) {
-            AdoptionRecord adoptionRecord = user.getAdoptionRecord();
-            LocalDate startDate = adoptionRecord.getAdoptionDate();
-            LocalDate endDate = LocalDate.now();
-            if (reportDataConverter.isDateWithinRange(date, startDate, endDate)) {
-                newReport = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
-                if (newReport == null) {
-                    newReport = new Report();
-                    newReport.setReportDateTime(date);
-                    newReport.setAdoptionRecord(adoptionRecord);
-                }
-            } else {
-                user.setState(PROBATION);
-                userService.update(user);
-                return false;
-            }
-            int a6Int = 0;
-            String valueA6 = values.get(4);
-            if (valueA6 != null) {
-                a6Int = reportDataConverter.convertToInteger(valueA6);
-                newReport.setDietAppetite(a6Int);
-            }
-            int a8Int = 0;
-            String valueA8 = values.get(2);
-            if (valueA8 != null) {
-                a8Int = reportDataConverter.convertToInteger(valueA8);
-                newReport.setDietPreferences(a8Int);
-            }
-            int a10Int = 0;
-            String valueA10 = values.get(1);
-            if (valueA10 != null) {
-                a10Int = reportDataConverter.convertToInteger(valueA10);
-                newReport.setDietAllergies(a10Int);
-            }
-            int a12Int = 0;
-            String valueA12 = values.get(0);
-            if (valueA12 != null) {
-                a12Int = reportDataConverter.convertToInteger(valueA12);
-                newReport.setHealthStatus(a12Int);
-            }
-            int a14Int = 0;
-            String valueA14 = values.get(3);
-            if (valueA14 != null) {
-                a14Int = reportDataConverter.convertToInteger(valueA14);
-                newReport.setBehaviorChange(a14Int);
-            }
-            reportRepository.save(newReport);
-            Long reportId = newReport.getId();
-            calculateReportRatingTotal(reportId);
-            return true;
-        } else {
+        if (user == null || user.getAdoptionRecord() == null) {
             return false;
         }
 
+        LocalDate date = reportDataConverter.convertToData(values.get(5));
+        LocalDate startDate = user.getAdoptionRecord().getAdoptionDate();
+        LocalDate endDate = LocalDate.now();
 
+        if (!reportDataConverter.isDateWithinRange(date, startDate, endDate)) {
+            user.setState(PROBATION);
+            userService.update(user);
+            return false;
+        }
+
+        Report newReport = getOrCreateReport(user, date);
+
+        // Автоматизация установки значений с использованием индексированных полей из списка values
+        setReportValues(newReport, values);
+
+        reportRepository.save(newReport);
+        calculateReportRatingTotal(newReport.getId());
+        return true;
     }
+    //Заполняем отчет в чате
 
-    List<QuestionsForReport> questions = new ArrayList<>(Arrays.asList(QuestionsForReport.values()));
-
-    //Метод инициирует вопросы пользователю и сохраняет ответы в отчете
+    /**
+     * Обрабатывает ответы пользователя в боте Telegram и заполняет отчет.
+     * Вызываются методы для навигации по вопросам и завершению формирования отчета.
+     *
+     * @param chatId      Telegram chat ID пользователя
+     * @param callbackData Callback data после нажатия кнопки в боте
+     */
     @Override
     public void fillOutReport(Long chatId, String callbackData) {
         String[] parts = callbackData.split("_");
@@ -133,44 +122,27 @@ public class ReportServiceImpl implements ReportService {
         Long reportId = Long.parseLong(parts[2]);
         Report report = reportRepository.findById(reportId).orElseThrow();
 
-        if (buttonIdentifier == 11) {
-            log.info("Was invoked method of sending question number {} by ReportService", questionIdentifier);
-            messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(0).getQuestion(), questionIdentifier, reportId);
-        } else if (buttonIdentifier < 11) {
-            switch (questionIdentifier) {
-                case 0:
-                    report.setDietAppetite(buttonIdentifier);
-                    break;
-                case 1:
-                    report.setDietPreferences(buttonIdentifier);
-                    break;
-                case 2:
-                    report.setDietAllergies(buttonIdentifier);
-                    break;
-                case 3:
-                    report.setHealthStatus(buttonIdentifier);
-                    break;
-                case 4:
-                    report.setBehaviorChange(buttonIdentifier);
-                    reportRepository.save(report);
-                    calculateReportRatingTotal(reportId);
-                    User user = userService.findUserByChatId(chatId);
-                    user.setState(PROBATION);
-                    userService.update(user);
-                    messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(1).getQuestion(), 5, reportId);
-                    adoptionRecordService.addNewReportToAdoptionRecord(report, chatId);
-                    break;
-            }
-            reportRepository.save(report);
+        log.info("Was invoked method of sending question number {} by ReportService", questionIdentifier);
 
-            int nextQuestionIdentifier = questionIdentifier + 1;
-            if (nextQuestionIdentifier < questions.size()) {
-                messageSender.sendQuestionForReportPhotoMessage(chatId, questions.get(nextQuestionIdentifier).getQuestion(), nextQuestionIdentifier, reportId);
+        if (buttonIdentifier == START_QUESTION_BUTTON_ID) {
+            askNextQuestion(chatId, questionIdentifier, reportId);
+        } else if (buttonIdentifier < START_QUESTION_BUTTON_ID) {
+            updateReportByAnswer(report, buttonIdentifier, questionIdentifier);
+            if (questionIdentifier == LAST_QUESTION_INDICATOR) {
+                finalizeReportProcess(report, chatId, reportId);
+            } else {
+                askNextQuestion(chatId, questionIdentifier + 1, reportId);
             }
         }
     }
 
     //Метод создает новый отчет, сохраняет его в базе и инициирует его заполнение
+
+    /**
+     * Создает новый отчет online в боте за текущий день, если его нет, и запускает процесс заполнения отчета.
+     *
+     * @param chatId Telegram chat ID пользователя
+     */
     @Override
     public void createReportOnline(Long chatId) {
         User user = userService.findUserByChatId(chatId);
@@ -190,7 +162,14 @@ public class ReportServiceImpl implements ReportService {
             fillOutReport(chatId, "11_0_" + reportId);
         }
     }
-
+//Метод для обработки фотографии для отчета
+    /**
+     * Обрабатывает фотографию животного для отчета, уменьшает размер фотографии и сохраняет в отчете.
+     *
+     * @param chatId   Telegram chat ID пользователя
+     * @param photo    Массив объектов PhotoSize, в котором передается фотография животного, высланная пользователем
+     * @param reportId ID отчета, ва котором будет храниться фотография
+     */
     @Override
     public void handlePetPhotoMessage(Long chatId, PhotoSize[] photo, Long reportId) {
         log.info("Was invoked handlePetPhotoMessage method for {}", chatId);
@@ -216,7 +195,14 @@ public class ReportServiceImpl implements ReportService {
         user.setState(PROBATION);
         userService.update(user);
     }
-
+//Метод для прикрепления фотографии к отчету
+    /**
+     * Прикрепляет фотографию к отчету пользователя за текущую дату.
+     *
+     * @param chatId Telegram chat ID пользователя
+     * @param photo  Массив объектов PhotoSize, в котором передается фотография животного, высланная пользователем
+     * @return true если фотография успешно прикреплена, в противном случае - false
+     */
     @Override
     public boolean attachPhotoToReport(Long chatId, PhotoSize[] photo) {
         log.info("Was invoked attachPhotoToReport method for {}", chatId);
@@ -239,14 +225,102 @@ public class ReportServiceImpl implements ReportService {
         log.info("User or Adoption Report not found {}", chatId);
         return false;
     }
-
+    /**
+     * Получение отчета пл ID.
+     *
+     * @param id ID отчета
+     * @return найденный отчет
+     * @throws NoSuchElementException если такого отчета нет
+     */
     @Override
     public Report getReportById(Long id) {
         return reportRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Report with id " + id + " was not found"));
     }
+    /**
+     * Вызывает следующий вопрос для заполнения отчета.
+     *
+     * @param chatId           Telegram chat ID пользователя
+     * @param questionIdentifier Integer в качестве идентификатора вопроса
+     * @param reportId         ID отчета, куда записываются ответы
+     */
+    private void askNextQuestion(Long chatId, int questionIdentifier, Long reportId) {
+        if (questionIdentifier < QuestionsForReport.values().length) {
+            messageSender.sendQuestionForReportPhotoMessage(
+                    chatId,
+                    QuestionsForReport.values()[questionIdentifier].getQuestion(),
+                    questionIdentifier,
+                    reportId
+            );
+        }
+    }
+//Обновляем отчет, внося в него новые введенные пользователем значения
+    private void updateReportByAnswer(Report report, int answerValue, int questionIdentifier) {
+        switch (QuestionsForReport.values()[questionIdentifier]) {
+            case DIETAPPETITE:
+                report.setDietAppetite(answerValue);
+                break;
+            case DIETALLERGIES:
+                report.setDietAllergies(answerValue);
+                break;
+            case DIETPREFERENCES:
+                report.setDietPreferences(answerValue);
+                break;
+            case HEALTHSTATUS:
+                report.setHealthStatus(answerValue);
+                break;
+            case BEHAVIORCHANGE:
+                report.setBehaviorChange(answerValue);
+                break;
+        }
+        reportRepository.save(report);
+    }
 
+    private void finalizeReportProcess(Report report, Long chatId, Long reportId) {
+        calculateReportRatingTotal(reportId);
+        User user = userService.findUserByChatId(chatId);
+        userService.setUserState(user.getId(), PROBATION);
+        messageSender.sendQuestionForReportPhotoMessage(chatId, QuestionsForReport.values()[1].getQuestion(), NEXT_QUESTION_ID, reportId);
+        adoptionRecordService.addNewReportToAdoptionRecord(report, chatId);
+    }
 
+    //Метод для получения отчета, если такой уже есть, или создания нового отчета
+    private Report getOrCreateReport(User user, LocalDate date) {
+        AdoptionRecord adoptionRecord = user.getAdoptionRecord();
+        Report report = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
+        if (report == null) {
+            report = new Report();
+            report.setReportDateTime(date);
+            report.setAdoptionRecord(adoptionRecord);
+        }
+        return report;
+    }
+    //В этом методу мы присваиваем значения. Если значения в отчете не указаны, то будет присвоен ноль.
+    private void setReportValues(Report report, List<String> values) {
+        int[] fieldsIndexes = {0, 1, 2, 3, 4};
+        List<Consumer<Integer>> valueSetters = Arrays.asList(
+                report::setHealthStatus,
+                report::setDietAllergies,
+                report::setDietPreferences,
+                report::setBehaviorChange,
+                report::setDietAppetite
+        );
+
+        for (int i = 0; i < fieldsIndexes.length; i++) {
+            String valueStr = values.get(fieldsIndexes[i]);
+            int valueInt = 0;
+            if (valueStr != null && !valueStr.isEmpty()) {
+                try {
+                    valueInt = reportDataConverter.convertToInteger(valueStr);
+                } catch (NumberFormatException e) {
+                    // Оставляем valueInt равным 0, если конвертация не удалась
+                }
+            }
+            // Настраиваем значение. Если valueStr был недопустим, valueInt останется 0.
+            valueSetters.get(i).accept(valueInt);
+        }
+    }
+//Метод для подсчета и сохранения общей суммы в отчете
     private void calculateReportRatingTotal(Long reportId) {
         try {
             Report report = reportRepository.findById(reportId).orElseThrow();
@@ -262,5 +336,4 @@ public class ReportServiceImpl implements ReportService {
             log.error("Ошибка при поиске отчета по идентификатору: {}", reportId);
         }
     }
-
 }
