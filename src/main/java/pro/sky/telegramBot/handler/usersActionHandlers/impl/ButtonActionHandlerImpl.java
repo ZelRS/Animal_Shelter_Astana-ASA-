@@ -150,6 +150,11 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
             log.info("Pressed BUT_GO_TO_SHELTER_SELECT button");
             messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId);
         });
+ //статистика по приютам
+        buttonMap.put(BUT_STATISTIC_SHELTER.getCallbackData(), (firstName, lastName, chatId, username) -> {
+            log.info("Pressed BUT_STATISTIC_SHELTER button");
+            messageSender.sendStatisticAboutShelterMessage(chatId);
+        });
 
     }
 

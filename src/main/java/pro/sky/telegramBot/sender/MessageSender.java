@@ -14,6 +14,7 @@ import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
@@ -46,6 +47,7 @@ public class MessageSender implements BlockedUserHandler {
     private final BotConfig config;
     private final UserService userService;
     private final MediaMessageCreator mediaMessageCreator;
+    private final ShelterService shelterService;
 
     /**
      * метод формирует и отправляет дефолтное сообщение в HTML формате
@@ -496,6 +498,18 @@ public class MessageSender implements BlockedUserHandler {
         }
         return false;
     }
+
+    public void sendStatisticAboutShelterMessage(Long chatId) {
+        log.info("Sending Statistic To Volunteer {}", chatId);
+        try {
+            SendMessage sendMessage = new SendMessage(chatId, shelterService.getShelterNamesWitPetCounts().toString());
+            messageExecutor.executeHTMLMessage(sendMessage);
+        } catch (Exception e){
+            log.error(" Failed to send message");
+        }
+
+    }
+
 
     //    .........отправка сообщений пользователю на любые другие случаи........
 }

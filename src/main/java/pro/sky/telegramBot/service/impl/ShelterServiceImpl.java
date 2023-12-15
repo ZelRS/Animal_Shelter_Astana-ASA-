@@ -15,6 +15,7 @@ import pro.sky.telegramBot.utils.StringListCreator;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -100,5 +101,17 @@ public class ShelterServiceImpl implements ShelterService {
         }
         shelterRepository.save(shelter.get());
         return true;
+    }
+
+    @Override
+    public List<String> getShelterNamesWitPetCounts() {
+        List<Object[]> results = shelterRepository.findShelterNamesPetCounts();
+        List<String> shelterNamesWitCounts = new ArrayList<>();
+        for (Object[] result : results) {
+            String name = (String) result[0];
+            Long count = (Long) result[1];
+            shelterNamesWitCounts.add(name + " - " + count);
+        }
+        return shelterNamesWitCounts;
     }
 }
