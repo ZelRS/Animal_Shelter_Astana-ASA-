@@ -14,6 +14,7 @@ import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
