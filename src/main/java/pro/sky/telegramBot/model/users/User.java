@@ -1,14 +1,16 @@
 package pro.sky.telegramBot.model.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import pro.sky.telegramBot.enums.UserState;
+import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.shelter.Shelter;
 
 import javax.persistence.*;
-import java.util.Collection;
 
 /**
  * модель пользователя в базе данных
@@ -33,14 +35,23 @@ public class User {
     @Column(name = "user_name")
     private String userName;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "info_id")
+    @JsonIgnore
     private UserInfo userInfo;
 
-    @OneToMany(mappedBy = "user")
-    private Collection<Pet> pets;
+    @OneToOne
+    @JoinColumn(name = "pet_id")
+    @JsonIgnore
+    private Pet pet;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @JoinColumn(name = "shelter_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JsonIgnore
     private Shelter shelter;
+
+    @OneToOne
+    @JsonIgnore
+    private AdoptionRecord adoptionRecord;
 }

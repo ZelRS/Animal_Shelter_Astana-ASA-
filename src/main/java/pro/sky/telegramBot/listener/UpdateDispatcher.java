@@ -1,60 +1,69 @@
 package pro.sky.telegramBot.listener;
 
-import com.pengrad.telegrambot.model.CallbackQuery;
-import com.pengrad.telegrambot.model.Message;
-import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.handler.usersActionHandlers.impl.ButtonActionHandler;
-import pro.sky.telegramBot.handler.usersActionHandlers.impl.CommandActionHandler;
+import pro.sky.telegramBot.handler.usersActionHandlers.impl.*;
 
-/**
- * диспетчер принимает апдейты от слушателя и, проверяя на null, достает необходимые данные
- */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UpdateDispatcher {
-    private final CommandActionHandler commandActionHandler;
-    private final ButtonActionHandler buttonActionHandler;
+    private final CommandActionHandlerImpl commandActionHandler;
+    private final ButtonActionHandlerImpl buttonActionHandler;
+    private final DocumentActionHandler documentActionHandler;
+    private final PhotoActionHandler photoActionHandler;
 
-    /**
-     * главный метод диспетчера, организующий проверку на null данных вытянутых из команды пользователя
-     */
     public void dispatch(Update update) {
-        if (update.message() != null) {
-            pullDataFromMessageCommand(update.message());
-        } else if (update.callbackQuery() != null) {
-            pullDataFromButtonCommand(update.callbackQuery());
+        if (update == null) return;
+
+        Message message = update.message();
+        CallbackQuery callbackQuery = update.callbackQuery();
+
+        // Вызываем соответствующий обработчик в зависимости от контента апдейта.
+        if (message != null) {
+            handleIncomingMessage(message);
+        } else if (callbackQuery != null) {
+            handleCallbackQuery(callbackQuery);
         }
     }
 
-    /**
-     * метод достает из апдейта необходимые данные для формирования ответа<br>
-     * при получении текстовой команды от пользователя.<br>
-     * Далее данные отправляются в обработчик команд {@link #commandActionHandler}
-     */
-    private void pullDataFromMessageCommand(Message message) {
+    private void handleIncomingMessage(Message message) {
+        Long chatId = message.chat().id();
+        if (message.document() != null) {
+            log.info("Invoking document handler for chatId: {}", chatId);
+            documentActionHandler.handle(message.document(), chatId);
+        } else if (message.photo() != null) {
+            log.info("Invoking photo handler for chatId: {}", chatId);
+            photoActionHandler.handle(message.photo(), chatId);
+        } else {
+            log.info("Invoking message command handler for chatId: {}", chatId);
+            handleMessageCommand(message);
+        }
+    }
 
+    private void handleMessageCommand(Message message) {
         String messageText = message.text();
-        long chatId = message.chat().id();
-        String firstName = message.chat().firstName();
-        String lastName = message.chat().lastName();
         if (messageText != null) {
-            commandActionHandler.handle(messageText, firstName, lastName, chatId);
+            Chat chat = message.chat();
+            commandActionHandler.handle(messageText, chat.firstName(), chat.lastName(), chat.id());
         }
     }
 
-    /**
-     * метод достает из апдейта необходимые данные для формирования ответа<br>
-     * при нажатии на кнопку пользователем.<br>
-     * Далее данные отправляются в обработчик кнопок<br>
-     * {@link #buttonActionHandler}
-     */
-    private void pullDataFromButtonCommand(CallbackQuery callbackQuery) {
+    private void handleCallbackQuery(CallbackQuery callbackQuery) {
         String callbackData = callbackQuery.data();
-        long chatId = callbackQuery.message().chat().id();
-        String firstName = callbackQuery.from().firstName();
-        String lastName = callbackQuery.from().lastName();
-        buttonActionHandler.handle(callbackData, firstName, lastName, chatId);
+        Message message = callbackQuery.message();
+
+        if (message != null) {
+            log.info("Invoking button handler for chatId: {}", message.chat().id());
+            buttonActionHandler.handle(
+                    callbackData,
+                    callbackQuery.from().firstName(),
+                    callbackQuery.from().lastName(),
+                    message.chat().id(),
+                    message.chat().username()
+            );
+        }
     }
 }

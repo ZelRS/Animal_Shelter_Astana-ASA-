@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.entity.MediaMessageParams;
+import pro.sky.telegramBot.loader.MediaLoader;
 
 import java.io.IOException;
 
@@ -34,9 +35,23 @@ public class MediaMessageCreator {
     }
 
     /**
-     * закрепление загруженного документа за сообщением
+     * закрепление загруженного документа XLSX формата за сообщением
      */
     public SendDocument createDocumentMessage(MediaMessageParams params) throws IOException {
-        return mediaLoader.documentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
+        return mediaLoader.XLSXDocumentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
+    }
+
+    /**
+     * закрепление загруженного документа XLSX формата за сообщением относящемся к контактным данным пользователя
+     */
+    public SendDocument createInfoTableXLSXDocumentMessage(MediaMessageParams params) throws IOException {
+        return mediaLoader.infoTableXLSXDocumentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
+    }
+
+    /**
+     * закрепление загруженного документа TXT формата за сообщением
+     */
+    public SendDocument createTXTDocumentMessage(MediaMessageParams params) throws IOException {
+        return mediaLoader.TXTDocumentLoader(params.getChatId(), params.getFilePath(), params.getFileName());
     }
 }

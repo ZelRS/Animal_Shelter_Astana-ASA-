@@ -1,5 +1,6 @@
 package pro.sky.telegramBot.utils.mediaUtils;
 
+import com.pengrad.telegrambot.request.SendDocument;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.service.ShelterService;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 
 import static pro.sky.telegramBot.enums.MessageImage.*;
@@ -19,6 +21,7 @@ import static pro.sky.telegramBot.enums.PetType.DOG;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional
 @Slf4j  // SLF4J logging
 public class SpecificMediaMessageCreator {
     private final MediaMessageCreator mediaMessageCreator;
@@ -41,7 +44,7 @@ public class SpecificMediaMessageCreator {
      * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
      * имеющего статус UNTRUSTED("не надежный")
      */
-    public SendPhoto createSorryWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
+    public SendPhoto createAnswerForUntrustedUserMessage(Long chatId, String firstName) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(SORRY_WELCOME_MSG_IMG.getPath());
@@ -51,13 +54,25 @@ public class SpecificMediaMessageCreator {
 
     /**
      * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
+     * имеющего статус UNTRUSTED("не надежный")
+     */
+    public SendPhoto createInformationNotFoundMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(SORRY_WELCOME_MSG_IMG.getPath());
+        params.setCaption("Упс! Простите. Информация не найдена в базе.");
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    /**
+     * сборка компонентов для фото-сообщения приветствия для пользователя,<br>
      * имеющего статус BLOCKED("в черном списке")
      */
-    public SendPhoto createBlockedWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
+    public SendPhoto createBlockedWelcomePhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(BLOCKED_WELCOME_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_BLOCKED_WELCOME(), firstName));
+        params.setCaption(String.format(config.getMSG_BLOCKED_WELCOME()));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -126,6 +141,10 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    /**
+     * сборка компонентов для фото-сообщения,<br>
+     * когда пользователь нажал кнопку "Рекомендации и советы" для собак
+     */
     public SendPhoto createCareDogRecMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -134,6 +153,10 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    /**
+     * сборка компонентов для фото-сообщения,<br>
+     * когда пользователь нажал кнопку "Рекомендации и советы" для кошек
+     */
     public SendPhoto createCareCatRecMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
@@ -142,16 +165,285 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
-    public SendPhoto createDownloadMessege(Long chatId) throws IOException{
+    /**
+     * сборка компонентов для фото-сообщения,<br>
+     * когда пользователь нажал кнопку "отправить отчет"<br>
+     * в интервале с 18:88 и до 21:00
+     */
+    public SendPhoto createReportSendTwoOptionsPhotoMessage(Long chatId) throws IOException {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
-        params.setFilePath(DOWNLOAD_REPORT_MESSEGE_IMG.getPath());
-        params.setCaption(config.getMSG_DOWNLOAD_REPORT_MESSEGE());
+        params.setFilePath(TWO_OPTIONS_SEND_REPORT_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_SEND_REPORT_TWO_OPTIONS());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    /**
+     * сборка компонентов для фото-сообщения,<br>
+     * когда пользователь нажал кнопку "отправить отчет"<br>
+     * в интервале до 18:88 и после 21:00
+     */
+    public SendPhoto createReportSendOneOptionPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(ONE_OPTION_SEND_REPORT_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_SEND_REPORT_ONE_OPTION());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
 
-//    .......  фото-сообщения для других целей......
+    /**
+     * сборка компонентов для отправки документа,<br>
+     * когда пользователь выбрал команду /report
+     */
+    public SendDocument createReportSendDocumentMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath("/documents/report.xlsx");
+        params.setFileName("report");
+        return mediaMessageCreator.createDocumentMessage(params);
+    }
+
+    /**
+     * сборка компонентов для отправки документа,<br>
+     * когда пользователь нажал на ссылку у конкретного документа
+     */
+    public SendDocument createRecDocDocumentMessage(Integer refNum, Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath("/documents/tips_and_tricks/" + refNum + "rec.txt");
+        params.setFileName(refNum + "rec");
+        return mediaMessageCreator.createTXTDocumentMessage(params);
+    }
+
+    /**
+     * сборка компонентов для отправки документа,<br>
+     * когда пользователь выбрал команду /info_table
+     */
+    public SendDocument createInfoTableDocumentMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath("/documents/info_table.xlsx");
+        params.setFileName("info_table");
+        return mediaMessageCreator.createInfoTableXLSXDocumentMessage(params);
+    }
+
+    //Метод предоставляет данные для вопроса отчета
+    public SendPhoto createQuestionForReportMessage(Long chatId, String question) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(QUESTION_FOR_REPORT_IMG.getPath());
+        params.setCaption(question);
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    //Метод предоставляет данные для сообщения пользователю. что его отчет принят
+    public SendPhoto createReportAcceptedPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(REPORT_ACCEPTED_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_REPORT_ACCEPTED());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createVolunteerWelcomePhotoMessage(Long chatId, String firstName) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(HELLO_VOLUNTEER_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_HELLO_VOLUNTEER(), firstName));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createChooseShelterPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(CHOOSE_SHELTER_IMG.getPath());
+        params.setCaption(config.getMSG_CHOOSE_SHELTER());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    /**
+     * сборка компонентов для отправки документа,<br>
+     * когда пользователь нажал на кнопку "позвать волонтёра"
+     */
+    public SendPhoto createCallVolunteerPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(CALL_VOLUNTEER_MSG_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_VOLUNTEER_NOTIFIED()));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+    /**
+     * Метод передает параметры для сообщения о возможности онлайн заполнения отчета
+     */
+    public SendPhoto createNotificationToAdopterAboutDailyReportPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+    /**
+     * Метод передает параметры для сообщения о начале процедуры онлайн заполнения отчета
+     */
+    public SendPhoto createNotificationToAdopterAboutStartReportPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ABOUT_START_REPORTING());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+    /**
+     * Метод передает параметры для сообщения о завершении процедуры онлайн заполнения отчета
+     */
+    public SendPhoto createNotificationToAdopterAboutEndReportPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ABOUT_END_REPORTING());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createMissingPetMessageToVolunteerPhotoMessage(Long volunteerChatId, Long userId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(volunteerChatId);
+        params.setFilePath(MISSING_PET_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_MISSING_PET(), userId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createAskVolunteerForHelpPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(REPORT_NOT_ACCEPTED_MSG_IMG.getPath());
+        params.setCaption(config.getMSG_GET_HELP_FROM_VOLUNTEER());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNeedToSendReportPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
+        params.setCaption(config.getMSG_NEED_TO_SEND_REPORT());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNeedToSendPhotoForReportPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
+        params.setCaption(config.getMSG_NEED_TO_SEND_PHOTO_FOR_REPORT());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToVolunteerAboutProblemPhotoMessage(
+            Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_PROBLEM(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToVolunteerAboutTryYourBest(
+            Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_TRY_YOUR_BEST(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToVolunteerAboutGoodJob(
+            Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_GOOD_JOB(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToVolunteerAboutCalculationsError(
+            Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_CALCULATION_ERROR_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_CALCULATION_ERROR(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAboutProblemPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_ABOUT_PROBLEM());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAboutTryYourBest(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_ABOUT_TRY_YOUR_BEST());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAboutGoodJob(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_ABOUT_GOOD_JOB());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createUnsuccessfulNotificationToVolunteerPhotoMessage(Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_FAILED(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToVolunteerAboutExtension(Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_EXTENSION(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createSuccessfulNotificationToVolunteer(Long chatId, Long userChatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
+        params.setCaption(String.format(config.getMSG_NOTIFICATION_SUCCESSFUL(), userChatId));
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createUnsuccessfulNotificationToAdopterPhotoMessage(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_FAILED());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createNotificationToAdopterAboutExtension(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_EXTENSION());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+    public SendPhoto createSuccessfulNotificationToAdopter(Long chatId) throws IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
+        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_SUCCESSFUL());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
+//    .......  медиа-сообщения для других целей......
 
 
 }

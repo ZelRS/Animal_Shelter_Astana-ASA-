@@ -1,10 +1,8 @@
 package pro.sky.telegramBot.executor;
 
 import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.request.SendDocument;
-import com.pengrad.telegrambot.request.SendMessage;
-import com.pengrad.telegrambot.request.SendPhoto;
-import com.pengrad.telegrambot.request.SendVideo;
+import com.pengrad.telegrambot.request.*;
+import com.pengrad.telegrambot.response.SendResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +48,7 @@ public class MessageExecutor {
     /**
      * отправка пользователю документа
      */
-    public void executeDocument(Long chatId, SendDocument sendDoc) {
+    public void executeDocument(SendDocument sendDoc) {
         log.info("Sending document message to user");
         telegramBot.execute(sendDoc);
     }

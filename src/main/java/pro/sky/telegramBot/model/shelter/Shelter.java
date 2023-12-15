@@ -26,10 +26,10 @@ public class Shelter {
     @Column(name = "name")
     private String name;
 
-    @Column(name="description")
+    @Column(name = "description")
     private String description;
 
-    @Column(name="preview")
+    @Column(name = "preview")
     private String preview;
 
     @Column(name = "address")
@@ -44,6 +44,24 @@ public class Shelter {
     @Column(name = "photo")
     @JsonIgnore
     private byte[] data;
+
+    // схема проезда
+    @Lob
+    @Column(name = "schema")
+    @JsonIgnore
+    private byte[] schema;
+
+    // график работы приюта
+    @Column(name = "schedule")
+    private String schedule;
+
+    // номер телефона охраны
+    @Column(name = "security_phone")
+    private String securityPhone;
+
+    // правила техники безопасности
+    @Column(name = "safety_rules")
+    private String safetyRules;
 
     @OneToMany(mappedBy = "shelter", fetch = FetchType.EAGER)
     @JsonIgnore

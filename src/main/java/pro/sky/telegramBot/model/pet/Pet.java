@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import pro.sky.telegramBot.enums.PetType;
+import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.model.users.User;
 
@@ -48,13 +49,17 @@ public class Pet {
     @JsonIgnore
     private byte[] data;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @OneToOne
+    @JoinColumn(name = "owner_id", unique = true)
     @JsonIgnore
-    private User user;
+    private User owner;
 
     @ManyToOne
     @JoinColumn(name = "shelter_id")
     @JsonIgnore
     private Shelter shelter;
+
+    @OneToOne
+    @JsonIgnore
+    private AdoptionRecord adoptionRecord;
 }
