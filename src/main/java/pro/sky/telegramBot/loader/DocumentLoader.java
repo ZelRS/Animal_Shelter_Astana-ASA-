@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.util.List;
 
 // Определяем сервис с необходимыми зависимостями для работы с документами.
+/**
+ * Класс для обработки и чтения документов
+ */
 @RequiredArgsConstructor
 @Service
 @Transactional
