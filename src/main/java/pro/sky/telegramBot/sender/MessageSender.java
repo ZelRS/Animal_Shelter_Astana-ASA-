@@ -383,7 +383,9 @@ public class MessageSender implements BlockedUserHandler {
         }
 
     }
-
+    /**
+     * Метод для выбора типа животного
+     */
     public void sendChooseShelterMessage(Long chatId) {
         log.info("Sending first time welcome message to {}", chatId);
         try {
