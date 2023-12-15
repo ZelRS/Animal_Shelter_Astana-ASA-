@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * Класс для преобразования стринговых параметров в необходимый формат для отчета
@@ -12,9 +13,9 @@ import java.time.format.DateTimeFormatter;
 @Component
 @Slf4j
 public class ReportDataConverter {
-    public LocalDate convertToData(String dateString) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        return LocalDate.parse(dateString, formatter);
+    public LocalDate convertToData(String textDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy", new Locale("ru"));
+        return LocalDate.parse(textDate, formatter);
     }
 
     public int convertToInteger(String valueA6) {
