@@ -158,6 +158,14 @@ public class SpecificKeyboardCreator {
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
+    public Keyboard buttonToSendPhotoKeyboard() {
+        log.info("Creating a keyboard to send a photo for report");
+        List<Button> buttons = new ArrayList<>(List.of(
+                new Button(config.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData())
+        ));
+        return keyboardCreator.createInlineKeyboard(buttons);
+    }
+
 //    ...... клавиатуры для других типов сообщений.....
 
 }
