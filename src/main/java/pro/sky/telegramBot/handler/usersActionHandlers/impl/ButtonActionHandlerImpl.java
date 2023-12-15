@@ -37,7 +37,7 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
 
     @FunctionalInterface
     interface Button {
-        void run(String firstName, String lastName, Long chatId, String username);
+        void run(String firstName, String lastName, Long chatId, String username, UserState userState);
     }
 
     private final Map<String, Button> buttonMap = new HashMap<>();
@@ -48,117 +48,109 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
      */
     @PostConstruct
     public void init() {
-        buttonMap.put(BUT_TAKING_PET.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_TAKING_PET.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed BUT_TAKING_PET button");
             messageSender.sendTakingPetPhotoMessage(chatId, firstName);
         });
 
-        buttonMap.put(BUT_CARE_PET_REC.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_CARE_PET_REC.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed BUT_CARE_PET_RECOMMENDATIONS button");
             messageSender.sendCarePetRecMessage(chatId);
         });
 
-        buttonMap.put(BUT_START_REGISTRATION.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_START_REGISTRATION.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed BUT_START_REGISTRATION button");
             messageSender.sendStartRegistrationMessage(chatId);
         });
 
         //  Обработчик кнопки "Отправить отчет", проверяется статус пользователя
-        buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_SEND_REPORT.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed SEND_REPORT button");
             User user = userService.findUserByChatId(chatId);
-            if (user != null && user.getAdoptionRecord() != null) {
-                UserState state = user.getState();
-                if (state != null && state.equals(PROBATION)) {
-                    messageSender.sendReportPhotoMessage(chatId);
-                    return;
-                }
+            if (user != null && user.getAdoptionRecord() != null && userState.equals(PROBATION)) {
+                messageSender.sendReportPhotoMessage(chatId);
+                return;
             }
             messageSender.sendReportNotAvailableMessage(chatId);
         });
 
-        buttonMap.put(BUT_SEND_PET_PHOTO.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_SEND_PET_PHOTO.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed SEND_PET_PHOTO button");
             User user = userService.findUserByChatId(chatId);
-            if (user != null && user.getAdoptionRecord() != null) {
-                UserState state = user.getState();
-                if (state != null && state.equals(PROBATION)) {
-                    photoMessageSender.sendPetPhotoForReportMessage(chatId);
-                } else {
-                    messageSender.sendDefaultHTMLMessage(chatId);
-                }
+            if (user != null && user.getAdoptionRecord() != null && userState.equals(PROBATION)) {
+                photoMessageSender.sendPetPhotoForReportMessage(chatId);
+                return;
             }
+            messageSender.sendDefaultHTMLMessage(chatId);
         });
 
         //  Если кнопка "Отправить отчет" доступна, то меняется статус пользователя и инициируется заполнение отчета
-        buttonMap.put(BUT_FILL_OUT_REPORT_ON.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_FILL_OUT_REPORT_ON.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed FILL_OUT_REPORT button");
             User user = userService.findUserByChatId(chatId);
-            if (user != null) {
-                UserState state = user.getState();
-                if (state != null && state.equals(PROBATION) && user.getAdoptionRecord() != null) {
-                    log.info("Change of user state to PROBATION_REPORT");
-                    user.setState(PROBATION_REPORT);
-                    userService.update(user);
-                    log.info("Was invoked method to fill out the report");
-                    reportService.createReportOnline(chatId);
-                } else {
-                    messageSender.sendDefaultHTMLMessage(chatId);
-                }
+            if (user != null && userState.equals(PROBATION) && user.getAdoptionRecord() != null) {
+                log.info("Change of user state to PROBATION_REPORT");
+                user.setState(PROBATION_REPORT);
+                userService.update(user);
+                log.info("Was invoked method to fill out the report");
+                reportService.createReportOnline(chatId);
+                return;
             }
+            messageSender.sendDefaultHTMLMessage(chatId);
+
         });
 
         //  Кнопка сделана без ответа, так как отключена в нерабочее время
-        buttonMap.put(BUT_FILL_OUT_REPORT_OFF.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_FILL_OUT_REPORT_OFF.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed FILL_OUT_REPORT button");
         });
 
         //  Точка входа "позвать волонтёра"
-        buttonMap.put(BUT_CALL_VOLUNTEER.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_CALL_VOLUNTEER.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed CALL_VOLUNTEER button");
             messageSender.sendCallVolunteerPhotoMessage(chatId, username);
         });
 
         //  Точка входа в информационное меню приюта
-        buttonMap.put(BUT_GET_FULL_INFO.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_GET_FULL_INFO.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed GET_FULL_INFO button");
             messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
         });
 
-        buttonMap.put(BUT_WANT_DOG.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_WANT_DOG.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed WANT_DOG button");
             messageSender.sendDogSheltersListPhotoMessage(chatId);
         });
 
-        buttonMap.put(BUT_WANT_CAT.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_WANT_CAT.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed WANT_CAT button");
             messageSender.sendCatSheltersListPhotoMessage(chatId);
         });
 
         //  Возврат с навигационного меню в меню информации о приюте
-        buttonMap.put(BUT_MORE_INFORMATION.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_MORE_INFORMATION.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed BUT_MORE_INFORMATION button");
             messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
         });
 
         //  Возврат в главное меню с навигационных кнопок
-        buttonMap.put(BUT_GO_TO_MAIN.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_GO_TO_MAIN.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed BUT_GO_TO_MAIN button");
             messageSender.sendShelterFunctionalPhotoMessage(chatId);
         });
 
         //  Возврат к выбору приюта c навигационных кнопок
-        buttonMap.put(BUT_GO_TO_SHELTER_SELECT.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        buttonMap.put(BUT_GO_TO_SHELTER_SELECT.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed BUT_GO_TO_SHELTER_SELECT button");
             messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId);
         });
- //статистика по приютам
-        buttonMap.put(BUT_STATISTIC_SHELTER.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        //статистика по приютам
+        buttonMap.put(BUT_STATISTIC_SHELTER.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed BUT_STATISTIC_SHELTER button");
             messageSender.sendStatisticAboutShelterMessage(chatId);
         });
- //статистика по пользователям
-        buttonMap.put(BUT_STATISTIC_NEW_USER.getCallbackData(), (firstName, lastName, chatId, username) -> {
+        //статистика по пользователям
+        buttonMap.put(BUT_STATISTIC_NEW_USER.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed BUT_STATISTIC_NEW_USER button");
             messageSender.sendStatisticAboutNewUserMessage(chatId);
         });
@@ -183,7 +175,7 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
         }
         Button commandToRun = buttonMap.get(callbackData.toLowerCase());
         if (commandToRun != null) {
-            commandToRun.run(firstName, lastName, chatId, username);
+            commandToRun.run(firstName, lastName, chatId, username, userState);
         } else {
             log.warn("No handler found for button: {}", callbackData);
             // отправка дефолтного сообщения
