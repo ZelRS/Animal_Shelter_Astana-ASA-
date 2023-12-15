@@ -16,7 +16,7 @@ public class UpdateDispatcher {
     private final CommandActionHandler commandActionHandler;
     private final ButtonActionHandler buttonActionHandler;
     private final DocumentActionHandler documentActionHandler;
-    private final PhotoActionHandler photoActionHandler;
+    private final PhotoActionHandlerImpl photoActionHandlerImpl;
 
     public void handleIncomingMessage(Message message, Long chatId, UserState userState) {
         if (message.document() != null) {
@@ -24,7 +24,7 @@ public class UpdateDispatcher {
             documentActionHandler.handle(message.document(), chatId, userState);
         } else if (message.photo() != null) {
             log.info("Invoking photo handler for chatId: {}", chatId);
-            photoActionHandler.handle(message.photo(), chatId, userState);
+            photoActionHandlerImpl.handle(message.photo(), chatId, userState);
         } else {
             log.info("Invoking message command handler for chatId: {}", chatId);
             handleMessageCommand(message, chatId, userState);

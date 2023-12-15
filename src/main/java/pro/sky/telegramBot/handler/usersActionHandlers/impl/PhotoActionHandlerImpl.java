@@ -1,6 +1,5 @@
 package pro.sky.telegramBot.handler.usersActionHandlers.impl;
 
-import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.model.PhotoSize;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
+import pro.sky.telegramBot.handler.usersActionHandlers.PhotoActionHandler;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.sender.specificSenders.PhotoMessageSender;
@@ -23,7 +23,7 @@ import static pro.sky.telegramBot.enums.UserState.*;
 @RequiredArgsConstructor
 @Getter
 @Slf4j
-public class PhotoActionHandler {
+public class PhotoActionHandlerImpl implements PhotoActionHandler {
     private final UserService userService;
     private final MessageSender messageSender;
     private final BlockedUserHandler blockedUserHandler;
@@ -34,7 +34,7 @@ public class PhotoActionHandler {
         void processPhoto(PhotoSize[] photo, Long chatId);
     }
 
-    private final Map<UserState, PhotoActionHandler.PhotoProcessor> photoMap = new HashMap<>();
+    private final Map<UserState, PhotoActionHandlerImpl.PhotoProcessor> photoMap = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -52,17 +52,18 @@ public class PhotoActionHandler {
         });
     }
 
+    @Override
     public void handle(PhotoSize[] photo, Long chatId, UserState userState) {
         if (userState.equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
             return;
         }
-        PhotoActionHandler.PhotoProcessor photoProcessor = photoMap.get(userState);
-            if (photoProcessor != null) {
-                photoProcessor.processPhoto(photo, chatId);
-            } else {
-                // Если не нашли обработчик для присланной фотографии
-                log.warn("No handler found for the state");
-            }
+        PhotoActionHandlerImpl.PhotoProcessor photoProcessor = photoMap.get(userState);
+        if (photoProcessor != null) {
+            photoProcessor.processPhoto(photo, chatId);
+        } else {
+            // Если не нашли обработчик для присланной фотографии
+            log.warn("No handler found for the state");
+        }
     }
 }
