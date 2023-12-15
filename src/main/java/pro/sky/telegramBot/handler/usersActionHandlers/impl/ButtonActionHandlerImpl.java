@@ -71,10 +71,10 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
                 UserState state = user.getState();
                 if (state != null && state.equals(PROBATION)) {
                     messageSender.sendReportPhotoMessage(chatId);
-                } else {
-                    messageSender.sendReportNotAvailableMessage(chatId);
+                    return;
                 }
             }
+            messageSender.sendReportNotAvailableMessage(chatId);
         });
 
         buttonMap.put(BUT_SEND_PET_PHOTO.getCallbackData(), (firstName, lastName, chatId, username) -> {
