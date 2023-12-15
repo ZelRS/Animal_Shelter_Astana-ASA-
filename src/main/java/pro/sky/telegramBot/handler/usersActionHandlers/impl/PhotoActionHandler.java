@@ -52,14 +52,12 @@ public class PhotoActionHandler {
         });
     }
 
-    public void handle(PhotoSize[] photo, Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        if (user != null && user.getState().equals(BLOCKED)) {
+    public void handle(PhotoSize[] photo, Long chatId, UserState userState) {
+        if (userState.equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
             return;
         }
-        assert user != null;
-        PhotoActionHandler.PhotoProcessor photoProcessor = photoMap.get(user.getState());
+        PhotoActionHandler.PhotoProcessor photoProcessor = photoMap.get(userState);
             if (photoProcessor != null) {
                 photoProcessor.processPhoto(photo, chatId);
             } else {

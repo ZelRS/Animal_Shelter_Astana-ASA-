@@ -171,14 +171,13 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
      * Если такой команды нет, отправляется дефолтное сообщение
      */
     @Override
-    public void handle(String callbackData, String firstName, String lastName, Long chatId, String username) {
-        User user = userService.findUserByChatId(chatId);
+    public void handle(String callbackData, String firstName, String lastName, Long chatId, String username, UserState userState) {
         // Все нажатия кнопок пользователя с данным статусом проскакивают без обработки в класс заполнения отчета
-        if (user != null && user.getState().equals(PROBATION_REPORT)) {
+        if (userState.equals(PROBATION_REPORT)) {
             log.info("Was invoked method of sending question by callbackData {} in handler", callbackData);
             reportService.fillOutReport(chatId, callbackData);
             return;
-        } else if (user != null && user.getState().equals(BLOCKED)) {
+        } else if (userState.equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
             return;
         }

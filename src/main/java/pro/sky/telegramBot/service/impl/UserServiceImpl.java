@@ -123,4 +123,24 @@ public class UserServiceImpl implements UserService {
     public List<User> getNewUser() {
         return userRepository.findAllByState(FREE);
     }
+
+    @Override
+    public UserState getUserState(Long chatId, String firstName) {
+        UserState userState = FREE;
+        User user = userRepository.findByChatId(chatId);
+        if(user != null) {
+            userState = user.getState();
+        } else {
+            createNewUser(chatId, firstName);
+        }
+        return userState;
+    }
+
+    private void createNewUser(Long chatId, String firstName) {
+        User user = new User();
+        user.setChatId(chatId);
+        user.setUserName(firstName);
+        user.setState(UserState.FREE);
+        create(user);
+    }
 }
