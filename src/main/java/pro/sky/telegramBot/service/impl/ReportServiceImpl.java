@@ -279,16 +279,9 @@ public class ReportServiceImpl implements ReportService {
     private void finalizeReportProcess(Report report, Long chatId, Long reportId) {
         calculateReportRatingTotal(reportId);
         User user = userService.findUserByChatId(chatId);
-        transitionUserState(user);
+        userService.setUserState(user.getId(), PROBATION);
         messageSender.sendQuestionForReportPhotoMessage(chatId, QuestionsForReport.values()[1].getQuestion(), NEXT_QUESTION_ID, reportId);
         adoptionRecordService.addNewReportToAdoptionRecord(report, chatId);
-    }
-
-    private void transitionUserState(User user) {
-        if (user != null) {
-            user.setState(PROBATION);
-            userService.update(user);
-        }
     }
 
     //Метод для получения отчета, если такой уже есть, или создания нового отчета
