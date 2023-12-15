@@ -45,4 +45,6 @@ public interface ShelterService {
      * загрузить схему проезда в базу
      */
     boolean uploadSchema(Long id, MultipartFile schema) throws Exception;
+
+    List<String> getShelterNamesWitPetCounts();
 }
