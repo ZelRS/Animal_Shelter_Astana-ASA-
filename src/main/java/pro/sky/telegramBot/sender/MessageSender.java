@@ -413,6 +413,7 @@ public class MessageSender implements BlockedUserHandler {
                 messageExecutor.executePhotoMessage(sendPhoto);
             } else {
                 SendPhoto sendPhoto = specificMediaMessageCreator.createReportAcceptedPhotoMessage(chatId);
+                sendPhoto.replyMarkup(specificKeyboardCreator.buttonToSendPhotoKeyboard());
                 messageExecutor.executePhotoMessage(sendPhoto);
             }
         } catch (Exception e) {
