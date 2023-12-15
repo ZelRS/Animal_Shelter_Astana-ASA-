@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pro.sky.telegramBot.enums.TrialPeriodState;
 import pro.sky.telegramBot.exception.notFound.PetNotFoundException;
 import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
 import pro.sky.telegramBot.model.adoption.AdoptionRecord;
@@ -25,7 +24,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static pro.sky.telegramBot.enums.PetType.NOPET;
-import static pro.sky.telegramBot.enums.TrialPeriodState.*;
+import static pro.sky.telegramBot.model.adoption.AdoptionRecord.TrialPeriodState.*;
 import static pro.sky.telegramBot.enums.UserState.*;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
 @Transactional
@@ -60,7 +59,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         }
         newAdoptionRecord.setUser(user);
         newAdoptionRecord.setPet(pet);
-        newAdoptionRecord.setState(TrialPeriodState.PROBATION);
+        newAdoptionRecord.setState(AdoptionRecord.TrialPeriodState.PROBATION);
         newAdoptionRecord.setAdoptionDate(date);
         newAdoptionRecord.setTrialPeriodDays(trialPeriodDays);
         newAdoptionRecord.setTrialPeriodEnd(date.plusDays(trialPeriodDays));
@@ -156,7 +155,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             Pet pet = user.getPet();
             AdoptionRecord adoptionRecord = user.getAdoptionRecord();
             adoptionRecord.setAdoptionDate(date);
-            adoptionRecord.setState(TrialPeriodState.PROBATION);
+            adoptionRecord.setState(AdoptionRecord.TrialPeriodState.PROBATION);
             adoptionRecord.setRatingTotal(0);
             if (pet != null) {
                 adoptionRecord.setPet(pet);
@@ -271,7 +270,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     public void decreaseTrialPeriodDays() {
         LocalDate currentDate = LocalDate.now();
         List<AdoptionRecord> adoptionRecords = adoptionRecordRepository.findByTrialPeriodEndAfterAndState(
-                currentDate, TrialPeriodState.PROBATION);
+                currentDate, AdoptionRecord.TrialPeriodState.PROBATION);
         List<AdoptionRecord> updatedAdoptionRecords = adoptionRecords.stream()
                 .filter(adoptionRecord -> adoptionRecord.getTrialPeriodDays() > 0)
                 .peek(adoptionRecord -> {

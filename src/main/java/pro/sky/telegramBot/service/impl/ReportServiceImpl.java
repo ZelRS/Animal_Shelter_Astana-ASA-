@@ -7,7 +7,6 @@ import com.pengrad.telegrambot.response.GetFileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.enums.QuestionsForReport;
 import pro.sky.telegramBot.loader.MediaLoader;
 import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.adoption.Report;
@@ -245,10 +244,10 @@ public class ReportServiceImpl implements ReportService {
      * @param reportId         ID отчета, куда записываются ответы
      */
     private void askNextQuestion(Long chatId, int questionIdentifier, Long reportId) {
-        if (questionIdentifier < QuestionsForReport.values().length) {
+        if (questionIdentifier < Report.QuestionsForReport.values().length) {
             messageSender.sendQuestionForReportPhotoMessage(
                     chatId,
-                    QuestionsForReport.values()[questionIdentifier].getQuestion(),
+                    Report.QuestionsForReport.values()[questionIdentifier].getQuestion(),
                     questionIdentifier,
                     reportId
             );
@@ -256,7 +255,7 @@ public class ReportServiceImpl implements ReportService {
     }
 //Обновляем отчет, внося в него новые введенные пользователем значения
     private void updateReportByAnswer(Report report, int answerValue, int questionIdentifier) {
-        switch (QuestionsForReport.values()[questionIdentifier]) {
+        switch (Report.QuestionsForReport.values()[questionIdentifier]) {
             case DIETAPPETITE:
                 report.setDietAppetite(answerValue);
                 break;
@@ -280,7 +279,7 @@ public class ReportServiceImpl implements ReportService {
         calculateReportRatingTotal(reportId);
         User user = userService.findUserByChatId(chatId);
         userService.setUserState(user.getId(), PROBATION);
-        messageSender.sendQuestionForReportPhotoMessage(chatId, QuestionsForReport.values()[1].getQuestion(), NEXT_QUESTION_ID, reportId);
+        messageSender.sendQuestionForReportPhotoMessage(chatId, Report.QuestionsForReport.values()[1].getQuestion(), NEXT_QUESTION_ID, reportId);
         adoptionRecordService.addNewReportToAdoptionRecord(report, chatId);
     }
 

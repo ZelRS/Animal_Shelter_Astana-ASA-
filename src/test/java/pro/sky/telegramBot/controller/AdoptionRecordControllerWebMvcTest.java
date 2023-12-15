@@ -37,8 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static pro.sky.telegramBot.enums.TrialPeriodState.*;
-import static pro.sky.telegramBot.enums.UserState.BLOCKED;
+import static pro.sky.telegramBot.model.adoption.AdoptionRecord.TrialPeriodState.*;
 import static pro.sky.telegramBot.enums.UserState.UNTRUSTED;
 
 @WebMvcTest(AdoptionRecordController.class)

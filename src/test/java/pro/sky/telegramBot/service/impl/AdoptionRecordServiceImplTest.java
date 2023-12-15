@@ -12,12 +12,11 @@ import pro.sky.telegramBot.repository.AdoptionRecordRepository;
 import pro.sky.telegramBot.service.PetService;
 import pro.sky.telegramBot.service.UserService;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static pro.sky.telegramBot.enums.TrialPeriodState.*;
+import static pro.sky.telegramBot.model.adoption.AdoptionRecord.TrialPeriodState.*;
 
 class AdoptionRecordServiceImplTest {
 

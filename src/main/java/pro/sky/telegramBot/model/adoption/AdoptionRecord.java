@@ -2,8 +2,8 @@ package pro.sky.telegramBot.model.adoption;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import pro.sky.telegramBot.enums.TrialPeriodState;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.users.User;
 
@@ -11,7 +11,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import pro.sky.telegramBot.model.adoption.*;
 
 @Entity(name = "adoption_record")
 @RequiredArgsConstructor
@@ -34,4 +33,20 @@ public class AdoptionRecord {
     @OneToMany(mappedBy = "adoptionRecord", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     private List<Report> reports = new ArrayList<>();
     private Integer ratingTotal;
+
+    @Getter
+    public enum TrialPeriodState {
+
+        PROBATION("испытательный срок"),
+        PROBATION_EXTEND("продление испытательного срока"),
+        SUCCESSFUL("успешно завершен"),
+        UNSUCCESSFUL("неуспешно завершен"),
+        CLOSED("закрыто");
+
+        private final String state;
+
+        TrialPeriodState(String state) {
+            this.state = state;
+        }
+    }
 }
