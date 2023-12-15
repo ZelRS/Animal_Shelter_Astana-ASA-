@@ -53,4 +53,6 @@ public interface UserService {
     void setUserState(Long id, UserState state);
 
     List<User> getNewUser();
+
+    UserState getUserState(Long chatId, String firstName);
 }

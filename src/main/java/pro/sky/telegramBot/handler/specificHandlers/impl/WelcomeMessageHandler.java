@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.UserState;
-import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.service.UserService;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static pro.sky.telegramBot.enums.UserState.*;
 
 /**
  * класс для обработки стартового приветственного сообщения
@@ -18,26 +18,15 @@ import java.util.Map;
 @Service
 @Slf4j  // SLF4J logging
 public class WelcomeMessageHandler {
-    private final UserService userService;
 
     private final pro.sky.telegramBot.sender.MessageSender messageSender;
 
-    public void handleStartCommand(String firstName, Long chatId) {
-        User user = userService.findUserByChatId(chatId);
+    public void handleStartCommand(String firstName, Long chatId, UserState userState) {
 
-        if (user == null) {
-            log.info("Received START command from a first-time user");
-            sendMessageWithExceptionHandling(() -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
-            user = new User();
-            user.setChatId(chatId);
-            user.setUserName(firstName);
-            user.setState(UserState.FREE);
-            userService.create(user);
-            return;
-        }
-        log.info("Received START command from user in state: {}", user.getState());
-        sendUserStateSpecificMessage(user, chatId);
+        log.info("Received START command from user in state: {}", userState);
+        sendUserStateSpecificMessage(firstName, chatId, userState);
     }
+
     private void sendMessageWithExceptionHandling(MessageSender messageSender) {
         try {
             messageSender.send();
@@ -46,21 +35,21 @@ public class WelcomeMessageHandler {
             throw new RuntimeException(e);
         }
     }
-    private void sendUserStateSpecificMessage(User user, Long chatId) {
+    private void sendUserStateSpecificMessage(String firstName, Long chatId, UserState userState) {
         Map<UserState, MessageSender> stateMessageMap = new HashMap<>();
-        stateMessageMap.put(UserState.FREE, () -> messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId));
-        stateMessageMap.put(UserState.POTENTIAL, () -> messageSender.sendChooseShelterMessage(chatId));
-        stateMessageMap.put(UserState.INVITED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId));
-        stateMessageMap.put(UserState.PROBATION, () -> messageSender.sendReportPhotoMessage(chatId));
-        stateMessageMap.put(UserState.VOLUNTEER, () -> messageSender.sendVolunteerWelcomePhotoMessage(user.getUserName(), chatId));
-        stateMessageMap.put(UserState.UNTRUSTED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(user.getUserName(), chatId));
+        stateMessageMap.put(FREE, () -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
+        stateMessageMap.put(POTENTIAL, () -> messageSender.sendChooseShelterMessage(chatId));
+        stateMessageMap.put(INVITED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
+        stateMessageMap.put(PROBATION, () -> messageSender.sendReportPhotoMessage(chatId));
+        stateMessageMap.put(VOLUNTEER, () -> messageSender.sendVolunteerWelcomePhotoMessage(firstName, chatId));
+        stateMessageMap.put(UNTRUSTED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
 
         MessageSender defaultMessageSender = () -> {
-            log.warn("Unknown user state: {}", user.getState());
+            log.warn("Unknown user state: {}", userState);
             messageSender.sendDefaultHTMLMessage(chatId);
         };
 
-        MessageSender messageSenderAction = stateMessageMap.getOrDefault(user.getState(), defaultMessageSender);
+        MessageSender messageSenderAction = stateMessageMap.getOrDefault(userState, defaultMessageSender);
         sendMessageWithExceptionHandling(messageSenderAction);
     }
 
