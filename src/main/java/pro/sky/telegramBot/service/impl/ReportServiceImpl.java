@@ -46,10 +46,18 @@ public class ReportServiceImpl implements ReportService {
     private final TelegramBot bot;
     private final MediaLoader mediaLoader;
 
+    // Константы для идентификации вопросов и кнопок
     private static final int START_QUESTION_BUTTON_ID = 11;
     private static final int LAST_QUESTION_INDICATOR = 4;
     private static final int NEXT_QUESTION_ID = 5;
-
+    /**
+     * Метод сохраняет новый отчет в записи об усыновлении и в базе.
+     * Если отчет с такой датой уже существует, то отчет перезаписывает его.
+     *
+     * @param newReport отчет, который нужно сохранить
+     * @param chatId    Telegram chat ID пользователя
+     * @return true если операция была успешной
+     */
     @Override
     public boolean saveReport(Report newReport, Long chatId) {
         log.info("Was invoked method saveReport");
@@ -63,7 +71,14 @@ public class ReportServiceImpl implements ReportService {
         return true;
     }
     //Метод создания отчета на основе данных эксель-файла
-
+    /**
+     * Создает отчет на основании значений, полученных из файла Excel.
+     * При этом проверяется дата отчета и обновляется состояние пользователя.
+     *
+     * @param chatId Telegram chat ID пользователя
+     * @param values список параметров типа string, полученные из файла Excel
+     * @return true если отчет успешно создан, в другом случае false
+     */
     @Override
     public boolean createReportFromExcel(Long chatId, List<String> values) {
         User user = userService.findUserByChatId(chatId);
@@ -91,6 +106,14 @@ public class ReportServiceImpl implements ReportService {
         return true;
     }
     //Заполняем отчет в чате
+
+    /**
+     * Обрабатывает ответы пользователя в боте Telegram и заполняет отчет.
+     * Вызываются методы для навигации по вопросам и завершению формирования отчета.
+     *
+     * @param chatId      Telegram chat ID пользователя
+     * @param callbackData Callback data после нажатия кнопки в боте
+     */
     @Override
     public void fillOutReport(Long chatId, String callbackData) {
         String[] parts = callbackData.split("_");
@@ -114,6 +137,12 @@ public class ReportServiceImpl implements ReportService {
     }
 
     //Метод создает новый отчет, сохраняет его в базе и инициирует его заполнение
+
+    /**
+     * Создает новый отчет online в боте за текущий день, если его нет, и запускает процесс заполнения отчета.
+     *
+     * @param chatId Telegram chat ID пользователя
+     */
     @Override
     public void createReportOnline(Long chatId) {
         User user = userService.findUserByChatId(chatId);
@@ -134,6 +163,13 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 //Метод для обработки фотографии для отчета
+    /**
+     * Обрабатывает фотографию животного для отчета, уменьшает размер фотографии и сохраняет в отчете.
+     *
+     * @param chatId   Telegram chat ID пользователя
+     * @param photo    Массив объектов PhotoSize, в котором передается фотография животного, высланная пользователем
+     * @param reportId ID отчета, ва котором будет храниться фотография
+     */
     @Override
     public void handlePetPhotoMessage(Long chatId, PhotoSize[] photo, Long reportId) {
         log.info("Was invoked handlePetPhotoMessage method for {}", chatId);
@@ -160,6 +196,13 @@ public class ReportServiceImpl implements ReportService {
         userService.update(user);
     }
 //Метод для прикрепления фотографии к отчету
+    /**
+     * Прикрепляет фотографию к отчету пользователя за текущую дату.
+     *
+     * @param chatId Telegram chat ID пользователя
+     * @param photo  Массив объектов PhotoSize, в котором передается фотография животного, высланная пользователем
+     * @return true если фотография успешно прикреплена, в противном случае - false
+     */
     @Override
     public boolean attachPhotoToReport(Long chatId, PhotoSize[] photo) {
         log.info("Was invoked attachPhotoToReport method for {}", chatId);
@@ -182,12 +225,25 @@ public class ReportServiceImpl implements ReportService {
         log.info("User or Adoption Report not found {}", chatId);
         return false;
     }
-
+    /**
+     * Получение отчета пл ID.
+     *
+     * @param id ID отчета
+     * @return найденный отчет
+     * @throws NoSuchElementException если такого отчета нет
+     */
     @Override
     public Report getReportById(Long id) {
         return reportRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Report with id " + id + " was not found"));
     }
+    /**
+     * Вызывает следующий вопрос для заполнения отчета.
+     *
+     * @param chatId           Telegram chat ID пользователя
+     * @param questionIdentifier Integer в качестве идентификатора вопроса
+     * @param reportId         ID отчета, куда записываются ответы
+     */
     private void askNextQuestion(Long chatId, int questionIdentifier, Long reportId) {
         if (questionIdentifier < QuestionsForReport.values().length) {
             messageSender.sendQuestionForReportPhotoMessage(
