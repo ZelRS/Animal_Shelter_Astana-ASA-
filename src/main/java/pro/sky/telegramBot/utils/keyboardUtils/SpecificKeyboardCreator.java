@@ -122,7 +122,9 @@ public class SpecificKeyboardCreator {
         }
         return keyboardCreator.createInlineKeyboardTwoRow(buttons);
     }
-
+    /**
+     * Клавиатура для получения информации волонтером
+     */
     public Keyboard volunteerMenuMessageKeyboard() {
         log.info("Creating keyboard markup for volunteer");
 
@@ -157,6 +159,9 @@ public class SpecificKeyboardCreator {
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
+    /**
+     * Кнопка для отправки фотографии животного после заполнения отчета в боте
+     */
 
     public Keyboard buttonToSendPhotoKeyboard() {
         log.info("Creating a keyboard to send a photo for report");
