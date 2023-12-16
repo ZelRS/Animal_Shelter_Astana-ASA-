@@ -525,16 +525,6 @@ public class MessageSender implements BlockedUserHandler {
 
     }
 
-    public void sendStatisticAboutNewUserMessage(Long chatId) {
-        log.info("Sending Statistic To Volunteer  {} About New User", chatId);
-        try {
-            SendMessage sendMessage = new SendMessage(chatId, userService.getNewUser().toString());
-            messageExecutor.executeHTMLMessage(sendMessage);
-        } catch (Exception e){
-            log.error(" Failed to send message");
-        }
-    }
-
 
     //    .........отправка сообщений пользователю на любые другие случаи........
 }

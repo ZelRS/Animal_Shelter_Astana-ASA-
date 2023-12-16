@@ -51,6 +51,4 @@ public interface UserService {
     void addPhoneNumberToPersonInfo(String firstName, String lastName, Long chatId, String phone);
 
     void setUserState(Long id, UserState state);
-
-    List<User> getNewUser();
 }
