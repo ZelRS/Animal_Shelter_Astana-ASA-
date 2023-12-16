@@ -7,12 +7,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.UserState;
+import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.specificHandlers.impl.ShelterCommandHandler;
 import pro.sky.telegramBot.handler.specificHandlers.impl.WelcomeMessageHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.CommandActionHandler;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.sender.specificSenders.DocumentSender;
+import pro.sky.telegramBot.sender.specificSenders.PhotoMessageSender;
 import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
@@ -35,13 +37,16 @@ import static pro.sky.telegramBot.enums.UserState.PROBATION;
 @Getter
 @Slf4j  // SLF4J logging
 public class CommandActionHandlerImpl implements CommandActionHandler {
-    private final MessageSender messageSender;
+    private final pro.sky.telegramBot.sender.specificSenders.HTMLMessageSender HTMLMessageSender;
+    private final PhotoMessageSender photoMessageSender;
+    private final DocumentSender documentSender;
     private final WelcomeMessageHandler welcomeMessageHandler;
     private final ShelterService shelterService;
     private final UserService userService;
     private final BlockedUserHandler blockedUserHandler;
     private final ShelterCommandHandler shelterCommandHandler;
     private final SpecificKeyboardCreator specificKeyboardCreator;
+    private final MessageExecutor executor;
 
     @FunctionalInterface
     interface Command {
@@ -65,15 +70,15 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         commandMap.put(REPORT.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received REPORT command");
             if (userState.equals(PROBATION)) {
-                messageSender.sendReportToUserDocumentMessage(chatId);
+                documentSender.sendReportToUserDocument(chatId);
             } else {
-                messageSender.sendNotSupportedMessage(chatId);
+                HTMLMessageSender.sendNotSupportedHTMLMessage(chatId);
             }
         });
 
         commandMap.put(INFO_TABLE.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received INFO_TABLE command");
-            messageSender.sendInfoTableToUserDocumentMessage(chatId);
+            documentSender.sendInfoTableToUserDocumentRequestMessage(chatId);
         });
 
         //Меню для дополнительной информации по приюту
@@ -82,9 +87,9 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
             log.info("Received /details command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getDescription() != null) {
-                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getDescription());
+                HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, user.getShelter().getDescription());
             } else {
-                messageSender.sendInformationNotFoundMessage(chatId);
+                photoMessageSender.sendInformationNotFoundPhotoMessage(chatId);
             }
         });
 
@@ -93,9 +98,9 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
             log.info("Received /address command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getAddress() != null) {
-                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getAddress());
+                HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, user.getShelter().getAddress());
             } else {
-                messageSender.sendInformationNotFoundMessage(chatId);
+                photoMessageSender.sendInformationNotFoundPhotoMessage(chatId);
             }
         });
 
@@ -104,9 +109,9 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
             log.info("Received /schedule command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSchedule() != null) {
-                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getSchedule());
+                HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, user.getShelter().getSchedule());
             } else {
-                messageSender.sendInformationNotFoundMessage(chatId);
+                photoMessageSender.sendInformationNotFoundPhotoMessage(chatId);
             }
         });
 
@@ -117,9 +122,9 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
             if (user.getShelter().getSchema() != null) {
                 SendPhoto sendPhoto = new SendPhoto(chatId, user.getShelter().getSchema());
                 sendPhoto.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
-                messageSender.menuInformationHandler(chatId, sendPhoto);
+                executor.executePhotoMessage(sendPhoto);
             } else {
-                messageSender.sendInformationNotFoundMessage(chatId);
+                photoMessageSender.sendInformationNotFoundPhotoMessage(chatId);
             }
         });
 
@@ -128,9 +133,9 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
             log.info("Received /sec_phone command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSecurityPhone() != null) {
-                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getSecurityPhone());
+                HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, user.getShelter().getSecurityPhone());
             } else {
-                messageSender.sendInformationNotFoundMessage(chatId);
+                photoMessageSender.sendInformationNotFoundPhotoMessage(chatId);
             }
         });
 
@@ -139,9 +144,9 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
             log.info("Received /safety command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSafetyRules() != null) {
-                messageSender.sendTextMessageFromInfoMenu(chatId, user.getShelter().getSafetyRules());
+                HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, user.getShelter().getSafetyRules());
             } else {
-                messageSender.sendInformationNotFoundMessage(chatId);
+                photoMessageSender.sendInformationNotFoundPhotoMessage(chatId);
             }
         });
 
@@ -155,13 +160,13 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
                 if (volunteerId != 0L) {
                     SendMessage message = new SendMessage(volunteerId, "Здравствуйте. Пользователь <b>" + user.getUserName() +
                             "</b> запросил обратный звонок.\nПерезвоните по номеру телефона " + phone);
-                    messageSender.menuInformationHandler(volunteerId, message);
+                    executor.executeHTMLMessage(message);
                 } else {
                     log.error("There are no volunteers in database");
-                    messageSender.sendTextMessageFromInfoMenu(chatId, "К сожалению на данный момент у нас нет свободных волонтеров");
+                    HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, "К сожалению на данный момент у нас нет свободных волонтеров");
                 }
             }, () -> {
-                messageSender.sendTextMessageFromInfoMenu(chatId, "К сожалению вы не предоставили свой номер телефона." +
+                HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, "К сожалению вы не предоставили свой номер телефона." +
                         " Добавьте номер телефона в таком формате:\n/phone ##(###)###-##-##");
             });
         });
@@ -169,7 +174,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         // Связаться с волонтером
         commandMap.put(VOLUNTEER.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received /volunteer command");
-            messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
+            photoMessageSender.sendShelterFullInfoPhotoMessage(firstName, lastName, chatId);
         });
 
         int refRecDocCount = 9; // число равно максимальному количеству(n) документов в /{n}rec в application.properties
@@ -179,7 +184,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
             int refNum = i;
             commandMap.put(command, (firstName, lastName, chatId, userState) -> {
                 log.info("Received getting {} RecDoc file command", refNum);
-                messageSender.sendRecDocDocumentMessage(refNum, chatId);
+                documentSender.sendRecDocDocument(refNum, chatId);
             });
         }
     }
@@ -198,7 +203,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         if (command.startsWith("/phone")) {
             String phone = command.split(" ")[1];
             userService.addPhoneNumberToPersonInfo(firstName, lastName, chatId, phone);
-            messageSender.sendTextMessageFromInfoMenu(chatId, "Ваш номер телефона успешно добавлен");
+            HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, "Ваш номер телефона успешно добавлен");
             return;
         }
         if (command.matches("^/\\d+_((DOG)|(CAT))$")) {
@@ -211,7 +216,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         } else {
             log.warn("No handler found for command: {}", command);
             // отправка дефолтного сообщения
-            messageSender.sendDefaultHTMLMessage(chatId);
+            HTMLMessageSender.sendDefaultHTMLMessage(chatId);
         }
     }
 }

@@ -1,4 +1,4 @@
-package pro.sky.telegramBot;
+package pro.sky.telegramBot.controller;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

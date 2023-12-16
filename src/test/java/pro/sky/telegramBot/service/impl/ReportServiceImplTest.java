@@ -12,24 +12,20 @@ import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.ReportRepository;
-import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
 import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.UserService;
 import pro.sky.telegramBot.utils.statistic.ReportDataConverter;
 import pro.sky.telegramBot.utils.statistic.ReportSumCalculator;
 
-import java.time.Clock;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReportServiceImplTest {
-
     @Mock
     private ReportRepository reportRepository;
     @Mock
@@ -39,7 +35,7 @@ class ReportServiceImplTest {
     @Mock
     private AdoptionRecordService adoptionRecordService;
     @Mock
-    private MessageSender messageSender;
+    private NotificationSender notificationSender;
     @Mock
     private ReportSumCalculator reportSumCalculator;
     @Mock
@@ -56,7 +52,7 @@ class ReportServiceImplTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         underTest = new ReportServiceImpl(reportRepository, reportDataConverter, userService, adoptionRecordService,
-                messageSender, reportSumCalculator, bot, mediaLoader);
+                notificationSender, reportSumCalculator, bot, mediaLoader);
     }
 
     @Test

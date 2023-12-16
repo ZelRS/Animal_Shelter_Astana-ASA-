@@ -12,7 +12,7 @@ import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.ReportRepository;
-import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
 import pro.sky.telegramBot.service.AdoptionRecordService;
 import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
@@ -40,7 +40,7 @@ public class ReportServiceImpl implements ReportService {
     private final ReportDataConverter reportDataConverter;
     private final UserService userService;
     private final AdoptionRecordService adoptionRecordService;
-    private final MessageSender messageSender;
+    private  final NotificationSender notificationSender;
     private final ReportSumCalculator reportSumCalculator;
     private final TelegramBot bot;
     private final MediaLoader mediaLoader;
@@ -245,7 +245,7 @@ public class ReportServiceImpl implements ReportService {
      */
     private void askNextQuestion(Long chatId, int questionIdentifier, Long reportId) {
         if (questionIdentifier < Report.QuestionsForReport.values().length) {
-            messageSender.sendQuestionForReportPhotoMessage(
+            notificationSender.sendQuestionForReportPhotoMessage(
                     chatId,
                     Report.QuestionsForReport.values()[questionIdentifier].getQuestion(),
                     questionIdentifier,
@@ -279,7 +279,7 @@ public class ReportServiceImpl implements ReportService {
         calculateReportRatingTotal(reportId);
         User user = userService.findUserByChatId(chatId);
         userService.setUserState(user.getId(), PROBATION);
-        messageSender.sendQuestionForReportPhotoMessage(chatId, Report.QuestionsForReport.values()[1].getQuestion(), NEXT_QUESTION_ID, reportId);
+        notificationSender.sendQuestionForReportPhotoMessage(chatId, Report.QuestionsForReport.values()[1].getQuestion(), NEXT_QUESTION_ID, reportId);
         adoptionRecordService.addNewReportToAdoptionRecord(report, chatId);
     }
 

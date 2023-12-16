@@ -11,14 +11,12 @@ import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.loader.DocumentLoader;
 import pro.sky.telegramBot.loader.MediaLoader;
-import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.service.ReportService;
 import pro.sky.telegramBot.service.UserService;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import static pro.sky.telegramBot.enums.MessageImage.*;
@@ -55,7 +53,6 @@ public class SpecificDocumentMessageCreator {
             params.setCaption(botConfig.getMSG_REPORT_NOT_ACCEPTED());
         }
         return mediaMessageCreator.createPhotoMessage(params);
-
     }
 
     public SendPhoto createPhotoResponseMessage(Long chatId, PhotoSize[] photo) throws IOException {
