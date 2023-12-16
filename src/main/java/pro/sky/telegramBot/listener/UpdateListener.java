@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
 @RequiredArgsConstructor
 @Slf4j  // SLF4J logging
 public class UpdateListener {
-    private final UpdateDispatcher updateDispatcher;
+    private final UserManager userManager;
     private final TelegramBot telegramBot;
 
     /**
@@ -24,7 +24,7 @@ public class UpdateListener {
     @PostConstruct
     public void init() {
         telegramBot.setUpdatesListener(updates -> {
-            updates.forEach(updateDispatcher::dispatch);
+            updates.forEach(userManager::dispatch);
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }

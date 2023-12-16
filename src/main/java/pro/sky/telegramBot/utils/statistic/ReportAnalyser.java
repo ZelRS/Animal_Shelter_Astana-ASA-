@@ -10,8 +10,8 @@ import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
 
 import java.util.List;
 
-import static pro.sky.telegramBot.enums.TrialPeriodState.*;
-import static pro.sky.telegramBot.enums.TrialPeriodState.UNSUCCESSFUL;
+import static pro.sky.telegramBot.model.adoption.AdoptionRecord.TrialPeriodState.*;
+import static pro.sky.telegramBot.model.adoption.AdoptionRecord.TrialPeriodState.UNSUCCESSFUL;
 
 /**
  * Класс для анализа отчетов

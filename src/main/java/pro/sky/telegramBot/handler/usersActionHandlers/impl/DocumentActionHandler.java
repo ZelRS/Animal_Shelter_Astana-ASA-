@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.DocumentHandler;
@@ -91,9 +92,8 @@ public class DocumentActionHandler implements DocumentHandler {
     }
 
     @Override
-    public void handle(Document document, Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        if (user != null && user.getState().equals(BLOCKED)) {
+    public void handle(Document document, Long chatId, UserState userState) {
+        if (userState.equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
             return;
         }

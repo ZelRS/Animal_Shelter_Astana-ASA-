@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.specificHandlers.impl.ShelterCommandHandler;
 import pro.sky.telegramBot.handler.specificHandlers.impl.WelcomeMessageHandler;
@@ -44,7 +45,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
 
     @FunctionalInterface
     interface Command {
-        void run(String firstName, String lastName, Long chatId);
+        void run(String firstName, String lastName, Long chatId, UserState userState);
     }
 
     private final Map<String, Command> commandMap = new HashMap<>();
@@ -56,12 +57,12 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
     @PostConstruct
     public void init() {
 
-        commandMap.put(START.getName(), (firstName, lastName, chatId) -> {
+        commandMap.put(START.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received START command");
-            welcomeMessageHandler.handleStartCommand(firstName, chatId);
+            welcomeMessageHandler.handleStartCommand(firstName, chatId, userState);
         });
 
-        commandMap.put(REPORT.getName(), (firstName, lastName, chatId) -> {
+        commandMap.put(REPORT.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received REPORT command");
             User user = userService.findUserByChatId(chatId);
             if (user != null && user.getState().equals(PROBATION)) {
@@ -71,14 +72,14 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
             }
         });
 
-        commandMap.put(INFO_TABLE.getName(), (firstName, lastName, chatId) -> {
+        commandMap.put(INFO_TABLE.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received INFO_TABLE command");
             messageSender.sendInfoTableToUserDocumentMessage(chatId);
         });
 
         //Меню для дополнительной информации по приюту
         //Узнать дополнительную информацию о приюте
-        commandMap.put("/details", (firstName, lastName, chatId) -> {
+        commandMap.put("/details", (firstName, lastName, chatId, userState) -> {
             log.info("Received /details command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getDescription() != null) {
@@ -89,7 +90,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
         // Получить одрес приюта
-        commandMap.put("/address", (firstName, lastName, chatId) -> {
+        commandMap.put("/address", (firstName, lastName, chatId, userState) -> {
             log.info("Received /address command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getAddress() != null) {
@@ -100,7 +101,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Получить график работы приюта
-        commandMap.put("/schedule", (firstName, lastName, chatId) -> {
+        commandMap.put("/schedule", (firstName, lastName, chatId, userState) -> {
             log.info("Received /schedule command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSchedule() != null) {
@@ -111,7 +112,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Посмотреть схему проезда к приюту
-        commandMap.put("/schema", (firstName, lastName, chatId) -> {
+        commandMap.put("/schema", (firstName, lastName, chatId, userState) -> {
             log.info("Received /schema command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSchema() != null) {
@@ -124,7 +125,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Узнать номер телефона охраны для оформления пропуска
-        commandMap.put("/sec_phone", (firstName, lastName, chatId) -> {
+        commandMap.put("/sec_phone", (firstName, lastName, chatId, userState) -> {
             log.info("Received /sec_phone command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSecurityPhone() != null) {
@@ -135,7 +136,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Прочитать правила техники безопасности приюта
-        commandMap.put("/safety", (firstName, lastName, chatId) -> {
+        commandMap.put("/safety", (firstName, lastName, chatId, userState) -> {
             log.info("Received /safety command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSafetyRules() != null) {
@@ -146,7 +147,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Оставить заявку на обратный звонок
-        commandMap.put("/callme", (firstName, lastName, chatId) -> {
+        commandMap.put("/callme", (firstName, lastName, chatId, userState) -> {
             log.info("Received /callMe command");
             User user = userService.findUserByChatId(chatId);
             Optional<String> phoneFromDatabase = userService.getUserPhone(user.getId());
@@ -167,7 +168,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
         // Связаться с волонтером
-        commandMap.put("/volunteer", (firstName, lastName, chatId) -> {
+        commandMap.put("/volunteer", (firstName, lastName, chatId, userState) -> {
             log.info("Received /volunteer command");
             messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
         });
@@ -177,7 +178,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
 
             String command = "/" + i + "rec";
             int refNum = i;
-            commandMap.put(command, (firstName, lastName, chatId) -> {
+            commandMap.put(command, (firstName, lastName, chatId, userState) -> {
                 log.info("Received getting {} RecDoc file command", refNum);
                 messageSender.sendRecDocDocumentMessage(refNum, chatId);
             });
@@ -190,9 +191,8 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
      * Если такой команды нет, отправляется дефолтное сообщение
      */
     @Override
-    public void handle(String command, String firstName, String lastName, Long chatId) {
-        User user = userService.findUserByChatId(chatId);
-        if (user != null && user.getState().equals(BLOCKED)) {
+    public void handle(String command, String firstName, String lastName, Long chatId, UserState userState) {
+        if (userState.equals(BLOCKED)) {
             blockedUserHandler.sendBlockedWelcomePhotoMessage(chatId);
             return;
         }
@@ -208,7 +208,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         }
         Command commandToRun = commandMap.get(command.toLowerCase());
         if (commandToRun != null) {
-            commandToRun.run(firstName, lastName, chatId);
+            commandToRun.run(firstName, lastName, chatId, userState);
         } else {
             log.warn("No handler found for command: {}", command);
             // отправка дефолтного сообщения
