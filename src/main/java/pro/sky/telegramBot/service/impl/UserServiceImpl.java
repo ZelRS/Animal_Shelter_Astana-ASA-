@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import static pro.sky.telegramBot.enums.UserState.FREE;
 import static pro.sky.telegramBot.enums.UserState.VOLUNTEER;
 
 /**

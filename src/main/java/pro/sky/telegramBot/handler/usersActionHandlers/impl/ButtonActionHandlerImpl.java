@@ -149,12 +149,12 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
             log.info("Pressed BUT_STATISTIC_SHELTER button");
             messageSender.sendStatisticAboutShelterMessage(chatId);
         });
+
         //статистика по пользователям
         buttonMap.put(BUT_STATISTIC_NEW_USER.getCallbackData(), (firstName, lastName, chatId, username, userState) -> {
             log.info("Pressed BUT_STATISTIC_NEW_USER button");
             messageSender.sendStatisticAboutNewUserMessage(chatId);
         });
-
     }
 
     /**
