@@ -35,11 +35,6 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
     private final BlockedUserHandler blockedUserHandler;
     private final PhotoMessageSender photoMessageSender;
 
-    @FunctionalInterface
-    interface Button {
-        void run(String firstName, String lastName, Long chatId, String username, UserState userState);
-    }
-
     private final Map<String, Button> buttonMap = new HashMap<>();
 
     /**
@@ -97,7 +92,6 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
                 return;
             }
             messageSender.sendDefaultHTMLMessage(chatId);
-
         });
 
         //  Кнопка сделана без ответа, так как отключена в нерабочее время
@@ -181,5 +175,10 @@ public class ButtonActionHandlerImpl implements ButtonActionHandler {
             // отправка дефолтного сообщения
             messageSender.sendDefaultHTMLMessage(chatId);
         }
+    }
+
+    @FunctionalInterface
+    interface Button {
+        void run(String firstName, String lastName, Long chatId, String username, UserState userState);
     }
 }

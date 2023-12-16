@@ -385,6 +385,7 @@ public class MessageSender implements BlockedUserHandler {
         }
 
     }
+
     /**
      * Метод для выбора типа животного
      */
@@ -411,15 +412,15 @@ public class MessageSender implements BlockedUserHandler {
         log.info("Sending question photo message to {}", chatId);
         try {
             User user = userService.findUserByChatId(chatId);
+            SendPhoto sendPhoto;
             if (user != null && user.getState().equals(PROBATION_REPORT)) {
-                SendPhoto sendPhoto = specificMediaMessageCreator.createQuestionForReportMessage(chatId, question);
+                sendPhoto = specificMediaMessageCreator.createQuestionForReportMessage(chatId, question);
                 sendPhoto.replyMarkup(specificKeyboardCreator.questionForReportMessageKeyboard(questionIdentifier, reportId));
-                messageExecutor.executePhotoMessage(sendPhoto);
             } else {
-                SendPhoto sendPhoto = specificMediaMessageCreator.createReportAcceptedPhotoMessage(chatId);
+                sendPhoto = specificMediaMessageCreator.createReportAcceptedPhotoMessage(chatId);
                 sendPhoto.replyMarkup(specificKeyboardCreator.buttonToSendPhotoKeyboard());
-                messageExecutor.executePhotoMessage(sendPhoto);
             }
+            messageExecutor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.error("Failed to send question photo message to {}", chatId, e);
         }
@@ -466,8 +467,6 @@ public class MessageSender implements BlockedUserHandler {
                 log.info("\"We have no volunteers now\" message was sent to user with chatId={}", chatId);
             }
             messageExecutor.executeHTMLMessage(sendMessage);
-
-
         } catch (Exception e) {
             log.info("Failed to send \"call a volunteer\" message to {}", chatId, e);
         }
@@ -490,20 +489,6 @@ public class MessageSender implements BlockedUserHandler {
         menuInformationHandler(chatId, message);
     }
 
-    /**
-     * проверка пользователя на статус "не надежный" c высылкой сообщения, что функционал ограничен
-     */
-    private boolean untrustedUserCheck(Long chatId, String firstName) throws IOException {
-        User user = userService.findUserByChatId(chatId);
-        SendPhoto sendPhoto;
-        if (user.getState().equals(UNTRUSTED)) {
-            sendPhoto = specificMediaMessageCreator.createAnswerForUntrustedUserMessage(chatId, firstName);
-            messageExecutor.executePhotoMessage(sendPhoto);
-            return true;
-        }
-        return false;
-    }
-
     public void sendReportNotAvailableMessage(Long chatId) {
         log.info("Sending a no report function available message to {}", chatId);
         try {
@@ -519,10 +504,9 @@ public class MessageSender implements BlockedUserHandler {
         try {
             SendMessage sendMessage = new SendMessage(chatId, shelterService.getShelterNamesWitPetCounts().toString());
             messageExecutor.executeHTMLMessage(sendMessage);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(" Failed to send message");
         }
-
     }
 
     public void sendStatisticAboutNewUserMessage(Long chatId) {
@@ -530,11 +514,31 @@ public class MessageSender implements BlockedUserHandler {
         try {
             SendMessage sendMessage = new SendMessage(chatId, userService.getNewUser().toString());
             messageExecutor.executeHTMLMessage(sendMessage);
-        } catch (Exception e){
+        } catch (Exception e) {
             log.error(" Failed to send message");
         }
     }
 
 
+
+
     //    .........отправка сообщений пользователю на любые другие случаи........
+
+
+
+
+
+    /**
+     * проверка пользователя на статус "не надежный" c высылкой сообщения, что функционал ограничен
+     */
+    private boolean untrustedUserCheck(Long chatId, String firstName) throws IOException {
+        User user = userService.findUserByChatId(chatId);
+        SendPhoto sendPhoto;
+        if (user.getState().equals(UNTRUSTED)) {
+            sendPhoto = specificMediaMessageCreator.createAnswerForUntrustedUserMessage(chatId, firstName);
+            messageExecutor.executePhotoMessage(sendPhoto);
+            return true;
+        }
+        return false;
+    }
 }

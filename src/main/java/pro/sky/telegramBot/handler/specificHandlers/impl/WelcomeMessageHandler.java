@@ -18,23 +18,13 @@ import static pro.sky.telegramBot.enums.UserState.*;
 @Service
 @Slf4j  // SLF4J logging
 public class WelcomeMessageHandler {
-
     private final pro.sky.telegramBot.sender.MessageSender messageSender;
 
     public void handleStartCommand(String firstName, Long chatId, UserState userState) {
-
         log.info("Received START command from user in state: {}", userState);
         sendUserStateSpecificMessage(firstName, chatId, userState);
     }
 
-    private void sendMessageWithExceptionHandling(MessageSender messageSender) {
-        try {
-            messageSender.send();
-        } catch (IOException e) {
-            log.error("An error occurred while sending a message: {}", e.getMessage());
-            throw new RuntimeException(e);
-        }
-    }
     private void sendUserStateSpecificMessage(String firstName, Long chatId, UserState userState) {
         Map<UserState, MessageSender> stateMessageMap = new HashMap<>();
         stateMessageMap.put(FREE, () -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
@@ -51,6 +41,15 @@ public class WelcomeMessageHandler {
 
         MessageSender messageSenderAction = stateMessageMap.getOrDefault(userState, defaultMessageSender);
         sendMessageWithExceptionHandling(messageSenderAction);
+    }
+
+    private void sendMessageWithExceptionHandling(MessageSender messageSender) {
+        try {
+            messageSender.send();
+        } catch (IOException e) {
+            log.error("An error occurred while sending a message: {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
     }
 
     @FunctionalInterface
