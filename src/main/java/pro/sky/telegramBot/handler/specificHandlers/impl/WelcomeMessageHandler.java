@@ -39,7 +39,7 @@ public class WelcomeMessageHandler {
         Map<UserState, MessageSender> stateMessageMap = new HashMap<>();
         stateMessageMap.put(FREE, () -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
         stateMessageMap.put(POTENTIAL, () -> messageSender.sendChooseShelterMessage(chatId));
-        stateMessageMap.put(INVITED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
+        stateMessageMap.put(INVITED, () -> messageSender.sendShelterFunctionalPhotoMessage(chatId));
         stateMessageMap.put(PROBATION, () -> messageSender.sendReportPhotoMessage(chatId));
         stateMessageMap.put(VOLUNTEER, () -> messageSender.sendVolunteerWelcomePhotoMessage(firstName, chatId));
         stateMessageMap.put(UNTRUSTED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
