@@ -10,8 +10,9 @@ import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.DocumentHandler;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.sender.specificSenders.DocumentMessageSender;
-import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.sender.specificSenders.DocumentSender;
+import pro.sky.telegramBot.sender.specificSenders.HTMLMessageSender;
+import pro.sky.telegramBot.sender.specificSenders.PhotoMessageSender;
 import pro.sky.telegramBot.service.UserService;
 
 import javax.annotation.PostConstruct;
@@ -33,10 +34,10 @@ import static pro.sky.telegramBot.enums.UserState.PROBATION;
 @Getter
 @Slf4j
 public class DocumentActionHandler implements DocumentHandler {
-
-    private final DocumentMessageSender documentMessageSender;
+    private final DocumentSender documentSender;
+    private final HTMLMessageSender HTMLMessageSender;
+    private final PhotoMessageSender photoMessageSender;
     private final UserService userService;
-    private final MessageSender messageSender;
     private final BlockedUserHandler blockedUserHandler;
 
     @FunctionalInterface
@@ -60,13 +61,13 @@ public class DocumentActionHandler implements DocumentHandler {
             User user = userService.findUserByChatId(chatId);
             if (user != null && user.getState().equals(PROBATION) && user.getAdoptionRecord() != null) {
                 try {
-                    documentMessageSender.sendReportResponseMessage(document, chatId);
+                    photoMessageSender.sendReportDocumentFromUserResponsePhotoMessage(document, chatId);
                 } catch (IOException e) {
                     throw new UserNotFoundException("Пользователь не найден");
                 }
             } else {
                 //Сообщаем, что отсутствует запись об усыновлении
-                messageSender.sendNoAdoptionRecordMessage(chatId);
+                HTMLMessageSender.sendNoAdoptionRecordHTMLMessage(chatId);
             }
         });
 
@@ -74,7 +75,7 @@ public class DocumentActionHandler implements DocumentHandler {
         documentMap.put("info_table.xlsx", (document, chatId) -> {
             log.info("Processing info_table.xlsx document");
             try {
-                documentMessageSender.sendInfoTableResponseMessage(document, chatId);
+                photoMessageSender.sendInfoTableDocumentFromUserResponsePhotoMessage(document, chatId);
             } catch (IOException e) {
                 throw new UserNotFoundException("Пользователь не найден");
             }
@@ -84,7 +85,7 @@ public class DocumentActionHandler implements DocumentHandler {
         documentMap.put("doc.pdf", (document, chatId) -> {
             log.info("Processing doc.pdf document");
             try {
-                documentMessageSender.sendScreenPersonalDocumentsResponseMessage(document, chatId);
+                photoMessageSender.sendScreenPersonalDocumentsResponseMessage(document, chatId);
             } catch (IOException e) {
                 throw new UserNotFoundException("Пользователь не найден");
             }

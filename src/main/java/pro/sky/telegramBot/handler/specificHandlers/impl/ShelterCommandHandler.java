@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.sender.specificSenders.PhotoMessageSender;
 import pro.sky.telegramBot.service.ShelterService;
 import pro.sky.telegramBot.service.UserService;
 
@@ -24,7 +24,8 @@ import static pro.sky.telegramBot.enums.PetType.DOG;
 @Getter
 @Slf4j  // SLF4J logging
 public class ShelterCommandHandler {
-    private final MessageSender messageSender;
+    private final pro.sky.telegramBot.sender.specificSenders.HTMLMessageSender HTMLMessageSender;
+    private final PhotoMessageSender photoMessageSender;
     private final ShelterService shelterService;
     private final UserService userService;
 
@@ -49,7 +50,7 @@ public class ShelterCommandHandler {
                 User user = userService.findUserByChatId(chatId);
                 user.setShelter(sheltersCat.get(finalI));
                 userService.update(user);
-                messageSender.sendShelterFunctionalPhotoMessage(chatId);
+                photoMessageSender.sendShelterFunctionalPhotoMessage(chatId);
             });
         }
 
@@ -62,7 +63,7 @@ public class ShelterCommandHandler {
                 User user = userService.findUserByChatId(chatId);
                 user.setShelter(sheltersDog.get(finalI));
                 userService.update(user);
-                messageSender.sendShelterFunctionalPhotoMessage(chatId);
+                photoMessageSender.sendShelterFunctionalPhotoMessage(chatId);
             });
         }
 
@@ -75,7 +76,7 @@ public class ShelterCommandHandler {
         } else {
             log.warn("No handler found for command: {}", command);
             // отправка дефолтного сообщения
-            messageSender.sendDefaultHTMLMessage(chatId);
+            HTMLMessageSender.sendDefaultHTMLMessage(chatId);
         }
     }
 

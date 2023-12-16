@@ -443,6 +443,13 @@ public class SpecificMediaMessageCreator {
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
+    public  SendPhoto createShelterFullInfoPhotoMessage(Long chatId) throws  IOException {
+        MediaMessageParams params = new MediaMessageParams();
+        params.setChatId(chatId);
+        params.setFilePath(SHELTER_INFORMATION_MSG_IMG.getPath());
+        return mediaMessageCreator.createPhotoMessage(params);
+    }
+
 //    .......  медиа-сообщения для других целей......
 
 

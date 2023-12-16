@@ -16,7 +16,6 @@ import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.*;
-import pro.sky.telegramBot.sender.MessageSender;
 import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
 import pro.sky.telegramBot.service.impl.*;
 import pro.sky.telegramBot.utils.keyboardUtils.KeyboardCreator;
@@ -64,8 +63,6 @@ class AdoptionRecordControllerWebMvcTest {
     private StatisticPreparer statisticPreparer;
     @MockBean
     private ReportDataConverter reportDataConverter;
-    @MockBean
-    private MessageSender messageSender;
     @MockBean
     private SpecificKeyboardCreator specificKeyboardCreator;
     @MockBean

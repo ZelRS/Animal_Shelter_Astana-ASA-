@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.UserState;
+import pro.sky.telegramBot.sender.specificSenders.HTMLMessageSender;
+import pro.sky.telegramBot.sender.specificSenders.PhotoMessageSender;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,7 +20,8 @@ import static pro.sky.telegramBot.enums.UserState.*;
 @Service
 @Slf4j  // SLF4J logging
 public class WelcomeMessageHandler {
-    private final pro.sky.telegramBot.sender.MessageSender messageSender;
+    private final HTMLMessageSender HTMLMessageSender;
+    private final PhotoMessageSender photoMessageSender;
 
     public void handleStartCommand(String firstName, Long chatId, UserState userState) {
         log.info("Received START command from user in state: {}", userState);
@@ -27,16 +30,16 @@ public class WelcomeMessageHandler {
 
     private void sendUserStateSpecificMessage(String firstName, Long chatId, UserState userState) {
         Map<UserState, MessageSender> stateMessageMap = new HashMap<>();
-        stateMessageMap.put(FREE, () -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
-        stateMessageMap.put(POTENTIAL, () -> messageSender.sendChooseShelterMessage(chatId));
-        stateMessageMap.put(INVITED, () -> messageSender.sendShelterFunctionalPhotoMessage(chatId));
-        stateMessageMap.put(PROBATION, () -> messageSender.sendReportPhotoMessage(chatId));
-        stateMessageMap.put(VOLUNTEER, () -> messageSender.sendVolunteerWelcomePhotoMessage(firstName, chatId));
-        stateMessageMap.put(UNTRUSTED, () -> messageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
+        stateMessageMap.put(FREE, () -> photoMessageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
+        stateMessageMap.put(POTENTIAL, () -> photoMessageSender.sendChooseShelterPhotoMessage(chatId));
+        stateMessageMap.put(INVITED, () -> photoMessageSender.sendShelterFunctionalPhotoMessage(chatId));
+        stateMessageMap.put(PROBATION, () -> photoMessageSender.sendReportPhotoMessage(chatId));
+        stateMessageMap.put(VOLUNTEER, () -> photoMessageSender.sendVolunteerWelcomePhotoMessage(firstName, chatId));
+        stateMessageMap.put(UNTRUSTED, () -> photoMessageSender.sendFirstTimeWelcomePhotoMessage(firstName, chatId));
 
         MessageSender defaultMessageSender = () -> {
             log.warn("Unknown user state: {}", userState);
-            messageSender.sendDefaultHTMLMessage(chatId);
+            HTMLMessageSender.sendDefaultHTMLMessage(chatId);
         };
 
         MessageSender messageSenderAction = stateMessageMap.getOrDefault(userState, defaultMessageSender);

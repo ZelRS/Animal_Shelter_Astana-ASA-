@@ -9,7 +9,7 @@ import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.handler.specificHandlers.BlockedUserHandler;
 import pro.sky.telegramBot.handler.usersActionHandlers.PhotoActionHandler;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.sender.MessageSender;
+import pro.sky.telegramBot.sender.specificSenders.HTMLMessageSender;
 import pro.sky.telegramBot.sender.specificSenders.PhotoMessageSender;
 import pro.sky.telegramBot.service.UserService;
 
@@ -25,7 +25,7 @@ import static pro.sky.telegramBot.enums.UserState.*;
 @Slf4j
 public class PhotoActionHandlerImpl implements PhotoActionHandler {
     private final UserService userService;
-    private final MessageSender messageSender;
+    private final HTMLMessageSender HTMLMessageSender;
     private final BlockedUserHandler blockedUserHandler;
     private final PhotoMessageSender photoMessageSender;
 
@@ -44,10 +44,10 @@ public class PhotoActionHandlerImpl implements PhotoActionHandler {
             // Проверяем, есть ли пользователь и может ли он присылать фото
             User user = userService.findUserByChatId(chatId);
             if (user != null && user.getState().equals(PROBATION_PHOTO) && user.getAdoptionRecord() != null) {
-                photoMessageSender.sendPhotoResponseMessage(photo, chatId);
+                photoMessageSender.sendPhotoResponsePhotoMessage(photo, chatId);
             } else {
                 //Сообщаем, что отсутствует запись об усыновлении
-                messageSender.sendNoAdoptionRecordMessage(chatId);
+                HTMLMessageSender.sendNoAdoptionRecordHTMLMessage(chatId);
             }
         });
     }

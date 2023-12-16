@@ -5,9 +5,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.executor.MessageExecutor;
+import pro.sky.telegramBot.model.users.User;
+import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
 import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
 
 import javax.transaction.Transactional;
+
+import static pro.sky.telegramBot.enums.UserState.PROBATION_REPORT;
 
 @RequiredArgsConstructor
 @Service
@@ -15,7 +20,10 @@ import javax.transaction.Transactional;
 @Slf4j  // SLF4J logging
 public class NotificationSender {
     private final SpecificMediaMessageCreator specificMediaMessageCreator;
-    private final MessageExecutor messageExecutor;
+    private final MessageExecutor executor;
+
+    private final UserService userService;
+    private final SpecificKeyboardCreator specificKeyboardCreator;
 
     /**
      * Метод формирует и отправляет сообщение о возможности заполнять отчет онлайн
@@ -25,7 +33,7 @@ public class NotificationSender {
         try {
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createNotificationToAdopterAboutDailyReportPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
+            executor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.info("Failed to send a message to the user than he daily should fill out a report {}", chatId, e);
         }
@@ -38,7 +46,7 @@ public class NotificationSender {
         try {
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createNotificationToAdopterAboutStartReportPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
+            executor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.info("Failed to send a message to {} about starting to fill out the report online", chatId, e);
         }
@@ -52,7 +60,7 @@ public class NotificationSender {
         try {
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createNotificationToAdopterAboutEndReportPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
+            executor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.info("Failed to send a message to {} about finishing to fill out the report online", chatId, e);
         }
@@ -66,7 +74,7 @@ public class NotificationSender {
         try {
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createMissingPetMessageToVolunteerPhotoMessage(volunteerChatId, userId);
-            messageExecutor.executePhotoMessage(sendPhoto);
+            executor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.info("Failed to send a message to the volunteer {} than no pet was detected by the adopter {}", volunteerChatId, userId, e);
         }
@@ -77,7 +85,7 @@ public class NotificationSender {
         try {
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createNeedToSendReportPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
+            executor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.info("Failed to send a message to the adopter {} than he should send a report", chatId, e);
         }
@@ -88,7 +96,7 @@ public class NotificationSender {
         try {
             SendPhoto sendPhoto;
             sendPhoto = specificMediaMessageCreator.createNeedToSendPhotoForReportPhotoMessage(chatId);
-            messageExecutor.executePhotoMessage(sendPhoto);
+            executor.executePhotoMessage(sendPhoto);
         } catch (Exception e) {
             log.info("Failed to send a message to the adopter {} than he should send a photo for the report", chatId, e);
         }
@@ -102,22 +110,22 @@ public class NotificationSender {
                 case "problem":
                     sendPhoto = specificMediaMessageCreator
                             .createNotificationToVolunteerAboutProblemPhotoMessage(chatId, userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 case "try your best":
                     sendPhoto = specificMediaMessageCreator.
                             createNotificationToVolunteerAboutTryYourBest(chatId, userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 case "good job":
                     sendPhoto = specificMediaMessageCreator.
                             createNotificationToVolunteerAboutGoodJob(chatId, userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 default:
                     sendPhoto = specificMediaMessageCreator.
                             createNotificationToVolunteerAboutCalculationsError(chatId, userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
             }
         } catch (Exception e) {
@@ -133,17 +141,17 @@ public class NotificationSender {
                 case "problem":
                     sendPhoto = specificMediaMessageCreator
                             .createNotificationToAdopterAboutProblemPhotoMessage(userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 case "try your best":
                     sendPhoto = specificMediaMessageCreator.
                             createNotificationToAdopterAboutTryYourBest(userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 case "good job":
                     sendPhoto = specificMediaMessageCreator.
                             createNotificationToAdopterAboutGoodJob(userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 default:
                     break;
@@ -161,22 +169,22 @@ public class NotificationSender {
                 case "problem":
                     sendPhoto = specificMediaMessageCreator
                             .createUnsuccessfulNotificationToVolunteerPhotoMessage(chatId, userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 case "try your best":
                     sendPhoto = specificMediaMessageCreator.
                             createNotificationToVolunteerAboutExtension(chatId, userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 case "good job":
                     sendPhoto = specificMediaMessageCreator.
                             createSuccessfulNotificationToVolunteer(chatId, userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 default:
                     sendPhoto = specificMediaMessageCreator.
                             createNotificationToVolunteerAboutCalculationsError(chatId, userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
             }
         } catch (Exception e) {
@@ -192,23 +200,46 @@ public class NotificationSender {
                 case "problem":
                     sendPhoto = specificMediaMessageCreator
                             .createUnsuccessfulNotificationToAdopterPhotoMessage(userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 case "try your best":
                     sendPhoto = specificMediaMessageCreator.
                             createNotificationToAdopterAboutExtension(userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 case "good job":
                     sendPhoto = specificMediaMessageCreator.
                             createSuccessfulNotificationToAdopter(userChatId);
-                    messageExecutor.executePhotoMessage(sendPhoto);
+                    executor.executePhotoMessage(sendPhoto);
                     break;
                 default:
                     break;
             }
         } catch (Exception e) {
             log.info("Failed to send a message to the user {} about his statistic", userChatId, e);
+        }
+    }
+
+    /**
+     * Метод формирует и отправляет сообщение пользователю,<br>
+     * когда он заполняет отчет онлайн в боте
+     */
+//    метод перенесен из MessageSender
+    public void sendQuestionForReportPhotoMessage(Long chatId, String question, int questionIdentifier, Long reportId) {
+        log.info("Sending question photo message to {}", chatId);
+        try {
+            User user = userService.findUserByChatId(chatId);
+            SendPhoto sendPhoto;
+            if (user != null && user.getState().equals(PROBATION_REPORT)) {
+                sendPhoto = specificMediaMessageCreator.createQuestionForReportMessage(chatId, question);
+                sendPhoto.replyMarkup(specificKeyboardCreator.questionForReportMessageKeyboard(questionIdentifier, reportId));
+            } else {
+                sendPhoto = specificMediaMessageCreator.createReportAcceptedPhotoMessage(chatId);
+                sendPhoto.replyMarkup(specificKeyboardCreator.buttonToSendPhotoKeyboard());
+            }
+            executor.executePhotoMessage(sendPhoto);
+        } catch (Exception e) {
+            log.error("Failed to send question photo message to {}", chatId, e);
         }
     }
 }
