@@ -9,7 +9,15 @@ import lombok.Getter;
 public enum Command {
     START("/start"),
     REPORT("/report"),
-    INFO_TABLE("/info_table");
+    INFO_TABLE("/info_table"),
+    DETAILS("/details"),
+    ADDRESS("/address"),
+    SCHEDULE("/schedule"),
+    SCHEMA("/schema"),
+    SEC_PHONE("/sec_phone"),
+    SAFETY("/safety"),
+    CALL_ME("/call_me"),
+    VOLUNTEER("/volunteer");
 
     private final String name;
 

@@ -13,17 +13,17 @@ import java.util.List;
 public interface AdoptionRecordRepository extends JpaRepository<AdoptionRecord, Long> {
     List<Report> findReportsByUser(User user);
 
-    @Query("SELECT DISTINCT ar.user FROM adoption_record ar " +
-            "LEFT JOIN ar.reports r " +
-            "WHERE ar.state = pro.sky.telegramBot.model.adoption.AdoptionRecord.TrialPeriodState.PROBATION " +
-            "AND (r.reportDateTime IS NULL OR r.reportDateTime < CURRENT_DATE)")
-    List<User> findUsersWithProbationAndNoReportToday();
+//    @Query("SELECT DISTINCT ar.user FROM adoption_record ar " +
+//            "LEFT JOIN ar.reports r " +
+//            "WHERE ar.state = pro.sky.telegramBot.model.adoption.AdoptionRecord.TrialPeriodState.PROBATION " +
+//            "AND (r.reportDateTime IS NULL OR r.reportDateTime < CURRENT_DATE)")
+//    List<User> findUsersWithProbationAndNoReportToday();
 
-    @Query("SELECT DISTINCT ar.user FROM adoption_record ar " +
-            "JOIN ar.reports r " +
-            "WHERE r.reportDateTime = CURRENT_DATE " +
-            "AND (r.data IS NULL OR r.data = '')")
-    List<User> findUsersWithReportTodayAndNoPhoto();
+//    @Query("SELECT DISTINCT ar.user FROM adoption_record ar " +
+//            "JOIN ar.reports r " +
+//            "WHERE r.reportDateTime = CURRENT_DATE " +
+//            "AND (r.data IS NULL OR r.data = '')")
+//    List<User> findUsersWithReportTodayAndNoPhoto();
 
     List<AdoptionRecord> findByTrialPeriodEndAfterAndState(LocalDate currentDate, AdoptionRecord.TrialPeriodState state);
 

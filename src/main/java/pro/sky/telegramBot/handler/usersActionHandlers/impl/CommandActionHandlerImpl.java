@@ -64,8 +64,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
 
         commandMap.put(REPORT.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received REPORT command");
-            User user = userService.findUserByChatId(chatId);
-            if (user != null && user.getState().equals(PROBATION)) {
+            if (userState.equals(PROBATION)) {
                 messageSender.sendReportToUserDocumentMessage(chatId);
             } else {
                 messageSender.sendNotSupportedMessage(chatId);
@@ -79,7 +78,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
 
         //Меню для дополнительной информации по приюту
         //Узнать дополнительную информацию о приюте
-        commandMap.put("/details", (firstName, lastName, chatId, userState) -> {
+        commandMap.put(DETAILS.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received /details command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getDescription() != null) {
@@ -89,8 +88,8 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
             }
         });
 
-        // Получить одрес приюта
-        commandMap.put("/address", (firstName, lastName, chatId, userState) -> {
+        // Получить адрес приюта
+        commandMap.put(ADDRESS.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received /address command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getAddress() != null) {
@@ -101,7 +100,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Получить график работы приюта
-        commandMap.put("/schedule", (firstName, lastName, chatId, userState) -> {
+        commandMap.put(SCHEDULE.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received /schedule command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSchedule() != null) {
@@ -112,7 +111,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Посмотреть схему проезда к приюту
-        commandMap.put("/schema", (firstName, lastName, chatId, userState) -> {
+        commandMap.put(SCHEMA.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received /schema command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSchema() != null) {
@@ -125,7 +124,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Узнать номер телефона охраны для оформления пропуска
-        commandMap.put("/sec_phone", (firstName, lastName, chatId, userState) -> {
+        commandMap.put(SEC_PHONE.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received /sec_phone command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSecurityPhone() != null) {
@@ -136,7 +135,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Прочитать правила техники безопасности приюта
-        commandMap.put("/safety", (firstName, lastName, chatId, userState) -> {
+        commandMap.put(SAFETY.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received /safety command");
             User user = userService.findUserByChatId(chatId);
             if (user.getShelter().getSafetyRules() != null) {
@@ -147,7 +146,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
 //         Оставить заявку на обратный звонок
-        commandMap.put("/callme", (firstName, lastName, chatId, userState) -> {
+        commandMap.put(CALL_ME.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received /callMe command");
             User user = userService.findUserByChatId(chatId);
             Optional<String> phoneFromDatabase = userService.getUserPhone(user.getId());
@@ -168,7 +167,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
         });
 
         // Связаться с волонтером
-        commandMap.put("/volunteer", (firstName, lastName, chatId, userState) -> {
+        commandMap.put(VOLUNTEER.getName(), (firstName, lastName, chatId, userState) -> {
             log.info("Received /volunteer command");
             messageSender.sendShelterFullInfoHTMLMessage(firstName, lastName, chatId);
         });

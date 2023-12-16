@@ -241,12 +241,12 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
      */
     @Override
     public void informAdopterAboutNeedToSendReport() {
-        List<User> adopters = adoptionRecordRepository.findUsersWithProbationAndNoReportToday();
-        if (!adopters.isEmpty()) {
-            for (User user : adopters) {
-                notificationSender.sendNotificationToAdopterAboutNeedToSendReportPhotoMessage(user.getChatId());
-            }
-        }
+//        List<User> adopters = adoptionRecordRepository.findUsersWithProbationAndNoReportToday();
+//        if (!adopters.isEmpty()) {
+//            for (User user : adopters) {
+//                notificationSender.sendNotificationToAdopterAboutNeedToSendReportPhotoMessage(user.getChatId());
+//            }
+//        }
     }
 
     /**
@@ -255,12 +255,12 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
      */
     @Override
     public void informAdopterAboutNeedToSendPhotoForReport() {
-        List<User> adopters = adoptionRecordRepository.findUsersWithReportTodayAndNoPhoto();
-        if (!adopters.isEmpty()) {
-            for (User user : adopters) {
-                notificationSender.sendNotificationToAdopterAboutNeedToSendPhotoForReportPhotoMessage(user.getChatId());
-            }
-        }
+//        List<User> adopters = adoptionRecordRepository.findUsersWithReportTodayAndNoPhoto();
+//        if (!adopters.isEmpty()) {
+//            for (User user : adopters) {
+//                notificationSender.sendNotificationToAdopterAboutNeedToSendPhotoForReportPhotoMessage(user.getChatId());
+//            }
+//        }
     }
     /**
      * Метод следит за уменьшением остатка испытательного периода и инициирует отправку промежуточных проверок
