@@ -45,7 +45,7 @@ public class ShelterController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
+    @PutMapping
     @Operation(summary = "Изменить существующий приют",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Приют, подлежащий изменению определяется по полю id")

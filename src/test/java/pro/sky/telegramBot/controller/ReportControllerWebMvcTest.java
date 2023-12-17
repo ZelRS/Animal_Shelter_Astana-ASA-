@@ -6,20 +6,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
 import pro.sky.telegramBot.model.adoption.Report;
 import pro.sky.telegramBot.service.ReportService;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.web.servlet.function.RequestPredicates.param;
 
 @WebMvcTest(ReportController.class)
-public class ReportControllerTest {
+public class ReportControllerWebMvcTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean

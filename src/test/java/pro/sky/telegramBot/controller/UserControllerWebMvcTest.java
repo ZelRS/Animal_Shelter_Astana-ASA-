@@ -77,9 +77,7 @@ public class UserControllerWebMvcTest {
         when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/user/{id}", USER.getId())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
+                        .get("/user/{id}", USER.getId()))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException));
     }
