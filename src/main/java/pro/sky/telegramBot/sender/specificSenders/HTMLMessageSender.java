@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.config.BotConfig;
+import pro.sky.telegramBot.config.MessageConfig;
 import pro.sky.telegramBot.executor.MessageExecutor;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.ShelterService;
@@ -27,7 +27,7 @@ import static pro.sky.telegramBot.enums.UserState.*;
 @Transactional
 @Slf4j  // SLF4J logging
 public class HTMLMessageSender {
-    private final BotConfig config;
+    private final MessageConfig messageConfig;
     private final MessageExecutor executor;
     private final UserService userService;
     private final ShelterService shelterService;
@@ -40,7 +40,7 @@ public class HTMLMessageSender {
     public void sendDefaultHTMLMessage(Long chatId) {
         log.info("Sending about message to {}", chatId);
         SendMessage message = new SendMessage(String.valueOf(chatId),
-                String.format(config.getMSG_DEFAULT())).parseMode(HTML);
+                String.format(messageConfig.getMSG_DEFAULT())).parseMode(HTML);
         // выполняется отправление дефолтного сообщения в HTML формате
         executor.executeHTMLMessage(message);
     }
@@ -55,7 +55,7 @@ public class HTMLMessageSender {
         User user = userService.findUserByChatId(chatId);
         SendMessage message;
         if (!user.getState().equals(INVITED)) {
-            message = new SendMessage(chatId, config.getMSG_START_REGISTRATION()).parseMode(HTML);
+            message = new SendMessage(chatId, messageConfig.getMSG_START_REGISTRATION()).parseMode(HTML);
         } else {
             message = new SendMessage(chatId, "Вы уже прошли регистрацию в конкретном приюте.\n" +
                     "Если вы хотите отменить Вашу запись, свяжитесь с волонтером");
@@ -73,14 +73,14 @@ public class HTMLMessageSender {
     public void sendNotSupportedHTMLMessage(Long chatId) {
         log.info("Sending not supported message to {}", chatId);
         SendMessage message = new SendMessage(String.valueOf(chatId),
-                String.format(config.getMSG_NOT_SUPPORTED())).parseMode(HTML);
+                String.format(messageConfig.getMSG_NOT_SUPPORTED())).parseMode(HTML);
         executor.executeHTMLMessage(message);
     }
 
     public void sendNoAdoptionRecordHTMLMessage(Long chatId) {
         log.info("Sending a no adoption record message to {}", chatId);
         try {
-            SendMessage sendMessage = new SendMessage(chatId, config.getMSG_NO_ADOPTION_RECORD());
+            SendMessage sendMessage = new SendMessage(chatId, messageConfig.getMSG_NO_ADOPTION_RECORD());
             executor.executeHTMLMessage(sendMessage);
         } catch (Exception e) {
             log.info("Failed to send a no adoption record message to {}", chatId, e);
@@ -96,7 +96,7 @@ public class HTMLMessageSender {
     public void sendReportNotAvailableHTMLMessage(Long chatId) {
         log.info("Sending a no report function available message to {}", chatId);
         try {
-            SendMessage sendMessage = new SendMessage(chatId, config.getMSG_NO_REPORT_AVAILABLE());
+            SendMessage sendMessage = new SendMessage(chatId, messageConfig.getMSG_NO_REPORT_AVAILABLE());
             executor.executeHTMLMessage(sendMessage);
         } catch (Exception e) {
             log.info("Failed to send a no adoption record message to {}", chatId, e);

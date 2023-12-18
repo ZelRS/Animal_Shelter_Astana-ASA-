@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.model.request.Keyboard;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.config.BotConfig;
+import pro.sky.telegramBot.config.ButtonConfig;
 import pro.sky.telegramBot.entity.Button;
 
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import static pro.sky.telegramBot.entity.Button.CallbackData.*;
 public class SpecificKeyboardCreator {
 
     private final KeyboardCreator keyboardCreator;
-    private final BotConfig config;
+    private final ButtonConfig buttonConfig;
 
     /**
      * метод формирует для сообщения ряд определенных кнопок,<br>
@@ -33,8 +33,8 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for cats and dogs");
 
         List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button(config.getBUT_WANT_CAT(), BUT_WANT_CAT.getCallbackData()));
-        buttons.add(new Button(config.getBUT_WANT_DOG(), BUT_WANT_DOG.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_WANT_CAT(), BUT_WANT_CAT.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_WANT_DOG(), BUT_WANT_DOG.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
@@ -47,18 +47,18 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for shelters functional");
 
         List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button(config.getBUT_GET_FULL_INFO(), BUT_GET_FULL_INFO.getCallbackData()));
-        buttons.add(new Button(config.getBUT_TAKING_PET(), BUT_TAKING_PET.getCallbackData()));
-        buttons.add(new Button(config.getBUT_SEND_REPORT(), BUT_SEND_REPORT.getCallbackData()));
-        buttons.add(new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_GET_FULL_INFO(), BUT_GET_FULL_INFO.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_TAKING_PET(), BUT_TAKING_PET.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_SEND_REPORT(), BUT_SEND_REPORT.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData()));
         return keyboardCreator.createInlineKeyboardTwoRow(buttons);
     }
 
     public Keyboard takingPetMessageKeyboard() {
         log.info("Creating keyboard markup for taking pet message");
         List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button(config.getBUT_CARE_PET_REC(), BUT_CARE_PET_REC.getCallbackData()));
-        buttons.add(new Button(config.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_CARE_PET_REC(), BUT_CARE_PET_REC.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
@@ -69,8 +69,8 @@ public class SpecificKeyboardCreator {
     public Keyboard fillOutReportActiveMessageKeyboard() {
         log.info("Creating keyboard markup for taking pet message");
         List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button(config.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_ON.getCallbackData()));
-        buttons.add(new Button(config.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_ON.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
@@ -81,8 +81,8 @@ public class SpecificKeyboardCreator {
     public Keyboard fillOutReportNotActiveMessageKeyboard() {
         log.info("Creating keyboard markup for taking pet message");
         List<Button> buttons = new ArrayList<>();
-        buttons.add(new Button(config.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_OFF.getCallbackData()));
-        buttons.add(new Button(config.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_FILL_OUT_REPORT_ON(), BUT_FILL_OUT_REPORT_OFF.getCallbackData()));
+        buttons.add(new Button(buttonConfig.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData()));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
 
@@ -93,9 +93,9 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for shelters information windows");
 
         List<Button> buttons = new ArrayList<>(List.of(
-                new Button(config.getBUT_MORE_INFORMATION(), BUT_MORE_INFORMATION.getCallbackData()),
-                new Button(config.getBUT_GO_TO_MAIN(), BUT_GO_TO_MAIN.getCallbackData()),
-                new Button(config.getBUT_GO_TO_SHELTER_SELECT(), BUT_GO_TO_SHELTER_SELECT.getCallbackData())
+                new Button(buttonConfig.getBUT_MORE_INFORMATION(), BUT_MORE_INFORMATION.getCallbackData()),
+                new Button(buttonConfig.getBUT_GO_TO_MAIN(), BUT_GO_TO_MAIN.getCallbackData()),
+                new Button(buttonConfig.getBUT_GO_TO_SHELTER_SELECT(), BUT_GO_TO_SHELTER_SELECT.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
@@ -107,8 +107,8 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for shelters information windows");
 
         List<Button> buttons = new ArrayList<>(List.of(
-                new Button(config.getBUT_GO_TO_MAIN(), BUT_GO_TO_MAIN.getCallbackData()),
-                new Button(config.getBUT_GO_TO_SHELTER_SELECT(), BUT_GO_TO_SHELTER_SELECT.getCallbackData())
+                new Button(buttonConfig.getBUT_GO_TO_MAIN(), BUT_GO_TO_MAIN.getCallbackData()),
+                new Button(buttonConfig.getBUT_GO_TO_SHELTER_SELECT(), BUT_GO_TO_SHELTER_SELECT.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
@@ -129,8 +129,8 @@ public class SpecificKeyboardCreator {
         log.info("Creating keyboard markup for volunteer");
 
         List<Button> buttons = new ArrayList<>(List.of(
-                new Button(config.getBUT_STATISTIC_NEW_USER(), BUT_STATISTIC_NEW_USER.getCallbackData()),
-                new Button(config.getBUT_STATISTIC_SHELTER(), BUT_STATISTIC_SHELTER.getCallbackData())
+                new Button(buttonConfig.getBUT_STATISTIC_NEW_USER(), BUT_STATISTIC_NEW_USER.getCallbackData()),
+                new Button(buttonConfig.getBUT_STATISTIC_SHELTER(), BUT_STATISTIC_SHELTER.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
@@ -142,8 +142,8 @@ public class SpecificKeyboardCreator {
         log.info("Creating after registration final keyboard markup for user");
 
         List<Button> buttons = new ArrayList<>(List.of(
-                new Button(config.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()),
-                new Button(config.getBUT_GET_FULL_INFO(), BUT_GET_FULL_INFO.getCallbackData())
+                new Button(buttonConfig.getBUT_START_REGISTRATION(), BUT_START_REGISTRATION.getCallbackData()),
+                new Button(buttonConfig.getBUT_GET_FULL_INFO(), BUT_GET_FULL_INFO.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
@@ -155,7 +155,7 @@ public class SpecificKeyboardCreator {
     public Keyboard pressTheButtonToCallVolunteerKeyboard() {
         log.info("Creating a keyboard call a volunteer");
         List<Button> buttons = new ArrayList<>(List.of(
-           new Button(config.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
+           new Button(buttonConfig.getBUT_CALL_VOLUNTEER(), BUT_CALL_VOLUNTEER.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }
@@ -166,7 +166,7 @@ public class SpecificKeyboardCreator {
     public Keyboard buttonToSendPhotoKeyboard() {
         log.info("Creating a keyboard to send a photo for report");
         List<Button> buttons = new ArrayList<>(List.of(
-                new Button(config.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData())
+                new Button(buttonConfig.getBUT_SEND_PET_PHOTO(), BUT_SEND_PET_PHOTO.getCallbackData())
         ));
         return keyboardCreator.createInlineKeyboard(buttons);
     }

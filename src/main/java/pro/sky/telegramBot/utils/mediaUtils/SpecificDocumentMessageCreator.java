@@ -6,7 +6,7 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.config.BotConfig;
+import pro.sky.telegramBot.config.MessageConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.loader.DocumentLoader;
@@ -33,7 +33,7 @@ public class SpecificDocumentMessageCreator {
     private final DocumentLoader documentLoader;
     private final MediaLoader mediaLoader;
     private final ReportService reportService;
-    private final BotConfig botConfig;
+    private final MessageConfig messageConfig;
     private final MediaMessageCreator mediaMessageCreator;
     private final UserService userService;
 
@@ -46,11 +46,11 @@ public class SpecificDocumentMessageCreator {
         if (reportService.createReportFromExcel(chatId, values)) {
             params.setChatId(chatId);
             params.setFilePath(REPORT_ACCEPTED_MSG_IMG.getPath());
-            params.setCaption(botConfig.getMSG_REPORT_ACCEPTED());
+            params.setCaption(messageConfig.getMSG_REPORT_ACCEPTED());
         } else {
             params.setChatId(chatId);
             params.setFilePath(REPORT_NOT_ACCEPTED_MSG_IMG.getPath());
-            params.setCaption(botConfig.getMSG_REPORT_NOT_ACCEPTED());
+            params.setCaption(messageConfig.getMSG_REPORT_NOT_ACCEPTED());
         }
         return mediaMessageCreator.createPhotoMessage(params);
     }
@@ -62,11 +62,11 @@ public class SpecificDocumentMessageCreator {
             log.info("Parameter were set for {}", chatId);
             params.setChatId(chatId);
             params.setFilePath(REPORT_ACCEPTED_MSG_IMG.getPath());
-            params.setCaption(botConfig.getMSG_PHOTO_ACCEPTED());
+            params.setCaption(messageConfig.getMSG_PHOTO_ACCEPTED());
         } else {
             params.setChatId(chatId);
             params.setFilePath(REPORT_NOT_ACCEPTED_MSG_IMG.getPath());
-            params.setCaption(botConfig.getMSG_PHOTO_NOT_ACCEPTED());
+            params.setCaption(messageConfig.getMSG_PHOTO_NOT_ACCEPTED());
         }
         return mediaMessageCreator.createPhotoMessage(params);
     }
@@ -97,7 +97,7 @@ public class SpecificDocumentMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(SAVING_USER_INFO_SUCCESS_MSG_IMG.getPath());
-        params.setCaption(botConfig.getMSG_SAVING_USER_INFO_SUCCESS());
+        params.setCaption(messageConfig.getMSG_SAVING_USER_INFO_SUCCESS());
 
         return mediaMessageCreator.createPhotoMessage(params);
     }
