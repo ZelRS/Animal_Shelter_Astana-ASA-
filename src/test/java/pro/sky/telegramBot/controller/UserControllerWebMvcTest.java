@@ -16,7 +16,7 @@ import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.UserInfoRepository;
 import pro.sky.telegramBot.repository.UserRepository;
-import pro.sky.telegramBot.service.impl.UserServiceImpl;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.impl.UserServiceImpl;
 
 import java.util.Optional;
 

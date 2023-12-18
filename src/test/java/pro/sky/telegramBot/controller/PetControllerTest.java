@@ -10,9 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import pro.sky.telegramBot.controller.PetController;
 import pro.sky.telegramBot.model.pet.Pet;
-import pro.sky.telegramBot.service.PetService;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.PetService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
