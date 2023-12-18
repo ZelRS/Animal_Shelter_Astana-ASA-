@@ -7,7 +7,7 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.config.BotConfig;
+import pro.sky.telegramBot.config.MessageConfig;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.executor.MessageExecutor;
@@ -40,7 +40,7 @@ public class PhotoMessageSender implements BlockedUserHandler {
     private final SpecificKeyboardCreator specificKeyboardCreator;
     private final MessageExecutor executor;
     private final UserService userService;
-    private final BotConfig config;
+    private final MessageConfig messageConfig;
 
     /**
      * метод формирует и отправляет приветственное фото-сообщение пользователю, пришедшему впервые
@@ -127,7 +127,7 @@ public class PhotoMessageSender implements BlockedUserHandler {
                 sendPhoto.caption("\"" + user.getShelter().getName() +
                         "\"\n------------\n" + user.getShelter().getPreview());
             } else {
-                sendPhoto.caption(config.getMSG_SHELTER_DEFAULT_PREVIEW());
+                sendPhoto.caption(messageConfig.getMSG_SHELTER_DEFAULT_PREVIEW());
             }
             // внедряется клавиатура выбора действия пользователя c приютом
             sendPhoto.replyMarkup(specificKeyboardCreator.shelterFunctionalMessageKeyboard());
@@ -360,7 +360,7 @@ public class PhotoMessageSender implements BlockedUserHandler {
             SendPhoto sendPhoto;
             sendPhoto = specificDocumentMessageCreator.createScreenPersonalDocumentsResponseMessage(chatId, document);
             if (!users.isEmpty()) {
-                String caption = String.format(config.getMSG_SAVING_USER_PERSONAL_DOCS_SCREENS_SUCCESS(),
+                String caption = String.format(messageConfig.getMSG_SAVING_USER_PERSONAL_DOCS_SCREENS_SUCCESS(),
                         user.getShelter().getName());
                 sendPhoto.caption(caption);
                 sendPhoto.replyMarkup(specificKeyboardCreator.afterRegistrationFinalKeyboard());

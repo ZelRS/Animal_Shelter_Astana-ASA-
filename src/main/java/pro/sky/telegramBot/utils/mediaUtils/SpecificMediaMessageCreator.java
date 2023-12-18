@@ -5,7 +5,7 @@ import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import pro.sky.telegramBot.config.BotConfig;
+import pro.sky.telegramBot.config.MessageConfig;
 import pro.sky.telegramBot.entity.MediaMessageParams;
 import pro.sky.telegramBot.service.ShelterService;
 
@@ -25,7 +25,7 @@ import static pro.sky.telegramBot.enums.PetType.DOG;
 @Slf4j  // SLF4J logging
 public class SpecificMediaMessageCreator {
     private final MediaMessageCreator mediaMessageCreator;
-    private final BotConfig config;
+    private final MessageConfig messageConfig;
     private final ShelterService shelterService;
 
     /**
@@ -36,7 +36,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(FIRST_TIME_WELCOME_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_SIMPLE_WELCOME(), firstName));
+        params.setCaption(String.format(messageConfig.getMSG_SIMPLE_WELCOME(), firstName));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -48,7 +48,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(SORRY_WELCOME_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_SORRY_WELCOME(), firstName));
+        params.setCaption(String.format(messageConfig.getMSG_SORRY_WELCOME(), firstName));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -72,7 +72,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(BLOCKED_WELCOME_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_BLOCKED_WELCOME()));
+        params.setCaption(String.format(messageConfig.getMSG_BLOCKED_WELCOME()));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -85,13 +85,13 @@ public class SpecificMediaMessageCreator {
         params.setFilePath(DOG_SHELTERS_MSG_IMG.getPath());
         int dogsCount = shelterService.findAllShelterNamesByType(DOG).size();
         if (dogsCount == 0) {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_NULL(), DOG.getAccusative()));
+            params.setCaption(String.format(messageConfig.getMSG_SHELTER_INTRO_NULL(), DOG.getAccusative()));
         } else if (dogsCount == 1) {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_ONE(), dogsCount, DOG.getAccusative()) + shelterService.getStringOfShelterNames(DOG));
+            params.setCaption(String.format(messageConfig.getMSG_SHELTER_INTRO_ONE(), dogsCount, DOG.getAccusative()) + shelterService.getStringOfShelterNames(DOG));
         } else if (dogsCount == 2 || dogsCount == 3) {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_TWO(), dogsCount, DOG.getAccusative()) + shelterService.getStringOfShelterNames(DOG));
+            params.setCaption(String.format(messageConfig.getMSG_SHELTER_INTRO_TWO(), dogsCount, DOG.getAccusative()) + shelterService.getStringOfShelterNames(DOG));
         } else {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_THREE(), dogsCount, DOG.getAccusative()) + shelterService.getStringOfShelterNames(DOG));
+            params.setCaption(String.format(messageConfig.getMSG_SHELTER_INTRO_THREE(), dogsCount, DOG.getAccusative()) + shelterService.getStringOfShelterNames(DOG));
         }
         return mediaMessageCreator.createPhotoMessage(params);
     }
@@ -105,16 +105,16 @@ public class SpecificMediaMessageCreator {
         params.setFilePath(CAT_SHELTERS_MSG_IMG.getPath());
         int catsCount = shelterService.findAllShelterNamesByType(CAT).size();
         if (catsCount == 0) {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_NULL(), CAT.getAccusative()));
+            params.setCaption(String.format(messageConfig.getMSG_SHELTER_INTRO_NULL(), CAT.getAccusative()));
         } else if (catsCount == 1) {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_ONE(), catsCount, CAT.getAccusative()) +
-                    shelterService.getStringOfShelterNames(CAT));
+            params.setCaption(String.format(messageConfig.getMSG_SHELTER_INTRO_ONE(), catsCount, CAT.getAccusative()) +
+                              shelterService.getStringOfShelterNames(CAT));
         } else if (catsCount == 2 || catsCount == 3) {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_TWO(), catsCount, CAT.getAccusative()) +
-                    shelterService.getStringOfShelterNames(CAT));
+            params.setCaption(String.format(messageConfig.getMSG_SHELTER_INTRO_TWO(), catsCount, CAT.getAccusative()) +
+                              shelterService.getStringOfShelterNames(CAT));
         } else {
-            params.setCaption(String.format(config.getMSG_SHELTER_INTRO_THREE(), catsCount, CAT.getAccusative()) +
-                    shelterService.getStringOfShelterNames(CAT));
+            params.setCaption(String.format(messageConfig.getMSG_SHELTER_INTRO_THREE(), catsCount, CAT.getAccusative()) +
+                              shelterService.getStringOfShelterNames(CAT));
         }
         return mediaMessageCreator.createPhotoMessage(params);
     }
@@ -137,7 +137,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(TAKING_PET_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_TAKING_PET(), firstName));
+        params.setCaption(String.format(messageConfig.getMSG_TAKING_PET(), firstName));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -149,7 +149,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CARE_DOG_REC_MSG_IMG.getPath());
-        params.setCaption(config.getMSG_CARE_PET_REC() + config.getMSG_CARE_DOG_SPEC_REC());
+        params.setCaption(messageConfig.getMSG_CARE_PET_REC() + messageConfig.getMSG_CARE_DOG_SPEC_REC());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -161,7 +161,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CARE_CAT_REC_MSG_IMG.getPath());
-        params.setCaption(config.getMSG_CARE_PET_REC());
+        params.setCaption(messageConfig.getMSG_CARE_PET_REC());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -174,7 +174,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(TWO_OPTIONS_SEND_REPORT_MSG_IMG.getPath());
-        params.setCaption(config.getMSG_SEND_REPORT_TWO_OPTIONS());
+        params.setCaption(messageConfig.getMSG_SEND_REPORT_TWO_OPTIONS());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -187,7 +187,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(ONE_OPTION_SEND_REPORT_MSG_IMG.getPath());
-        params.setCaption(config.getMSG_SEND_REPORT_ONE_OPTION());
+        params.setCaption(messageConfig.getMSG_SEND_REPORT_ONE_OPTION());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -241,7 +241,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(REPORT_ACCEPTED_MSG_IMG.getPath());
-        params.setCaption(config.getMSG_REPORT_ACCEPTED());
+        params.setCaption(messageConfig.getMSG_REPORT_ACCEPTED());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -249,7 +249,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(HELLO_VOLUNTEER_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_HELLO_VOLUNTEER(), firstName));
+        params.setCaption(String.format(messageConfig.getMSG_HELLO_VOLUNTEER(), firstName));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -257,7 +257,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CHOOSE_SHELTER_IMG.getPath());
-        params.setCaption(config.getMSG_CHOOSE_SHELTER());
+        params.setCaption(messageConfig.getMSG_CHOOSE_SHELTER());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -269,7 +269,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(CALL_VOLUNTEER_MSG_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_VOLUNTEER_NOTIFIED()));
+        params.setCaption(String.format(messageConfig.getMSG_VOLUNTEER_NOTIFIED()));
         return mediaMessageCreator.createPhotoMessage(params);
     }
     /**
@@ -279,7 +279,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
-        params.setCaption(config.getMSG_NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT());
+        params.setCaption(messageConfig.getMSG_NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT());
         return mediaMessageCreator.createPhotoMessage(params);
     }
     /**
@@ -289,7 +289,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
-        params.setCaption(config.getMSG_NOTIFICATION_ABOUT_START_REPORTING());
+        params.setCaption(messageConfig.getMSG_NOTIFICATION_ABOUT_START_REPORTING());
         return mediaMessageCreator.createPhotoMessage(params);
     }
     /**
@@ -299,7 +299,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
-        params.setCaption(config.getMSG_NOTIFICATION_ABOUT_END_REPORTING());
+        params.setCaption(messageConfig.getMSG_NOTIFICATION_ABOUT_END_REPORTING());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -307,7 +307,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(volunteerChatId);
         params.setFilePath(MISSING_PET_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_MISSING_PET(), userId));
+        params.setCaption(String.format(messageConfig.getMSG_MISSING_PET(), userId));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -315,7 +315,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(REPORT_NOT_ACCEPTED_MSG_IMG.getPath());
-        params.setCaption(config.getMSG_GET_HELP_FROM_VOLUNTEER());
+        params.setCaption(messageConfig.getMSG_GET_HELP_FROM_VOLUNTEER());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -323,7 +323,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
-        params.setCaption(config.getMSG_NEED_TO_SEND_REPORT());
+        params.setCaption(messageConfig.getMSG_NEED_TO_SEND_REPORT());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -331,7 +331,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_TO_ADOPTER_ABOUT_DAILY_REPORT_IMG.getPath());
-        params.setCaption(config.getMSG_NEED_TO_SEND_PHOTO_FOR_REPORT());
+        params.setCaption(messageConfig.getMSG_NEED_TO_SEND_PHOTO_FOR_REPORT());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -340,7 +340,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_NOTIFICATION_PROBLEM(), userChatId));
+        params.setCaption(String.format(messageConfig.getMSG_NOTIFICATION_PROBLEM(), userChatId));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -349,7 +349,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_NOTIFICATION_TRY_YOUR_BEST(), userChatId));
+        params.setCaption(String.format(messageConfig.getMSG_NOTIFICATION_TRY_YOUR_BEST(), userChatId));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -358,7 +358,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_NOTIFICATION_GOOD_JOB(), userChatId));
+        params.setCaption(String.format(messageConfig.getMSG_NOTIFICATION_GOOD_JOB(), userChatId));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -367,7 +367,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_CALCULATION_ERROR_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_NOTIFICATION_CALCULATION_ERROR(), userChatId));
+        params.setCaption(String.format(messageConfig.getMSG_NOTIFICATION_CALCULATION_ERROR(), userChatId));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -375,7 +375,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
-        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_ABOUT_PROBLEM());
+        params.setCaption(messageConfig.getMSG_NOTIFICATION_ADOPTER_ABOUT_PROBLEM());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -383,7 +383,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
-        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_ABOUT_TRY_YOUR_BEST());
+        params.setCaption(messageConfig.getMSG_NOTIFICATION_ADOPTER_ABOUT_TRY_YOUR_BEST());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -391,7 +391,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
-        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_ABOUT_GOOD_JOB());
+        params.setCaption(messageConfig.getMSG_NOTIFICATION_ADOPTER_ABOUT_GOOD_JOB());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -399,7 +399,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_NOTIFICATION_FAILED(), userChatId));
+        params.setCaption(String.format(messageConfig.getMSG_NOTIFICATION_FAILED(), userChatId));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -407,7 +407,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_NOTIFICATION_EXTENSION(), userChatId));
+        params.setCaption(String.format(messageConfig.getMSG_NOTIFICATION_EXTENSION(), userChatId));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -415,7 +415,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
-        params.setCaption(String.format(config.getMSG_NOTIFICATION_SUCCESSFUL(), userChatId));
+        params.setCaption(String.format(messageConfig.getMSG_NOTIFICATION_SUCCESSFUL(), userChatId));
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -423,7 +423,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_PROBLEM_IMG.getPath());
-        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_FAILED());
+        params.setCaption(messageConfig.getMSG_NOTIFICATION_ADOPTER_FAILED());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -431,7 +431,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_TRY_YOUR_BEST_IMG.getPath());
-        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_EXTENSION());
+        params.setCaption(messageConfig.getMSG_NOTIFICATION_ADOPTER_EXTENSION());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
@@ -439,7 +439,7 @@ public class SpecificMediaMessageCreator {
         MediaMessageParams params = new MediaMessageParams();
         params.setChatId(chatId);
         params.setFilePath(NOTIFICATION_GOOD_JOB_IMG.getPath());
-        params.setCaption(config.getMSG_NOTIFICATION_ADOPTER_SUCCESSFUL());
+        params.setCaption(messageConfig.getMSG_NOTIFICATION_ADOPTER_SUCCESSFUL());
         return mediaMessageCreator.createPhotoMessage(params);
     }
 
