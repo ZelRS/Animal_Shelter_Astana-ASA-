@@ -116,7 +116,7 @@ public class HTMLMessageSender {
     public void sendStatisticAboutNewUserHTMLMessage(Long chatId) {
         log.info("Sending Statistic To Volunteer  {} About New User", chatId);
         try {
-            SendMessage sendMessage = new SendMessage(chatId, userService.getNewUser().toString());
+            SendMessage sendMessage = new SendMessage(chatId, userService.getFREESateUser().toString());
             executor.executeHTMLMessage(sendMessage);
         } catch (Exception e) {
             log.error(" Failed to send message");

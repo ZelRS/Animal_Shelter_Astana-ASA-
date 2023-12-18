@@ -38,6 +38,9 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     private final NotificationSender notificationSender;
     private final ReportAnalyser reportAnalyser;
 
+    /**
+     * Метод позволяет создать новый отчет об усыновлении
+     */
     @Override
     public AdoptionRecord createNewAdoptionRecord(Long userId, Long petId) {
         User user = userService.getById(userId);
@@ -77,6 +80,7 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         return savedAdoptionRecord;
 
     }
+
     @Override
     public AdoptionRecord extendAdoptionRecord(Long adoptionRecordId) {
         try {

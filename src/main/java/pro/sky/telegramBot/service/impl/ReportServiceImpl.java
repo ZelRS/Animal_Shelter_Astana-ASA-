@@ -40,7 +40,7 @@ public class ReportServiceImpl implements ReportService {
     private final ReportDataConverter reportDataConverter;
     private final UserService userService;
     private final AdoptionRecordService adoptionRecordService;
-    private  final NotificationSender notificationSender;
+    private final NotificationSender notificationSender;
     private final ReportSumCalculator reportSumCalculator;
     private final TelegramBot bot;
     private final MediaLoader mediaLoader;
@@ -49,6 +49,7 @@ public class ReportServiceImpl implements ReportService {
     private static final int START_QUESTION_BUTTON_ID = 11;
     private static final int LAST_QUESTION_INDICATOR = 4;
     private static final int NEXT_QUESTION_ID = 5;
+
     /**
      * Метод сохраняет новый отчет в записи об усыновлении и в базе.
      * Если отчет с такой датой уже существует, то отчет перезаписывает его.
@@ -69,7 +70,7 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(newReport);
         return true;
     }
-    //Метод создания отчета на основе данных эксель-файла
+
     /**
      * Создает отчет на основании значений, полученных из файла Excel.
      * При этом проверяется дата отчета и обновляется состояние пользователя.
@@ -104,13 +105,12 @@ public class ReportServiceImpl implements ReportService {
         calculateReportRatingTotal(newReport.getId());
         return true;
     }
-    //Заполняем отчет в чате
 
     /**
      * Обрабатывает ответы пользователя в боте Telegram и заполняет отчет.
      * Вызываются методы для навигации по вопросам и завершению формирования отчета.
      *
-     * @param chatId      Telegram chat ID пользователя
+     * @param chatId       Telegram chat ID пользователя
      * @param callbackData Callback data после нажатия кнопки в боте
      */
     @Override
@@ -134,8 +134,6 @@ public class ReportServiceImpl implements ReportService {
             }
         }
     }
-
-    //Метод создает новый отчет, сохраняет его в базе и инициирует его заполнение
 
     /**
      * Создает новый отчет online в боте за текущий день, если его нет, и запускает процесс заполнения отчета.
@@ -161,7 +159,7 @@ public class ReportServiceImpl implements ReportService {
             fillOutReport(chatId, "11_0_" + reportId);
         }
     }
-//Метод для обработки фотографии для отчета
+
     /**
      * Обрабатывает фотографию животного для отчета, уменьшает размер фотографии и сохраняет в отчете.
      *
@@ -194,7 +192,7 @@ public class ReportServiceImpl implements ReportService {
         user.setState(PROBATION);
         userService.update(user);
     }
-//Метод для прикрепления фотографии к отчету
+
     /**
      * Прикрепляет фотографию к отчету пользователя за текущую дату.
      *
@@ -224,6 +222,7 @@ public class ReportServiceImpl implements ReportService {
         log.info("User or Adoption Report not found {}", chatId);
         return false;
     }
+
     /**
      * Получение отчета пл ID.
      *
@@ -236,12 +235,13 @@ public class ReportServiceImpl implements ReportService {
         return reportRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Report with id " + id + " was not found"));
     }
+
     /**
      * Вызывает следующий вопрос для заполнения отчета.
      *
-     * @param chatId           Telegram chat ID пользователя
+     * @param chatId             Telegram chat ID пользователя
      * @param questionIdentifier Integer в качестве идентификатора вопроса
-     * @param reportId         ID отчета, куда записываются ответы
+     * @param reportId           ID отчета, куда записываются ответы
      */
     private void askNextQuestion(Long chatId, int questionIdentifier, Long reportId) {
         if (questionIdentifier < Report.QuestionsForReport.values().length) {
@@ -253,7 +253,8 @@ public class ReportServiceImpl implements ReportService {
             );
         }
     }
-//Обновляем отчет, внося в него новые введенные пользователем значения
+
+    //Обновляем отчет, внося в него новые введенные пользователем значения
     private void updateReportByAnswer(Report report, int answerValue, int questionIdentifier) {
         switch (Report.QuestionsForReport.values()[questionIdentifier]) {
             case DIETAPPETITE:
@@ -275,6 +276,7 @@ public class ReportServiceImpl implements ReportService {
         reportRepository.save(report);
     }
 
+    //  метод финализирующий процесс создания отчета пользователем
     private void finalizeReportProcess(Report report, Long chatId, Long reportId) {
         calculateReportRatingTotal(reportId);
         User user = userService.findUserByChatId(chatId);
@@ -283,7 +285,7 @@ public class ReportServiceImpl implements ReportService {
         adoptionRecordService.addNewReportToAdoptionRecord(report, chatId);
     }
 
-    //Метод для получения отчета, если такой уже есть, или создания нового отчета
+    //  Метод для получения отчета, если такой уже есть, или создания нового отчета
     private Report getOrCreateReport(User user, LocalDate date) {
         AdoptionRecord adoptionRecord = user.getAdoptionRecord();
         Report report = reportRepository.findByAdoptionRecordIdAndReportDateTime(adoptionRecord.getId(), date);
@@ -294,7 +296,8 @@ public class ReportServiceImpl implements ReportService {
         }
         return report;
     }
-    //В этом методу мы присваиваем значения. Если значения в отчете не указаны, то будет присвоен ноль.
+
+    //  В этом методу мы присваиваем значения. Если значения в отчете не указаны, то будет присвоен ноль.
     private void setReportValues(Report report, List<String> values) {
         int[] fieldsIndexes = {0, 1, 2, 3, 4};
         List<Consumer<Integer>> valueSetters = Arrays.asList(
@@ -319,7 +322,8 @@ public class ReportServiceImpl implements ReportService {
             valueSetters.get(i).accept(valueInt);
         }
     }
-//Метод для подсчета и сохранения общей суммы в отчете
+
+    //  Метод для подсчета и сохранения общей суммы в отчете
     private void calculateReportRatingTotal(Long reportId) {
         try {
             Report report = reportRepository.findById(reportId).orElseThrow();

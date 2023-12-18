@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
      * создать и сохранить пользователя в БД
      */
     @Override
-    public User create(User user) {
+    public User createUserInfo(User user) {
         return userRepository.save(user);
     }
 
@@ -63,24 +63,33 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+    /**
+     * Метод позволяет создать информацию о пользователе
+     */
     @Override
-    public UserInfo create(UserInfo userInfo) {
+    public UserInfo createUserInfo(UserInfo userInfo) {
         return userInfoRepository.save(userInfo);
     }
 
+    /**
+     * Метод позволяет получить номер телефона пользователя
+     */
     public Optional<String> getUserPhone(Long id) {
         return userRepository.findPhoneById(id);
     }
 
-    public UserInfo setUserPhone(UserInfo userInfo) {
-        return userInfoRepository.save(userInfo);
-    }
-
+    /**
+     * Метод позволяет получить список пользователей с выбранным статусом,
+     * у которых отсутствует запись об усыновлении
+     */
     @Override
     public List<User> findAllByAdoptionRecordIsNullAndState(UserState state) {
         return userRepository.findAllByAdoptionRecordIsNullAndState(state);
     }
 
+    /**
+     * Метод позволяет получить список пользователей с выбранным статусом
+     */
     @Override
     public List<User> findAllByState(UserState userState) {
         return userRepository.findAllByState(userState);
@@ -107,11 +116,14 @@ public class UserServiceImpl implements UserService {
      */
     public void addPhoneNumberToPersonInfo(String firstName, String lastName, Long chatId, String phone) {
         User user = findUserByChatId(chatId);
-        UserInfo userInfo = setUserPhone(new UserInfo(firstName, lastName, phone));
+        UserInfo userInfo = createUserInfo(new UserInfo(firstName, lastName, phone));
         user.setUserInfo(userInfo);
         update(user);
     }
 
+    /**
+     * Метод позволяет сменить статус пользователя
+     */
     @Override
     public void setUserState(Long id, UserState state) {
         User user = getById(id);
@@ -119,11 +131,18 @@ public class UserServiceImpl implements UserService {
         update(user);
     }
 
+    /**
+     * Метод позволяет получить список пользователей со статусом FREE
+     */
     @Override
-    public List<User> getNewUser() {
+    public List<User> getFREESateUser() {
         return userRepository.findAllByState(FREE);
     }
 
+    /**
+     * Метод позволяет получить статус пользователя.
+     * Если пользователь не найден, создается новый пользователь
+     */
     @Override
     public UserState getUserState(Long chatId, String firstName) {
         UserState userState = FREE;
@@ -136,11 +155,15 @@ public class UserServiceImpl implements UserService {
         return userState;
     }
 
+    /**
+     * Метод позволяет создать нового пользователя
+     * с присваиванием ему статуса FREE и сохранением его в БД
+     */
     private void createNewUser(Long chatId, String firstName) {
         User user = new User();
         user.setChatId(chatId);
         user.setUserName(firstName);
         user.setState(FREE);
-        create(user);
+        createUserInfo(user);
     }
 }
