@@ -27,6 +27,10 @@ import static pro.sky.telegramBot.enums.PetType.NOPET;
 import static pro.sky.telegramBot.model.adoption.AdoptionRecord.TrialPeriodState.*;
 import static pro.sky.telegramBot.enums.UserState.*;
 import static pro.sky.telegramBot.enums.UserState.PROBATION;
+
+/**
+ * Сервис для работы с записями об усыновлении
+ */
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -39,7 +43,11 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     private final ReportAnalyser reportAnalyser;
 
     /**
-     * Метод позволяет создать новый отчет об усыновлении
+     * Создает новую запись об усыновлении
+     *
+     * @param userId идентификатор пользователя
+     * @param petId  идентификатор питомца
+     * @return созданная запись об усыновлении
      */
     @Override
     public AdoptionRecord createNewAdoptionRecord(Long userId, Long petId) {
@@ -80,7 +88,12 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         return savedAdoptionRecord;
 
     }
-
+    /**
+     * Продление записи об усыновлении
+     *
+     * @param adoptionRecordId идентификатор записи об усыновлении
+     * @return продленная запись об усыновлении
+     */
     @Override
     public AdoptionRecord extendAdoptionRecord(Long adoptionRecordId) {
         try {
@@ -121,7 +134,12 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
             return null;
         }
     }
-
+    /**
+     * Прекращение записи об усыновлении
+     *
+     * @param adoptionRecordId идентификатор записи об усыновлении
+     * @return завершенная запись об усыновлении
+     */
     @Override
     public AdoptionRecord terminateAdoptionRecord(Long adoptionRecordId) {
         try {
@@ -145,6 +163,11 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
         }
     }
 
+    /**
+     * Сохраняет запись об усыновлении
+     *
+     * @param adoptionRecord запись об усыновлении
+     */
     @Override
     public void save(AdoptionRecord adoptionRecord) {
         adoptionRecordRepository.save(adoptionRecord);
@@ -177,7 +200,10 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
     }
 
     /**
-     * Метод добавляет новый отчет к записи усыновления
+     * Добавляет новый отчет к записи об усыновлении
+     *
+     * @param newReport новый отчет
+     * @param chatId    идентификатор чата
      */
     @Override
     public void addNewReportToAdoptionRecord(Report newReport, Long chatId) {
@@ -285,7 +311,9 @@ public class AdoptionRecordServiceImpl implements AdoptionRecordService {
                 .collect(Collectors.toList());
         adoptionRecordRepository.saveAll(updatedAdoptionRecords);
     }
-
+    /**
+     * Метод проверяет наступление срока проверок и инициирует проверку
+     */
 
     private void checkEvents(AdoptionRecord adoptionRecord) {
         List<Report> reports = adoptionRecordRepository.findAllReportsByAdoptionRecord(adoptionRecord);
