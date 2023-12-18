@@ -16,6 +16,7 @@ import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.model.users.UserInfo;
 import pro.sky.telegramBot.repository.UserInfoRepository;
 import pro.sky.telegramBot.repository.UserRepository;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.impl.UserServiceImpl;
 
 import java.util.*;
 

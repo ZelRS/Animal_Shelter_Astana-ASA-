@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import pro.sky.telegramBot.enums.UserState;
-import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.UserService;
 
 /**
  * Определяет, есть ли в базе пользователь и какой у него статус. Если пользователя нет, то вносит его в базу.

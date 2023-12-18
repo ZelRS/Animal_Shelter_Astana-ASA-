@@ -10,22 +10,22 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pro.sky.telegramBot.config.BotConfig;
 import pro.sky.telegramBot.enums.UserState;
-import pro.sky.telegramBot.executor.MessageExecutor;
-import pro.sky.telegramBot.loader.MediaLoader;
+import pro.sky.telegramBot.service.executors.MessageExecutor;
+import pro.sky.telegramBot.service.loaders.MediaLoader;
 import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.*;
-import pro.sky.telegramBot.sender.specificSenders.NotificationSender;
-import pro.sky.telegramBot.service.impl.*;
-import pro.sky.telegramBot.utils.keyboardUtils.KeyboardCreator;
-import pro.sky.telegramBot.utils.keyboardUtils.SpecificKeyboardCreator;
-import pro.sky.telegramBot.utils.mediaUtils.MediaMessageCreator;
-import pro.sky.telegramBot.utils.mediaUtils.SpecificMediaMessageCreator;
-import pro.sky.telegramBot.utils.statistic.ReportAnalyser;
-import pro.sky.telegramBot.utils.statistic.ReportDataConverter;
-import pro.sky.telegramBot.utils.statistic.ReportSumCalculator;
-import pro.sky.telegramBot.utils.statistic.StatisticPreparer;
+import pro.sky.telegramBot.service.senders.NotificationSender;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.impl.*;
+import pro.sky.telegramBot.service.creators.keyboardCreators.GeneralKeyboardCreator;
+import pro.sky.telegramBot.service.creators.keyboardCreators.SpecificKeyboardCreator;
+import pro.sky.telegramBot.service.creators.mediaMessageCreators.GeneralMediaMessageCreator;
+import pro.sky.telegramBot.service.creators.mediaMessageCreators.SpecificMediaMessageCreator;
+import pro.sky.telegramBot.utils.ReportAnalyser;
+import pro.sky.telegramBot.utils.ReportDataConverter;
+import pro.sky.telegramBot.utils.ReportSumCalculator;
+import pro.sky.telegramBot.utils.StatisticPreparer;
 
 import java.util.Optional;
 
@@ -66,7 +66,7 @@ class AdoptionRecordControllerWebMvcTest {
     @MockBean
     private SpecificKeyboardCreator specificKeyboardCreator;
     @MockBean
-    private KeyboardCreator keyboardCreator;
+    private GeneralKeyboardCreator generalKeyboardCreator;
     @MockBean
     private ReportSumCalculator reportSumCalculator;
     @MockBean
@@ -76,7 +76,7 @@ class AdoptionRecordControllerWebMvcTest {
     @MockBean
     private SpecificMediaMessageCreator specificMediaMessageCreator;
     @MockBean
-    private MediaMessageCreator mediaMessageCreator;
+    private GeneralMediaMessageCreator generalMediaMessageCreator;
     @MockBean
     private MediaLoader mediaLoader;
     @MockBean

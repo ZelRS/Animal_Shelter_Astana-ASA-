@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pro.sky.telegramBot.model.adoption.Report;
-import pro.sky.telegramBot.service.ReportService;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.ReportService;
 
 @RestController
 @RequiredArgsConstructor

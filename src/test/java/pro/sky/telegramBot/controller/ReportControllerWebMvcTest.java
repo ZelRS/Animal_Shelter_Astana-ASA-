@@ -9,14 +9,13 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import pro.sky.telegramBot.model.adoption.Report;
-import pro.sky.telegramBot.service.ReportService;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.ReportService;
 
 import java.io.InputStream;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.web.servlet.function.RequestPredicates.param;
 
 @WebMvcTest(ReportController.class)
 public class ReportControllerWebMvcTest {

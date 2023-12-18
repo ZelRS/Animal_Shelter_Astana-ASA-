@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.users.User;
-import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.UserService;
 
 /**
  * контроллер для обработки с эндпоинтов, связанных с пользователями и информацией о них

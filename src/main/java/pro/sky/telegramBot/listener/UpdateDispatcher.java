@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.UserState;
-import pro.sky.telegramBot.handler.usersActionHandlers.ButtonActionHandler;
-import pro.sky.telegramBot.handler.usersActionHandlers.CommandActionHandler;
-import pro.sky.telegramBot.handler.usersActionHandlers.impl.*;
+import pro.sky.telegramBot.service.handlers.usersActionHandlers.ButtonActionHandler;
+import pro.sky.telegramBot.service.handlers.usersActionHandlers.CommandActionHandler;
+import pro.sky.telegramBot.service.handlers.usersActionHandlers.impl.DocumentActionHandler;
+import pro.sky.telegramBot.service.handlers.usersActionHandlers.impl.PhotoActionHandlerImpl;
 
 @Service
 @RequiredArgsConstructor
