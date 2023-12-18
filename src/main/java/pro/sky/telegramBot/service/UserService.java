@@ -26,7 +26,7 @@ public interface UserService {
     /**
      * создать и сохранить пользователя в БД
      */
-    User create(User user);
+    User createUserInfo(User user);
 
     /**
      * изменить пользователя в БД
@@ -36,23 +36,46 @@ public interface UserService {
     /**
      * создать и сохранить информацию о пользователе пользователя в БД
      */
-    UserInfo create(UserInfo userInfo);
+    UserInfo createUserInfo(UserInfo userInfo);
 
+    /**
+     * Метод позволяет получить номер телефона пользователя
+     */
     Optional<String> getUserPhone(Long id);
 
-    UserInfo setUserPhone(UserInfo userInfo);
-
+    /**
+     * Метод позволяет получить список пользователей с выбранным статусом,
+     * у которых отсутствует запись об усыновлении
+     */
     List<User> findAllByAdoptionRecordIsNullAndState(UserState state);
 
+    /**
+     * Метод позволяет получить список пользователей с выбранным статусом
+     */
     List<User> findAllByState(UserState userState);
 
+    /**
+     * метод возвращает chatID случайного волонтера
+     */
     Long getRandomVolunteerId();
 
+    /**
+     * Метод добавляет номер телефона в таблицу UserInfo
+     */
     void addPhoneNumberToPersonInfo(String firstName, String lastName, Long chatId, String phone);
 
+    /**
+     * Метод позволяет сменить статус пользователя
+     */
     void setUserState(Long id, UserState state);
 
-    List<User> getNewUser();
+    /**
+     * Метод позволяет получить список пользователей со статусом FREE
+     */
+    List<User> getFREESateUser();
 
+    /**
+     * Метод позволяет получить статус пользователя.
+     */
     UserState getUserState(Long chatId, String firstName);
 }

@@ -28,7 +28,7 @@ public class UserController {
     @PostMapping
     @Operation(summary = "Добавить пользователя")
     public ResponseEntity<User> create(@RequestBody User user) {
-        return ResponseEntity.ok(userService.create(user));
+        return ResponseEntity.ok(userService.createUserInfo(user));
     }
 
     @PutMapping("/{id}")

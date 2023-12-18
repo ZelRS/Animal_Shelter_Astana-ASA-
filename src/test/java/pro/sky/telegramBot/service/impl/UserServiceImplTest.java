@@ -71,7 +71,7 @@ public class UserServiceImplTest {
     void create_Should_SaveUser_Test() {
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
-        User savedUser = userService.create(new User());
+        User savedUser = userService.createUserInfo(new User());
         assertNotNull(savedUser);
         verify(userRepository, times(1)).save(any(User.class));
     }

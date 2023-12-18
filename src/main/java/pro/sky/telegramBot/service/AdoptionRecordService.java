@@ -5,6 +5,9 @@ import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 
 public interface AdoptionRecordService {
 
+    /**
+     * Метод позволяет создать новый отчет об усыновлении
+     */
     AdoptionRecord createNewAdoptionRecord(Long userId, Long petId);
 
     void addNewReportToAdoptionRecord(Report newReport, Long chatId);

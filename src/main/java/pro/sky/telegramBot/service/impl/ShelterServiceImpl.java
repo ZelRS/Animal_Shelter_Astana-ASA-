@@ -103,6 +103,9 @@ public class ShelterServiceImpl implements ShelterService {
         return true;
     }
 
+    /**
+     * Метод позволяет получить список имен приютов с количеством животных в нем
+     */
     @Override
     public List<String> getShelterNamesWitPetCounts() {
         List<Object[]> results = shelterRepository.findShelterNamesPetCounts();

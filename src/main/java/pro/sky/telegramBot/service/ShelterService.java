@@ -46,5 +46,8 @@ public interface ShelterService {
      */
     boolean uploadSchema(Long id, MultipartFile schema) throws Exception;
 
+    /**
+     * Метод позволяет получить список имен приютов с количеством животных в нем
+     */
     List<String> getShelterNamesWitPetCounts();
 }

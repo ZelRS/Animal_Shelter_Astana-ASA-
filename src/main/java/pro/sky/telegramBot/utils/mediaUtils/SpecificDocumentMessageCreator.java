@@ -89,7 +89,7 @@ public class SpecificDocumentMessageCreator {
         userInfo.setPassport(values.get(3));
         userInfo.setPhone(values.get(4));
         userInfo.setEmail(values.get(5));
-        userService.create(userInfo);
+        userService.createUserInfo(userInfo);
         user.setUserInfo(userInfo);
         user.setState(UserState.POTENTIAL);
 

@@ -32,7 +32,6 @@ public class PetServiceImpl implements PetService {
         return petRepository.save(pet);
     }
 
-
     /**
      * загрузить в БД фото животного
      */
@@ -57,7 +56,6 @@ public class PetServiceImpl implements PetService {
         return petRepository.save(pet);
     }
 
-
     /**
      * получить животное из БД по id
      */
@@ -69,5 +67,4 @@ public class PetServiceImpl implements PetService {
         return petRepository.findById(id)
                 .orElseThrow(() -> new PetNotFoundException("Животное не найдено"));
     }
-
 }
