@@ -7,9 +7,10 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.telegramBot.enums.PetType;
 import pro.sky.telegramBot.exception.notFound.ShelterNotFoundException;
-import pro.sky.telegramBot.loader.MediaLoader;
+import pro.sky.telegramBot.service.loaders.MediaLoader;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.repository.ShelterRepository;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.impl.ShelterServiceImpl;
 
 import java.util.List;
 import java.util.Optional;

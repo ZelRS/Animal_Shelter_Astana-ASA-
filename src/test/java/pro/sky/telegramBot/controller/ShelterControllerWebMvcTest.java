@@ -12,11 +12,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pro.sky.telegramBot.exception.notFound.ShelterNotFoundException;
-import pro.sky.telegramBot.handler.specificHandlers.impl.ShelterCommandHandler;
-import pro.sky.telegramBot.loader.MediaLoader;
+import pro.sky.telegramBot.service.handlers.specificHandlers.impl.ShelterCommandHandler;
+import pro.sky.telegramBot.service.loaders.MediaLoader;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.repository.ShelterRepository;
-import pro.sky.telegramBot.service.impl.ShelterServiceImpl;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.impl.ShelterServiceImpl;
 
 import java.util.Optional;
 

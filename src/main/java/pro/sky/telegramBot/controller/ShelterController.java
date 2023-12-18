@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pro.sky.telegramBot.handler.specificHandlers.impl.ShelterCommandHandler;
+import pro.sky.telegramBot.service.handlers.specificHandlers.impl.ShelterCommandHandler;
 import pro.sky.telegramBot.model.shelter.Shelter;
-import pro.sky.telegramBot.service.ShelterService;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.ShelterService;
 
 import java.io.IOException;
 

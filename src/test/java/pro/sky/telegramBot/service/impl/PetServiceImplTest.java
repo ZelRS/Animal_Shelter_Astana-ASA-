@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pro.sky.telegramBot.exception.notFound.PetNotFoundException;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.repository.PetRepository;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.impl.PetServiceImpl;
+
 import java.io.IOException;
 import java.util.Optional;
 

@@ -9,8 +9,9 @@ import pro.sky.telegramBot.model.adoption.AdoptionRecord;
 import pro.sky.telegramBot.model.pet.Pet;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.repository.AdoptionRecordRepository;
-import pro.sky.telegramBot.service.PetService;
-import pro.sky.telegramBot.service.UserService;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.PetService;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.UserService;
+import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.impl.AdoptionRecordServiceImpl;
 
 import java.util.Optional;
 
