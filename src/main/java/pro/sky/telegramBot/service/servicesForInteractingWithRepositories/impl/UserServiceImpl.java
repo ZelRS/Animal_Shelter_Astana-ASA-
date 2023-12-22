@@ -1,6 +1,9 @@
 package pro.sky.telegramBot.service.servicesForInteractingWithRepositories.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.exception.notFound.UserNotFoundException;
@@ -43,6 +46,7 @@ public class UserServiceImpl implements UserService {
      * получить пользователя из БД по id
      */
     @Override
+    @Cacheable("users")
     public User getById(Long id) {
         return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
     }
@@ -51,6 +55,7 @@ public class UserServiceImpl implements UserService {
      * создать и сохранить пользователя в БД
      */
     @Override
+    @CachePut(value = "users", key = "#user.id")
     public User createUserInfo(User user) {
         return userRepository.save(user);
     }
@@ -59,6 +64,7 @@ public class UserServiceImpl implements UserService {
      * изменить пользователя в БД
      */
     @Override
+    @CachePut(value = "users", key = "#user.id")
     public User update(User user) {
         return userRepository.save(user);
     }
@@ -125,6 +131,7 @@ public class UserServiceImpl implements UserService {
      * Метод позволяет сменить статус пользователя
      */
     @Override
+    @CachePut(value = "users", key = "id")
     public void setUserState(Long id, UserState state) {
         User user = getById(id);
         user.setState(state);
@@ -153,6 +160,29 @@ public class UserServiceImpl implements UserService {
             createNewUser(chatId, firstName);
         }
         return userState;
+    }
+
+
+    /**
+     * удаление пользователя по id
+     */
+    @Override
+    @CacheEvict("users")
+    public void deleteUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            userRepository.deleteById(id);
+        } else {
+            throw new UserNotFoundException("Удаление невозможно. Пользователя по данному id не существует.");
+        }
+    }
+
+    /**
+     * получение списка всех пользователей
+     */
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     /**

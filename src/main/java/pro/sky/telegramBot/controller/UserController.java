@@ -9,6 +9,8 @@ import pro.sky.telegramBot.enums.UserState;
 import pro.sky.telegramBot.model.users.User;
 import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.UserService;
 
+import java.util.List;
+
 /**
  * контроллер для обработки с эндпоинтов, связанных с пользователями и информацией о них
  */
@@ -25,6 +27,7 @@ public class UserController {
     public ResponseEntity<User> getById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.getById(id));
     }
+
     @PostMapping
     @Operation(summary = "Добавить пользователя")
     public ResponseEntity<User> create(@RequestBody User user) {
@@ -35,5 +38,17 @@ public class UserController {
     @Operation(summary = "Изменить статус пользователя")
     public void setUserState(@PathVariable("id") Long id, @RequestParam UserState state) {
         userService.setUserState(id, state);
+    }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Удалить пользователя по id")
+    public void deleteUserById(@PathVariable("id") Long id) {
+        userService.deleteUserById(id);
+    }
+
+    @GetMapping("/all")
+    @Operation(summary = "Получить список всех пользователей")
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }

@@ -78,4 +78,17 @@ public interface UserService {
      * Метод позволяет получить статус пользователя.
      */
     UserState getUserState(Long chatId, String firstName);
+
+
+    /**
+     * удаление пользователя по id
+     */
+    void deleteUserById(Long id);
+
+
+    /**
+     * получение списка всех пользователей
+     */
+    List<User> getAllUsers();
+
 }
