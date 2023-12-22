@@ -165,6 +165,11 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
     /**
      * Метод позволяет создать нового пользователя
      * с присваиванием ему статуса FREE и сохранением его в БД

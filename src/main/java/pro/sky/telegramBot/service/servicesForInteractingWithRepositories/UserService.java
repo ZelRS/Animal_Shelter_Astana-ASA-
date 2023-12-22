@@ -80,4 +80,7 @@ public interface UserService {
     UserState getUserState(Long chatId, String firstName);
 
     void deleteUserById(Long id);
+
+    List<User> getAllUsers();
+
 }
