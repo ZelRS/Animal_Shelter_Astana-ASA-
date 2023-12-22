@@ -155,6 +155,16 @@ public class UserServiceImpl implements UserService {
         return userState;
     }
 
+    @Override
+    public void deleteUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            userRepository.deleteById(user.get().getId());
+        } else {
+            throw new UserNotFoundException("Удаление невозможно. Пользователя по данному id не существует.");
+        }
+    }
+
     /**
      * Метод позволяет создать нового пользователя
      * с присваиванием ему статуса FREE и сохранением его в БД

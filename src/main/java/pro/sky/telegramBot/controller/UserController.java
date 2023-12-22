@@ -36,4 +36,10 @@ public class UserController {
     public void setUserState(@PathVariable("id") Long id, @RequestParam UserState state) {
         userService.setUserState(id, state);
     }
+
+    @DeleteMapping("/{id}")
+    @Operation(summary = "Удалить пользователя по id")
+    public void deleteUserById(@PathVariable("id") Long id) {
+        userService.deleteUserById(id);
+    }
 }
