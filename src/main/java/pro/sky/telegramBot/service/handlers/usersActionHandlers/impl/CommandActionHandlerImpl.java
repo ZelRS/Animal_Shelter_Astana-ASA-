@@ -152,7 +152,7 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
 
 //         Оставить заявку на обратный звонок
         commandMap.put(CALL_ME.getName(), (firstName, lastName, chatId, userState) -> {
-            log.info("Received /callMe command");
+            log.info("Received /call_Me command");
             User user = userService.findUserByChatId(chatId);
             Optional<String> phoneFromDatabase = userService.getUserPhone(user.getId());
             phoneFromDatabase.ifPresentOrElse(phone -> {
