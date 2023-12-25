@@ -4,3 +4,5 @@ The project is being developed by a team of developers consisting of:
 3. Yatsenko Yuri
 4. Karebin Alexey
 5. Roskach Anna
+
+Telegram bot link: @ASAstana_Bot (https://t.me/ASAstana_Bot)
