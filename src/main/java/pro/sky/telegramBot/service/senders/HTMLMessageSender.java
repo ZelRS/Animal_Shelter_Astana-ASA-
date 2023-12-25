@@ -89,7 +89,9 @@ public class HTMLMessageSender {
 
     public void sendInfoMenuHTMLMessage(Long chatId, String msg) {
         SendMessage message = new SendMessage(chatId, msg);
-        message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
+        User user = userService.findUserByChatId(chatId);
+        if (!user.getState().equals(VOLUNTEER))
+            message.replyMarkup(specificKeyboardCreator.shelterInformationFunctionalKeyboard());
         executor.executeHTMLMessage(message);
     }
 
