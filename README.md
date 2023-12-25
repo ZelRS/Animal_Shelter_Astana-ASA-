@@ -1,7 +1,6 @@
-Проект телеграм-бота для приюта домашних животных из Астаны. 
-Разработку ведет команда разработчиков в составе: 
-1. Зеленин Роман
-2. Петухов Юрий
-3. Яценко Юрий
-4. Каребин Алексей
-5. Роскач Анна
+The project is being developed by a team of developers consisting of:
+1. Zelenin Roman
+2. Petukhov Yuri
+3. Yatsenko Yuri
+4. Karebin Alexey
+5. Roskach Anna
