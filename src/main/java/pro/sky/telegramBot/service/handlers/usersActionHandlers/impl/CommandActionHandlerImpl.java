@@ -1,6 +1,5 @@
 package pro.sky.telegramBot.service.handlers.usersActionHandlers.impl;
 
-import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.request.SendPhoto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -152,23 +151,21 @@ public class CommandActionHandlerImpl implements CommandActionHandler {
 
 //         Оставить заявку на обратный звонок
         commandMap.put(CALL_ME.getName(), (firstName, lastName, chatId, userState) -> {
-            log.info("Received /callMe command");
+            log.info("Received /call_Me command");
             User user = userService.findUserByChatId(chatId);
             Optional<String> phoneFromDatabase = userService.getUserPhone(user.getId());
             phoneFromDatabase.ifPresentOrElse(phone -> {
                 Long volunteerId = userService.getRandomVolunteerId();
                 if (volunteerId != 0L) {
-                    SendMessage message = new SendMessage(volunteerId, "Здравствуйте. Пользователь <b>" + user.getUserName() +
+                    HTMLMessageSender.sendInfoMenuHTMLMessage(volunteerId, "Здравствуйте. Пользователь <b>" + user.getUserName() +
                             "</b> запросил обратный звонок.\nПерезвоните по номеру телефона " + phone);
-                    executor.executeHTMLMessage(message);
+                    HTMLMessageSender.sendInfoMenuHTMLMessage(user.getChatId(), "Спасибо! Наш сотрудник свяжется с вами в ближайшее время");
                 } else {
                     log.error("There are no volunteers in database");
                     HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, "К сожалению на данный момент у нас нет свободных волонтеров");
                 }
-            }, () -> {
-                HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, "К сожалению вы не предоставили свой номер телефона." +
-                        " Добавьте номер телефона в таком формате:\n/phone ##(###)###-##-##");
-            });
+            }, () -> HTMLMessageSender.sendInfoMenuHTMLMessage(chatId, "К сожалению вы не предоставили свой номер телефона." +
+                    " Добавьте номер телефона в таком формате:\n/phone ##(###)###-##-##"));
         });
 
         // Связаться с волонтером

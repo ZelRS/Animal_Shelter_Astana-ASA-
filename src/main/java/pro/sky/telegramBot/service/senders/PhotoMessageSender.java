@@ -155,7 +155,7 @@ public class PhotoMessageSender implements BlockedUserHandler {
                 .append("/schema - Посмотреть схему проезда\n")
                 .append("/sec_phone - Контакты для оформления пропуска\n")
                 .append("/safety - Правила техники безопасности\n")
-                .append("/callMe - Оставить контакты для обратной связи\n");
+                .append("/call_Me - Оставить контакты для обратной связи\n");
         try {
             SendPhoto sendPhoto = specificMediaMessageCreator.createShelterFullInfoPhotoMessage(chatId);
             sendPhoto.caption(caption.toString());
