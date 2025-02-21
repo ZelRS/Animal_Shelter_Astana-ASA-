@@ -1,7 +1,13 @@
 package pro.sky.telegramBot.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.models.media.MediaType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +31,17 @@ public class ShelterController {
     private final ShelterService shelterservice;
     private final ShelterCommandHandler shelterCommandHandler;
 
+//    @ApiResponses({
+//            @ApiResponse(
+//                    responseCode = "200",
+//                    description = "Создание приюта",
+//                    content = @Content(
+//                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+//                            schema = @Schema(implementation = Shelter.class)
+//                    )
+//            )
+//    })
+
     @PostMapping
     @Operation(summary = "Создать приют",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -45,7 +62,7 @@ public class ShelterController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
+    @PutMapping(consumes = MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Изменить существующий приют",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Приют, подлежащий изменению определяется по полю id")

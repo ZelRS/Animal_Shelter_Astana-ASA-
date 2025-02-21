@@ -12,10 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pro.sky.telegramBot.exception.notFound.ShelterNotFoundException;
-import pro.sky.telegramBot.service.handlers.specificHandlers.impl.ShelterCommandHandler;
-import pro.sky.telegramBot.service.loaders.MediaLoader;
 import pro.sky.telegramBot.model.shelter.Shelter;
 import pro.sky.telegramBot.repository.ShelterRepository;
+import pro.sky.telegramBot.service.handlers.specificHandlers.impl.ShelterCommandHandler;
+import pro.sky.telegramBot.service.loaders.MediaLoader;
 import pro.sky.telegramBot.service.servicesForInteractingWithRepositories.impl.ShelterServiceImpl;
 
 import java.util.Optional;
@@ -93,7 +93,7 @@ public class ShelterControllerWebMvcTest {
         when(shelterRepository.findById(any(Long.class))).thenReturn(Optional.of(SHELTER));
 
         mockMvc.perform(MockMvcRequestBuilders
-                .multipart("/shelter/{id}", SHELTER.getId())
+                        .multipart("/shelter/{id}", SHELTER.getId())
                         .file(PHOTO))
                 .andExpect(status().isOk());
 
